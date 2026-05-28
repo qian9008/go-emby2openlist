@@ -13,6 +13,9 @@ type Openlist struct {
 	// Host openlist 访问地址（如果 openlist 使用本地代理模式, 则这个地址必须配置公网可访问地址）
 	Host string `yaml:"host"`
 
+	// Enable365 是否启用 365 缩略图下载
+	Enable365 bool `yaml:"365-enable"`
+
 	// LocalTreeGen 本地目录树生成相关
 	LocalTreeGen *LocalTreeGen `yaml:"local-tree-gen"`
 }
