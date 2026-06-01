@@ -158,14 +158,18 @@ const LoginPage = () => {
 
         e.preventDefault();
         const form = e.target as HTMLFormElement;
-        const serverInput = form.querySelector('#server-address') as HTMLInputElement;
-        const serverAddress = serverInput?.value?.trim();
+        const serverIpInput = form.querySelector('#server-ip') as HTMLInputElement;
+        const serverPortInput = form.querySelector('#server-port') as HTMLInputElement;
+        const serverIp = serverIpInput?.value?.trim();
+        const serverPort = serverPortInput?.value?.trim();
 
-        if (!serverAddress) {
+        if (!serverIp) {
             setServerCheckError(t('please_enter_server_address'));
             setCheckingServer(false);
             return;
         }
+
+        const serverAddress = serverPort ? `${serverIp}:${serverPort}` : serverIp;
 
         const servers = await jellyfin.discovery.getRecommendedServerCandidates(serverAddress);
         const best = jellyfin.discovery.findBestServer(servers);
@@ -256,19 +260,35 @@ const LoginPage = () => {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={onSubmitServer}>
-                            <Label htmlFor="server-address" className="mb-2 block font-medium">
-                                {t('server_address')}
-                            </Label>
-                            <Input
-                                id="server-address"
-                                type="text"
-                                placeholder="jellyfin.example.com"
-                                className="w-full"
-                                autoCapitalize="none"
-                                autoCorrect="off"
-                                inputMode="url"
-                                autoFocus
-                            />
+                            <div className="flex gap-2 mb-2">
+                                <div className="flex-1">
+                                    <Label htmlFor="server-ip" className="mb-2 block font-medium">
+                                        {t('server_address')}
+                                    </Label>
+                                    <Input
+                                        id="server-ip"
+                                        type="text"
+                                        placeholder="192.168.1.100"
+                                        className="w-full"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div className="w-24">
+                                    <Label htmlFor="server-port" className="mb-2 block font-medium">
+                                        Port
+                                    </Label>
+                                    <Input
+                                        id="server-port"
+                                        type="text"
+                                        placeholder="8096"
+                                        className="w-full"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                    />
+                                </div>
+                            </div>
                             <p className="mt-2 text-xs text-muted-foreground">{t('no_http')}</p>
                             {serverCheckError && (
                                 <p className="mt-2 text-sm text-destructive flex items-center gap-2">
