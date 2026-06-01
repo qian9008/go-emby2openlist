@@ -1,0 +1,392 @@
+# Jellyfin API
+
+## API Docs
+- ActivityLog [Gets activity log entries.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335280e0.md): 
+- ApiKey [Get all keys.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335281e0.md): 
+- ApiKey [Create a new api key.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335282e0.md): 
+- ApiKey [Remove an api key.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335283e0.md): 
+- Artists [Gets all artists from a given item, folder, or the entire library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335284e0.md): 
+- Artists [Gets an artist by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335285e0.md): 
+- Artists [Gets all album artists from a given item, folder, or the entire library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335286e0.md): 
+- Audio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335287e0.md): 
+- Audio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335288e0.md): 
+- Audio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335289e0.md): 
+- Audio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335290e0.md): 
+- Backup [Gets a list of all currently present backups in the backup directory.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335291e0.md): 
+- Backup [Creates a new Backup.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335292e0.md): 
+- Backup [Gets the descriptor from an existing archive is present.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335293e0.md): 
+- Backup [Restores to a backup by restarting the server and applying the backup.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335294e0.md): 
+- Branding [Gets branding configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335295e0.md): 
+- Branding [Gets branding css.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335296e0.md): 
+- Branding [Gets branding css.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335297e0.md): 
+- Channels [Gets available channels.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335298e0.md): 
+- Channels [Get channel features.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335299e0.md): 
+- Channels [Get channel items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335300e0.md): 
+- Channels [Get all channel features.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335301e0.md): 
+- Channels [Gets latest channel items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335302e0.md): 
+- ClientLog [Upload a document.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335303e0.md): 
+- Collection [Creates a new collection.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335304e0.md): 
+- Collection [Adds items to a collection.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335305e0.md): 
+- Collection [Removes items from a collection.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335306e0.md): 
+- Configuration [Gets application configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335307e0.md): 
+- Configuration [Updates application configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335308e0.md): 
+- Configuration [Gets a named configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335309e0.md): 
+- Configuration [Updates named configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335310e0.md): 
+- Configuration [Updates branding configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335311e0.md): 
+- Configuration [Gets a default MetadataOptions object.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335312e0.md): 
+- Dashboard [Gets a dashboard configuration page.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335313e0.md): 
+- Dashboard [Gets the configuration pages.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335314e0.md): 
+- Devices [Get Devices.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335315e0.md): 
+- Devices [Deletes a device.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335316e0.md): 
+- Devices [Get info for a device.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335317e0.md): 
+- Devices [Get options for a device.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335318e0.md): 
+- Devices [Update device options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335319e0.md): 
+- DisplayPreferences [Get Display Preferences.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335320e0.md): 
+- DisplayPreferences [Update Display Preferences.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335321e0.md): 
+- DynamicHls [Gets a video stream using HTTP live streaming.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335322e0.md): 
+- DynamicHls [Gets an audio stream using HTTP live streaming.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335323e0.md): 
+- DynamicHls [Gets an audio hls playlist stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335324e0.md): 
+- DynamicHls [Gets an audio hls playlist stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335325e0.md): 
+- DynamicHls [Gets a video stream using HTTP live streaming.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335326e0.md): 
+- DynamicHls [Gets a hls live stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335327e0.md): 
+- DynamicHls [Gets a video stream using HTTP live streaming.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335328e0.md): 
+- DynamicHls [Gets a video hls playlist stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335329e0.md): 
+- DynamicHls [Gets a video hls playlist stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335330e0.md): 
+- Environment [Get Default directory browser.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335331e0.md): 
+- Environment [Gets the contents of a given directory in the file system.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335332e0.md): 
+- Environment [Gets available drives from the server's file system.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335333e0.md): 
+- Environment [Gets network paths.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335334e0.md): 
+- Environment [Gets the parent path of a given path.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335335e0.md): 
+- Environment [Validates path.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335336e0.md): 
+- Filter [Gets legacy query filters.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335337e0.md): 
+- Filter [Gets query filters.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335338e0.md): 
+- Genres [Gets all genres from a given item, folder, or the entire library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335339e0.md): 
+- Genres [Gets a genre, by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335340e0.md): 
+- HlsSegment [Gets the specified audio segment for an audio item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335341e0.md): 
+- HlsSegment [Gets the specified audio segment for an audio item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335342e0.md): 
+- HlsSegment [Gets a hls video segment.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335343e0.md): 
+- HlsSegment [Gets a hls video playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335344e0.md): 
+- HlsSegment [Stops an active encoding.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335345e0.md): 
+- Image [Get artist image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335346e0.md): 
+- Image [Get artist image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335347e0.md): 
+- Image [Generates or gets the splashscreen.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335348e0.md): 
+- Image [Uploads a custom splashscreen.
+The body is expected to the image contents base64 encoded.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335349e0.md): 
+- Image [Delete a custom splashscreen.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335350e0.md): 
+- Image [Get genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335351e0.md): 
+- Image [Get genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335352e0.md): 
+- Image [Get genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335353e0.md): 
+- Image [Get genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335354e0.md): 
+- Image [Get item image infos.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335355e0.md): 
+- Image [Delete an item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335356e0.md): 
+- Image [Set item image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335357e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335358e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335359e0.md): 
+- Image [Delete an item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335360e0.md): 
+- Image [Set item image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335361e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335362e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335363e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335364e0.md): 
+- Image [Gets the item's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335365e0.md): 
+- Image [Updates the index for an item image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335366e0.md): 
+- Image [Get music genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335367e0.md): 
+- Image [Get music genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335368e0.md): 
+- Image [Get music genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335369e0.md): 
+- Image [Get music genre image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335370e0.md): 
+- Image [Get person image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335371e0.md): 
+- Image [Get person image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335372e0.md): 
+- Image [Get person image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335373e0.md): 
+- Image [Get person image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335374e0.md): 
+- Image [Get studio image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335375e0.md): 
+- Image [Get studio image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335376e0.md): 
+- Image [Get studio image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335377e0.md): 
+- Image [Get studio image by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335378e0.md): 
+- Image [Sets the user image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335379e0.md): 
+- Image [Delete the user's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335380e0.md): 
+- Image [Get user profile image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335381e0.md): 
+- Image [Get user profile image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335382e0.md): 
+- InstantMix [Creates an instant playlist based on a given album.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335383e0.md): 
+- InstantMix [Creates an instant playlist based on a given artist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335384e0.md): 
+- InstantMix [Creates an instant playlist based on a given artist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335385e0.md): 
+- InstantMix [Creates an instant playlist based on a given item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335386e0.md): 
+- InstantMix [Creates an instant playlist based on a given genre.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335387e0.md): 
+- InstantMix [Creates an instant playlist based on a given genre.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335388e0.md): 
+- InstantMix [Creates an instant playlist based on a given playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335389e0.md): 
+- InstantMix [Creates an instant playlist based on a given song.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335390e0.md): 
+- ItemLookup [Get the item's external id info.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335391e0.md): 
+- ItemLookup [Applies search criteria to an item and refreshes metadata.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335392e0.md): 
+- ItemLookup [Get book remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335393e0.md): 
+- ItemLookup [Get box set remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335394e0.md): 
+- ItemLookup [Get movie remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335395e0.md): 
+- ItemLookup [Get music album remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335396e0.md): 
+- ItemLookup [Get music artist remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335397e0.md): 
+- ItemLookup [Get music video remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335398e0.md): 
+- ItemLookup [Get person remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335399e0.md): 
+- ItemLookup [Get series remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335400e0.md): 
+- ItemLookup [Get trailer remote search.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335401e0.md): 
+- ItemRefresh [Refreshes metadata for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335402e0.md): 
+- Items [Gets items based on a query.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335403e0.md): 
+- Items [Get Item User Data.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335404e0.md): 
+- Items [Update Item User Data.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335405e0.md): 
+- Items [Gets items based on a query.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335406e0.md): 
+- Library [Deletes items from the library and filesystem.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335407e0.md): 
+- Library [Deletes an item from the library and filesystem.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335408e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335409e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335410e0.md): 
+- Library [Gets all parents of an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335411e0.md): 
+- Library [Gets critic review for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335412e0.md): 
+- Library [Downloads item media.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335413e0.md): 
+- Library [Get the original file of an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335414e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335415e0.md): 
+- Library [Get theme songs and videos for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335416e0.md): 
+- Library [Get theme songs for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335417e0.md): 
+- Library [Get theme videos for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335418e0.md): 
+- Library [Get item counts.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335419e0.md): 
+- Library [Gets the library options info.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335420e0.md): 
+- Library [Reports that new movies have been added by an external source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335421e0.md): 
+- Library [Gets all user media folders.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335422e0.md): 
+- Library [Reports that new movies have been added by an external source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335423e0.md): 
+- Library [Reports that new movies have been added by an external source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335424e0.md): 
+- Library [Gets a list of physical paths from virtual folders.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335425e0.md): 
+- Library [Starts a library scan.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335426e0.md): 
+- Library [Reports that new episodes of a series have been added by an external source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335427e0.md): 
+- Library [Reports that new episodes of a series have been added by an external source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335428e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335429e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335430e0.md): 
+- Library [Gets similar items.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335431e0.md): 
+- ItemUpdate [Updates an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335432e0.md): 
+- ItemUpdate [Updates an item's content type.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335433e0.md): 
+- ItemUpdate [Gets metadata editor info for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335434e0.md): 
+- UserLibrary [Gets an item from a user's library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335435e0.md): 
+- UserLibrary [Gets intros to play before the main media item plays.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335436e0.md): 
+- UserLibrary [Gets local trailers for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335437e0.md): 
+- UserLibrary [Gets special features for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335438e0.md): 
+- UserLibrary [Gets latest media.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335439e0.md): 
+- UserLibrary [Gets the root folder from a user's library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335440e0.md): 
+- UserLibrary [Marks an item as a favorite.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335441e0.md): 
+- UserLibrary [Unmarks item as a favorite.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335442e0.md): 
+- UserLibrary [Deletes a user's saved personal rating for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335443e0.md): 
+- UserLibrary [Updates a user's rating for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335444e0.md): 
+- LibraryStructure [Gets all virtual folders.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335445e0.md): 
+- LibraryStructure [Adds a virtual folder.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335446e0.md): 
+- LibraryStructure [Removes a virtual folder.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335447e0.md): 
+- LibraryStructure [Update library options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335448e0.md): 
+- LibraryStructure [Renames a virtual folder.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335449e0.md): 
+- LibraryStructure [Add a media path to a library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335450e0.md): 
+- LibraryStructure [Remove a media path.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335451e0.md): 
+- LibraryStructure [Updates a media path.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335452e0.md): 
+- LiveTv [Get channel mapping options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335453e0.md): 
+- LiveTv [Set channel mappings.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335454e0.md): 
+- LiveTv [Gets available live tv channels.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335455e0.md): 
+- LiveTv [Gets a live tv channel.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335456e0.md): 
+- LiveTv [Get guide info.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335457e0.md): 
+- LiveTv [Gets available live tv services.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335458e0.md): 
+- LiveTv [Adds a listings provider.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335459e0.md): 
+- LiveTv [Delete listing provider.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335460e0.md): 
+- LiveTv [Gets default listings provider info.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335461e0.md): 
+- LiveTv [Gets available lineups.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335462e0.md): 
+- LiveTv [Gets available countries.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335463e0.md): 
+- LiveTv [Gets a live tv recording stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335464e0.md): 
+- LiveTv [Gets a live tv channel stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335465e0.md): 
+- LiveTv [Gets available live tv epgs.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335466e0.md): 
+- LiveTv [Gets available live tv epgs.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335467e0.md): 
+- LiveTv [Gets a live tv program.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335468e0.md): 
+- LiveTv [Gets recommended live tv epgs.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335469e0.md): 
+- LiveTv [Gets live tv recordings.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335470e0.md): 
+- LiveTv [Gets a live tv recording.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335471e0.md): 
+- LiveTv [Deletes a live tv recording.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335472e0.md): 
+- LiveTv [Gets recording folders.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335473e0.md): 
+- LiveTv [Gets live tv recording groups.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335474e0.md): 
+- LiveTv [Get recording group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335475e0.md): 
+- LiveTv [Gets live tv recording series.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335476e0.md): 
+- LiveTv [Gets live tv series timers.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335477e0.md): 
+- LiveTv [Creates a live tv series timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335478e0.md): 
+- LiveTv [Gets a live tv series timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335479e0.md): 
+- LiveTv [Cancels a live tv series timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335480e0.md): 
+- LiveTv [Updates a live tv series timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335481e0.md): 
+- LiveTv [Gets the live tv timers.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335482e0.md): 
+- LiveTv [Creates a live tv timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335483e0.md): 
+- LiveTv [Gets a timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335484e0.md): 
+- LiveTv [Cancels a live tv timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335485e0.md): 
+- LiveTv [Updates a live tv timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335486e0.md): 
+- LiveTv [Gets the default values for a new timer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335487e0.md): 
+- LiveTv [Adds a tuner host.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335488e0.md): 
+- LiveTv [Deletes a tuner host.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335489e0.md): 
+- LiveTv [Get tuner host types.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335490e0.md): 
+- LiveTv [Resets a tv tuner.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335491e0.md): 
+- LiveTv [Discover tuners.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335492e0.md): 
+- LiveTv [Discover tuners.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335493e0.md): 
+- Localization [Gets known countries.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335494e0.md): 
+- Localization [Gets known cultures.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335495e0.md): 
+- Localization [Gets localization options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335496e0.md): 
+- Localization [Gets known parental ratings.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335497e0.md): 
+- Lyrics [Gets an item's lyrics.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335498e0.md): 
+- Lyrics [Upload an external lyric file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335499e0.md): 
+- Lyrics [Deletes an external lyric file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335500e0.md): 
+- Lyrics [Search remote lyrics.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335501e0.md): 
+- Lyrics [Downloads a remote lyric.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335502e0.md): 
+- Lyrics [Gets the remote lyrics.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335503e0.md): 
+- MediaInfo [Gets live playback media info for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335504e0.md): 
+- MediaInfo [Gets live playback media info for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335505e0.md): For backwards compatibility parameters can be sent via Query or Body, with Query having higher precedence.
+- MediaInfo [Closes a media source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335506e0.md): 
+- MediaInfo [Opens a media source.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335507e0.md): 
+- MediaInfo [Tests the network with a request with the size of the bitrate.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335508e0.md): 
+- MediaSegments [Gets all media segments based on an itemId.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335509e0.md): 
+- Movies [Gets movie recommendations.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335510e0.md): 
+- MusicGenres [Gets all music genres from a given item, folder, or the entire library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335511e0.md): 
+- MusicGenres [Gets a music genre, by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335512e0.md): 
+- Package [Gets available packages.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335513e0.md): 
+- Package [Gets a package by name or assembly GUID.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335514e0.md): 
+- Package [Installs a package.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335515e0.md): 
+- Package [Cancels a package installation.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335516e0.md): 
+- Package [Gets all package repositories.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335517e0.md): 
+- Package [Sets the enabled and existing package repositories.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335518e0.md): 
+- Persons [Gets all persons.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335519e0.md): 
+- Persons [Get person by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335520e0.md): 
+- Playlists [Creates a new playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335521e0.md): For backwards compatibility parameters can be sent via Query or Body, with Query having higher precedence.
+- Playlists [Updates a playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335522e0.md): 
+- Playlists [Get a playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335523e0.md): 
+- Playlists [Adds items to a playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335524e0.md): 
+- Playlists [Removes items from a playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335525e0.md): 
+- Playlists [Gets the original items of a playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335526e0.md): 
+- Playlists [Moves a playlist item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335527e0.md): 
+- Playlists [Get a playlist's users.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335528e0.md): 
+- Playlists [Get a playlist user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335529e0.md): 
+- Playlists [Modify a user of a playlist's users.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335530e0.md): 
+- Playlists [Remove a user from a playlist's users.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335531e0.md): 
+- Playstate [Reports that a session has begun playing an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335532e0.md): 
+- Playstate [Reports that a session has stopped playing an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335533e0.md): 
+- Playstate [Reports a session's playback progress.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335534e0.md): 
+- Playstate [Reports playback has started within a session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335535e0.md): 
+- Playstate [Pings a playback session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335536e0.md): 
+- Playstate [Reports playback progress within a session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335537e0.md): 
+- Playstate [Reports playback has stopped within a session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335538e0.md): 
+- Playstate [Marks an item as played for user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335539e0.md): 
+- Playstate [Marks an item as unplayed for user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335540e0.md): 
+- Plugins [Gets a list of currently installed plugins.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335541e0.md): 
+- Plugins [Uninstalls a plugin.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335542e0.md): 
+- Plugins [Uninstalls a plugin by version.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335543e0.md): 
+- Plugins [Disable a plugin.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335544e0.md): 
+- Plugins [Enables a disabled plugin.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335545e0.md): 
+- Plugins [Gets a plugin's image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335546e0.md): 
+- Plugins [Gets plugin configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335547e0.md): 
+- Plugins [Updates plugin configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335548e0.md): Accepts plugin configuration as JSON body.
+- Plugins [Gets a plugin's manifest.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335549e0.md): 
+- QuickConnect [Authorizes a pending quick connect request.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335550e0.md): 
+- QuickConnect [Attempts to retrieve authentication information.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335551e0.md): 
+- QuickConnect [Gets the current quick connect state.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335552e0.md): 
+- QuickConnect [Initiate a new quick connect request.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335553e0.md): 
+- RemoteImage [Gets available remote images for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335554e0.md): 
+- RemoteImage [Downloads a remote image for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335555e0.md): 
+- RemoteImage [Gets available remote image providers for an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335556e0.md): 
+- ScheduledTasks [Get tasks.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335557e0.md): 
+- ScheduledTasks [Get task by id.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335558e0.md): 
+- ScheduledTasks [Update specified task triggers.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335559e0.md): 
+- ScheduledTasks [Start specified task.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335560e0.md): 
+- ScheduledTasks [Stop specified task.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335561e0.md): 
+- Search [Gets the search hint result.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335562e0.md): 
+- Session [Get all password reset providers.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335563e0.md): 
+- Session [Get all auth providers.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335564e0.md): 
+- Session [Gets a list of sessions.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335565e0.md): 
+- Session [Issues a full general command to a client.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335566e0.md): 
+- Session [Issues a general command to a client.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335567e0.md): 
+- Session [Issues a command to a client to display a message to the user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335568e0.md): 
+- Session [Instructs a session to play an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335569e0.md): 
+- Session [Issues a playstate command to a client.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335570e0.md): 
+- Session [Issues a system command to a client.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335571e0.md): 
+- Session [Adds an additional user to a session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335572e0.md): 
+- Session [Removes an additional user from a session.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335573e0.md): 
+- Session [Instructs a session to browse to an item or view.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335574e0.md): 
+- Session [Updates capabilities for a device.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335575e0.md): 
+- Session [Updates capabilities for a device.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335576e0.md): 
+- Session [Reports that a session has ended.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335577e0.md): 
+- Session [Reports that a session is viewing an item.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335578e0.md): 
+- Startup [Completes the startup wizard.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335579e0.md): 
+- Startup [Gets the initial startup wizard configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335580e0.md): 
+- Startup [Sets the initial startup wizard configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335581e0.md): 
+- Startup [Gets the first user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335582e0.md): 
+- Startup [Sets remote access and UPnP.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335583e0.md): 
+- Startup [Gets the first user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335584e0.md): 
+- Startup [Sets the user name and password.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335585e0.md): 
+- Studios [Gets all studios from a given item, folder, or the entire library.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335586e0.md): 
+- Studios [Gets a studio by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335587e0.md): 
+- Subtitle [Gets a list of available fallback font files.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335588e0.md): 
+- Subtitle [Gets a fallback font file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335589e0.md): 
+- Subtitle [Search remote subtitles.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335590e0.md): 
+- Subtitle [Downloads a remote subtitle.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335591e0.md): 
+- Subtitle [Gets the remote subtitles.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335592e0.md): 
+- Subtitle [Gets an HLS subtitle playlist.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335593e0.md): 
+- Subtitle [Upload an external subtitle file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335594e0.md): 
+- Subtitle [Deletes an external subtitle file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335595e0.md): 
+- Subtitle [Gets subtitles in a specified format.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335596e0.md): 
+- Subtitle [Gets subtitles in a specified format.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335597e0.md): 
+- Suggestions [Gets suggestions.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335598e0.md): 
+- SyncPlay [Gets a SyncPlay group by id.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335599e0.md): 
+- SyncPlay [Notify SyncPlay group that member is buffering.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335600e0.md): 
+- SyncPlay [Join an existing SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335601e0.md): 
+- SyncPlay [Leave the joined SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335602e0.md): 
+- SyncPlay [Gets all SyncPlay groups.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335603e0.md): 
+- SyncPlay [Request to move an item in the playlist in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335604e0.md): 
+- SyncPlay [Create a new SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335605e0.md): 
+- SyncPlay [Request next item in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335606e0.md): 
+- SyncPlay [Request pause in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335607e0.md): 
+- SyncPlay [Update session ping.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335608e0.md): 
+- SyncPlay [Request previous item in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335609e0.md): 
+- SyncPlay [Request to queue items to the playlist of a SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335610e0.md): 
+- SyncPlay [Notify SyncPlay group that member is ready for playback.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335611e0.md): 
+- SyncPlay [Request to remove items from the playlist in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335612e0.md): 
+- SyncPlay [Request seek in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335613e0.md): 
+- SyncPlay [Request SyncPlay group to ignore member during group-wait.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335614e0.md): 
+- SyncPlay [Request to set new playlist in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335615e0.md): 
+- SyncPlay [Request to change playlist item in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335616e0.md): 
+- SyncPlay [Request to set repeat mode in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335617e0.md): 
+- SyncPlay [Request to set shuffle mode in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335618e0.md): 
+- SyncPlay [Request stop in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335619e0.md): 
+- SyncPlay [Request unpause in SyncPlay group.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335620e0.md): 
+- System [Gets information about the request endpoint.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335621e0.md): 
+- System [Gets information about the server.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335622e0.md): 
+- System [Gets public information about the server.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335623e0.md): 
+- System [Gets information about the server.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335624e0.md): 
+- System [Gets a list of available server log files.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335625e0.md): 
+- System [Gets a log file.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335626e0.md): 
+- System [Pings the system.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335627e0.md): 
+- System [Pings the system.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335628e0.md): 
+- System [Restarts the application.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335629e0.md): 
+- System [Shuts down the application.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335630e0.md): 
+- TimeSync [Gets the current UTC time.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335631e0.md): 
+- Tmdb [Gets the TMDb image configuration options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335632e0.md): 
+- Trailers [Finds movies and trailers similar to a given trailer.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335633e0.md): 
+- Trickplay [Gets a trickplay tile image.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335634e0.md): 
+- Trickplay [Gets an image tiles playlist for trickplay.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335635e0.md): 
+- TvShows [Gets episodes for a tv season.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335636e0.md): 
+- TvShows [Gets seasons for a tv series.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335637e0.md): 
+- TvShows [Gets a list of next up episodes.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335638e0.md): 
+- TvShows [Gets a list of upcoming episodes.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335639e0.md): 
+- UniversalAudio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335640e0.md): 
+- UniversalAudio [Gets an audio stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335641e0.md): 
+- User [Gets a list of users.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335642e0.md): 
+- User [Updates a user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335643e0.md): 
+- User [Gets a user by Id.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335644e0.md): 
+- User [Deletes a user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335645e0.md): 
+- User [Updates a user policy.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335646e0.md): 
+- User [Authenticates a user by name.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335647e0.md): 
+- User [Authenticates a user with quick connect.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335648e0.md): 
+- User [Updates a user configuration.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335649e0.md): 
+- User [Initiates the forgot password process for a local user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335650e0.md): 
+- User [Redeems a forgot password pin.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335651e0.md): 
+- User [Gets the user based on auth token.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335652e0.md): 
+- User [Creates a user.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335653e0.md): 
+- User [Updates a user's password.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335654e0.md): 
+- User [Gets a list of publicly visible users for display on a login screen.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335655e0.md): 
+- UserViews [Get user views.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335656e0.md): 
+- UserViews [Get user view grouping options.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335657e0.md): 
+- VideoAttachments [Get video attachment.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335658e0.md): 
+- Videos [Gets additional parts for a video.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335659e0.md): 
+- Videos [Removes alternate video sources.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335660e0.md): 
+- Videos [Gets a video stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335661e0.md): 
+- Videos [Gets a video stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335662e0.md): 
+- Videos [Gets a video stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335663e0.md): 
+- Videos [Gets a video stream.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335664e0.md): 
+- Videos [Merges videos into a single record.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335665e0.md): 
+- Years [Get years.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335666e0.md): 
+- Years [Gets a year.](https://s.apifox.cn/e4cd47de-cb20-44ad-8bd9-d96f171fb494/465335667e0.md): 

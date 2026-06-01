@@ -1,0 +1,15 @@
+{
+    "skipIntro": "Skip Intro",
+    "skipOutro": "Skip Outro",
+    "audioTracks": "Audio Tracks",
+    "subtitles": "Subtitles",
+    "off": "Off",
+    "playNextItem": "Play Next Item",
+    "upNext": "Next episode in {{seconds}} seconds",
+    "startNow": "Start Now",
+    "dismiss": "Dismiss",
+    "seasonEpisode": "S{{season}} E{{episode}}",
+    "previousItem": "Previous Item",
+    "nextItem": "Next Item",
+    "nowPlaying": "Now Playing"
+}

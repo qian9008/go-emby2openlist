@@ -1,0 +1,13 @@
+{
+    "title": "Bibliothek",
+    "no_items_title": "Keine Elemente gefunden",
+    "no_items_description": "In dieser Bibliothek sind keine Elemente vorhanden.",
+    "sort_name": "Name",
+    "sort_date_added": "Hinzugefügt am",
+    "sort_premiere_date": "Premiere Datum",
+    "sort_community_rating": "Community Bewertung",
+    "sort_critic_rating": "Kritiker Bewertung",
+    "sort_runtime": "Laufzeit",
+    "ascending": "Aufsteigend",
+    "descending": "Absteigend"
+}
