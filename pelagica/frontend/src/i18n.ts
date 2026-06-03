@@ -25,6 +25,10 @@ for (const [path, module] of Object.entries(localeModules)) {
 
 const nsList = Array.from(namespaces).sort();
 
+if (typeof window !== 'undefined' && !localStorage.getItem('i18nextLng')) {
+    localStorage.setItem('i18nextLng', 'zh');
+}
+
 i18n.use(LanguageDetector)
     .use(initReactI18next)
     .init({

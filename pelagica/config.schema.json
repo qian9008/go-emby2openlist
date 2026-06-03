@@ -70,47 +70,158 @@
       "type": "object"
     },
     "BaseItemKind": {
-      "description": "The base item kind.",
-      "enum": [
-        "AggregateFolder",
-        "Audio",
-        "AudioBook",
-        "BasePluginFolder",
-        "Book",
-        "BoxSet",
-        "Channel",
-        "ChannelFolderItem",
-        "CollectionFolder",
-        "Episode",
-        "Folder",
-        "Genre",
-        "ManualPlaylistsFolder",
-        "Movie",
-        "LiveTvChannel",
-        "LiveTvProgram",
-        "MusicAlbum",
-        "MusicArtist",
-        "MusicGenre",
-        "MusicVideo",
-        "Person",
-        "Photo",
-        "PhotoAlbum",
-        "Playlist",
-        "PlaylistsFolder",
-        "Program",
-        "Recording",
-        "Season",
-        "Series",
-        "Studio",
-        "Trailer",
-        "TvChannel",
-        "TvProgram",
-        "UserRootFolder",
-        "UserView",
-        "Video",
-        "Year"
+      "anyOf": [
+        {
+          "const": "AggregateFolder",
+          "type": "string"
+        },
+        {
+          "const": "Audio",
+          "type": "string"
+        },
+        {
+          "const": "AudioBook",
+          "type": "string"
+        },
+        {
+          "const": "BasePluginFolder",
+          "type": "string"
+        },
+        {
+          "const": "Book",
+          "type": "string"
+        },
+        {
+          "const": "BoxSet",
+          "type": "string"
+        },
+        {
+          "const": "Channel",
+          "type": "string"
+        },
+        {
+          "const": "ChannelFolderItem",
+          "type": "string"
+        },
+        {
+          "const": "CollectionFolder",
+          "type": "string"
+        },
+        {
+          "const": "Episode",
+          "type": "string"
+        },
+        {
+          "const": "Folder",
+          "type": "string"
+        },
+        {
+          "const": "Genre",
+          "type": "string"
+        },
+        {
+          "const": "ManualPlaylistsFolder",
+          "type": "string"
+        },
+        {
+          "const": "Movie",
+          "type": "string"
+        },
+        {
+          "const": "LiveTvChannel",
+          "type": "string"
+        },
+        {
+          "const": "LiveTvProgram",
+          "type": "string"
+        },
+        {
+          "const": "MusicAlbum",
+          "type": "string"
+        },
+        {
+          "const": "MusicArtist",
+          "type": "string"
+        },
+        {
+          "const": "MusicGenre",
+          "type": "string"
+        },
+        {
+          "const": "MusicVideo",
+          "type": "string"
+        },
+        {
+          "const": "Person",
+          "type": "string"
+        },
+        {
+          "const": "Photo",
+          "type": "string"
+        },
+        {
+          "const": "PhotoAlbum",
+          "type": "string"
+        },
+        {
+          "const": "Playlist",
+          "type": "string"
+        },
+        {
+          "const": "PlaylistsFolder",
+          "type": "string"
+        },
+        {
+          "const": "Program",
+          "type": "string"
+        },
+        {
+          "const": "Recording",
+          "type": "string"
+        },
+        {
+          "const": "Season",
+          "type": "string"
+        },
+        {
+          "const": "Series",
+          "type": "string"
+        },
+        {
+          "const": "Studio",
+          "type": "string"
+        },
+        {
+          "const": "Trailer",
+          "type": "string"
+        },
+        {
+          "const": "TvChannel",
+          "type": "string"
+        },
+        {
+          "const": "TvProgram",
+          "type": "string"
+        },
+        {
+          "const": "UserRootFolder",
+          "type": "string"
+        },
+        {
+          "const": "UserView",
+          "type": "string"
+        },
+        {
+          "const": "Video",
+          "type": "string"
+        },
+        {
+          "const": "Year",
+          "type": "string"
+        },
+        {}
       ],
-      "type": "string"
+      "description": "The base item kind."
     },
     "ConfigLink": {
       "properties": {
@@ -319,40 +430,130 @@
       "type": "object"
     },
     "ItemSortBy": {
-      "description": "These represent sort orders.",
-      "enum": [
-        "Default",
-        "AiredEpisodeOrder",
-        "Album",
-        "AlbumArtist",
-        "Artist",
-        "DateCreated",
-        "OfficialRating",
-        "DatePlayed",
-        "PremiereDate",
-        "StartDate",
-        "SortName",
-        "Name",
-        "Random",
-        "Runtime",
-        "CommunityRating",
-        "ProductionYear",
-        "PlayCount",
-        "CriticRating",
-        "IsFolder",
-        "IsUnplayed",
-        "IsPlayed",
-        "SeriesSortName",
-        "VideoBitRate",
-        "AirTime",
-        "Studio",
-        "IsFavoriteOrLiked",
-        "DateLastContentAdded",
-        "SeriesDatePlayed",
-        "ParentIndexNumber",
-        "IndexNumber"
+      "anyOf": [
+        {
+          "const": "Default",
+          "type": "string"
+        },
+        {
+          "const": "AiredEpisodeOrder",
+          "type": "string"
+        },
+        {
+          "const": "Album",
+          "type": "string"
+        },
+        {
+          "const": "AlbumArtist",
+          "type": "string"
+        },
+        {
+          "const": "Artist",
+          "type": "string"
+        },
+        {
+          "const": "DateCreated",
+          "type": "string"
+        },
+        {
+          "const": "OfficialRating",
+          "type": "string"
+        },
+        {
+          "const": "DatePlayed",
+          "type": "string"
+        },
+        {
+          "const": "PremiereDate",
+          "type": "string"
+        },
+        {
+          "const": "StartDate",
+          "type": "string"
+        },
+        {
+          "const": "SortName",
+          "type": "string"
+        },
+        {
+          "const": "Name",
+          "type": "string"
+        },
+        {
+          "const": "Random",
+          "type": "string"
+        },
+        {
+          "const": "Runtime",
+          "type": "string"
+        },
+        {
+          "const": "CommunityRating",
+          "type": "string"
+        },
+        {
+          "const": "ProductionYear",
+          "type": "string"
+        },
+        {
+          "const": "PlayCount",
+          "type": "string"
+        },
+        {
+          "const": "CriticRating",
+          "type": "string"
+        },
+        {
+          "const": "IsFolder",
+          "type": "string"
+        },
+        {
+          "const": "IsUnplayed",
+          "type": "string"
+        },
+        {
+          "const": "IsPlayed",
+          "type": "string"
+        },
+        {
+          "const": "SeriesSortName",
+          "type": "string"
+        },
+        {
+          "const": "VideoBitRate",
+          "type": "string"
+        },
+        {
+          "const": "AirTime",
+          "type": "string"
+        },
+        {
+          "const": "Studio",
+          "type": "string"
+        },
+        {
+          "const": "IsFavoriteOrLiked",
+          "type": "string"
+        },
+        {
+          "const": "DateLastContentAdded",
+          "type": "string"
+        },
+        {
+          "const": "SeriesDatePlayed",
+          "type": "string"
+        },
+        {
+          "const": "ParentIndexNumber",
+          "type": "string"
+        },
+        {
+          "const": "IndexNumber",
+          "type": "string"
+        },
+        {}
       ],
-      "type": "string"
+      "description": "These represent sort orders."
     },
     "ItemsSection": {
       "description": "A generic section displaying a grid of items",

@@ -196,3 +196,8 @@ func getApiKey(c *gin.Context) (keyType ApiKeyType, keyName string, apiKey strin
 
 	return
 }
+
+// ExportGetApiKey 导出 getApiKey 供其他包使用
+func ExportGetApiKey(c *gin.Context) (keyType ApiKeyType, keyName string, apiKey string) {
+	return getApiKey(c)
+}

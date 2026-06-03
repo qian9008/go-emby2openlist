@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import Page from '../Page';
 import { useItem } from '@/hooks/api/useItem';
 import MoviePage from './MoviePage';
@@ -19,6 +19,9 @@ import { useLibraryItems } from '@/hooks/api/useLibraryItems';
 import ItemsListPage, { type UseItemsHook } from './ItemsListPage';
 import { getPrimaryImageUrl } from '@/utils/jellyfinUrls';
 import WatchedStateBadge from '@/components/WatchedStateBadge';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+
 
 const ItemPageSkeleton = memo(() => {
     return (
@@ -119,15 +122,76 @@ const ItemPage = () => {
     const { t } = useTranslation('item');
     const params = useParams<{ itemId: string }>();
     const itemId = params.itemId;
+    const navigate = useNavigate();
 
     const { config, loading: configLoading } = useConfig();
     const { data: item, isLoading, error } = useItem(itemId, true, getUserId() || undefined);
 
+    const handleBack = () => {
+        if (!item) {
+            navigate(-1);
+            return;
+        }
+
+        // 智能的“返回上级”导航，规避从播放器返回后历史记录紊乱的问题
+        switch (item.Type) {
+            case 'Episode':
+                // 单集返回到所属“季” (ParentId)
+                if (item.ParentId) {
+                    navigate(`/item/${item.ParentId}`);
+                } else if (item.SeriesId) {
+                    navigate(`/item/${item.SeriesId}`);
+                } else {
+                    navigate('/');
+                }
+                break;
+            case 'Season':
+                // 季返回到所属“剧集” (SeriesId)
+                if (item.SeriesId) {
+                    navigate(`/item/${item.SeriesId}`);
+                } else if (item.ParentId) {
+                    navigate(`/item/${item.ParentId}`);
+                } else {
+                    navigate('/');
+                }
+                break;
+            case 'Movie':
+            case 'Series':
+            case 'MusicAlbum':
+            case 'Playlist':
+            case 'BoxSet':
+            case 'Folder':
+            case 'Video':
+                // 顶层媒体/文件夹返回到所属“媒体库” (ParentId)
+                if (item.ParentId) {
+                    navigate(`/library?library=${item.ParentId}`);
+                } else {
+                    navigate('/library');
+                }
+                break;
+            default:
+                // 其他类型（如 Genre, Studio 等）使用默认浏览器历史返回
+                navigate(-1);
+                break;
+        }
+    };
+
     return (
         <Page
             title={item ? `${item.Name}` : isLoading ? t('loading') : t('item_not_found')}
-            className="flex-1 flex flex-col"
+            className="flex-1 flex flex-col relative"
         >
+            {/* 返回按钮 */}
+            <div className="absolute top-4 left-4 z-50">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10 bg-background/30 backdrop-blur-md border border-border/50 hover:bg-background/80 hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer flex items-center justify-center"
+                    onClick={handleBack}
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+            </div>
             {(isLoading || configLoading) && <ItemPageSkeleton />}
             {error && <p>Error loading item details.</p>}
             {item &&

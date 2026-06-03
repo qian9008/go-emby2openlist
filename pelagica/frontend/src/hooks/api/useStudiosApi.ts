@@ -25,17 +25,22 @@ export function useStudiosByItemCount(limit: number = 20, hasThumb: boolean = tr
                 hasThumb: String(hasThumb),
             });
 
-            const response = await fetch(`/api/studios?${params.toString()}`, {
-                headers: {
-                    Authorization: token,
-                },
-            });
+            try {
+                const response = await fetch(`/api/studios?${params.toString()}`, {
+                    headers: {
+                        Authorization: token,
+                    },
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch studios');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch studios');
+                }
+
+                return (await response.json()) as StudioSummary[];
+            } catch (error) {
+                console.warn('Failed to fetch studios:', error);
+                return [] as StudioSummary[];
             }
-
-            return (await response.json()) as StudioSummary[];
         },
     });
 }

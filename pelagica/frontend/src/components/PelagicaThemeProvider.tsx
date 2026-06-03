@@ -24,10 +24,13 @@ const PelagicaThemeLoader = () => {
 
             if (!effectiveThemeId) return;
 
-            const theme = await fetchThemeById(effectiveThemeId);
-            if (!mounted || !theme) return;
-
-            applyTheme(theme);
+            try {
+                const theme = await fetchThemeById(effectiveThemeId);
+                if (!mounted || !theme) return;
+                applyTheme(theme);
+            } catch (err) {
+                console.warn('Failed to load theme:', err);
+            }
         }
 
         loadTheme();

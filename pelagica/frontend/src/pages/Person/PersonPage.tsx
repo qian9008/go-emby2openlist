@@ -6,12 +6,13 @@ import { memo, useEffect, useState } from 'react';
 import Page from '../Page';
 import { usePerson } from '@/hooks/api/usePerson';
 import { getUserId } from '@/utils/localstorageCredentials';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import FilmographyRow from './FilmographyRow';
 import type { TFunction } from 'i18next';
 import { Button } from '@/components/ui/button';
-import { ImageOff } from 'lucide-react';
+import { ImageOff, ArrowLeft } from 'lucide-react';
+
 
 const PersonPageSkeleton = memo(() => {
     return (
@@ -177,14 +178,26 @@ const PersonPage = () => {
     const { t } = useTranslation('item');
     const params = useParams<{ itemId: string }>();
     const itemId = params.itemId;
+    const navigate = useNavigate();
 
     const { data: item, isLoading, error } = usePerson(itemId, getUserId() || undefined);
 
     return (
         <Page
             title={item ? `${item.Name}` : isLoading ? t('loading') : t('item_not_found')}
-            className="min-h-full"
+            className="min-h-full relative"
         >
+            {/* 返回按钮 */}
+            <div className="absolute top-4 left-4 z-50">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10 bg-background/30 backdrop-blur-md border border-border/50 hover:bg-background/80 hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer flex items-center justify-center"
+                    onClick={() => navigate(-1)}
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+            </div>
             {isLoading && <PersonPageSkeleton />}
             {error && <p>Error loading item details.</p>}
             {item && <PersonPageContent item={item} t={t} />}

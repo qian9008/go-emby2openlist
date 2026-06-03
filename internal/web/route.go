@@ -5,6 +5,7 @@ import (
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/emby"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/m3u8"
 	openlist_localtree "github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/openlist/localtree"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,10 @@ var rules [][2]any
 
 func initRulePatterns() {
 	logs.Info("正在初始化路由规则...")
+
+	// 初始化分享数据存储
+	share.Init()
+
 	rules = compileRules([][2]any{
 		// websocket
 		{constant.Reg_Socket, emby.ProxySocket()},
@@ -81,6 +86,13 @@ func initRulePatterns() {
 		// 手动更新本地目录树
 		{constant.Route_UpdateOpenlistLocalTree, openlist_localtree.UpdateManually},
 
+		// ---- 分享系统 API ----
+		{constant.Route_ShareUsers, share.HandleGetUsers},
+		{constant.Route_ShareCreate, shareMethodGuard("POST", share.HandleCreateShare)},
+		{constant.Route_ShareMine, share.HandleGetMine},
+		{constant.Route_SharedWithMe, share.HandleGetSharedWithMe},
+		{constant.Route_ShareById, shareMethodRouter()},
+
 		// 根路径重定向到首页
 		{constant.Reg_Root, emby.ProxyRoot},
 
@@ -93,4 +105,31 @@ func initRulePatterns() {
 // initRoutes 初始化路由
 func initRoutes(r *gin.Engine) {
 	r.Any("/*vars", globalDftHandler)
+}
+
+// shareMethodGuard 方法守卫: 仅允许指定 HTTP 方法通过, 否则回源代理
+func shareMethodGuard(method string, handler func(*gin.Context)) func(*gin.Context) {
+	return func(c *gin.Context) {
+		if c.Request.Method == method {
+			handler(c)
+		} else {
+			emby.ProxyOrigin(c)
+		}
+	}
+}
+
+// shareMethodRouter 根据 HTTP 方法分发到不同的分享处理器
+// GET /api/share/:id -> 查询详情
+// DELETE /api/share/:id -> 取消分享
+func shareMethodRouter() func(*gin.Context) {
+	return func(c *gin.Context) {
+		switch c.Request.Method {
+		case "GET":
+			share.HandleGetShareDetail(c)
+		case "DELETE":
+			share.HandleDeleteShare(c)
+		default:
+			emby.ProxyOrigin(c)
+		}
+	}
 }

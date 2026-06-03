@@ -3,7 +3,7 @@ import { useTitleDisplayMode, getItemDisplayName } from '@/hooks/useTitleDisplay
 import { useSeasons } from '@/hooks/api/useSeasons';
 import { getPrimaryImageUrl } from '@/utils/jellyfinUrls';
 import type { BaseItemDto } from '@jellyfin/sdk/lib/generated-client/models';
-import { ImageOff, Play } from 'lucide-react';
+import { ImageOff, Play, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -31,6 +31,7 @@ import ItemAdminButton from '@/components/ItemAdminButton';
 import { TrailerButton } from '../../components/TrailerButton';
 import { useUpcomingEpisodes } from '../../hooks/api/useUpcomingEpisodes';
 import UpcomingEpisodeComponent from './UpcomingEpisodeComponent';
+import ShareDialog from '@/components/ShareDialog';
 
 interface SeriesPageProps {
     item: BaseItemDto;
@@ -40,6 +41,7 @@ interface SeriesPageProps {
 const SeriesPage = ({ item, config }: SeriesPageProps) => {
     const { t } = useTranslation('item');
     const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
+    const [shareOpen, setShareOpen] = useState(false);
     const [titleMode] = useTitleDisplayMode();
     const { data: seasons, isLoading, error } = useSeasons(item.Id || '');
     const [posterFailed, setPosterFailed] = useState(false);
@@ -84,7 +86,7 @@ const SeriesPage = ({ item, config }: SeriesPageProps) => {
                                 ? 'relative w-full max-w-[18rem] md:max-w-[24rem] mx-auto md:mx-0 shadow-lg rounded-md overflow-hidden'
                                 : 'relative w-48 min-w-[12rem] h-72 md:w-72 md:min-w-[18rem] md:h-108 mx-auto md:mx-0 shadow-lg rounded-md overflow-hidden'
                         }
-                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio } : undefined}
+                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio ?? undefined } : undefined}
                     >
                         <img
                             src={getPrimaryImageUrl(
@@ -105,7 +107,7 @@ const SeriesPage = ({ item, config }: SeriesPageProps) => {
                                 ? 'w-full max-w-[18rem] md:max-w-[24rem] mx-auto md:mx-0 rounded-md bg-muted flex items-center justify-center shadow-lg'
                                 : 'w-48 min-w-[12rem] h-72 md:w-72 md:min-w-[18rem] md:h-108 mx-auto md:mx-0 rounded-md bg-muted flex items-center justify-center shadow-lg'
                         }
-                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio } : undefined}
+                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio ?? undefined } : undefined}
                     >
                         <ImageOff className="text-muted-foreground" size={32} />
                     </div>
@@ -150,6 +152,15 @@ const SeriesPage = ({ item, config }: SeriesPageProps) => {
                         />
                         <PlayStateButton itemId={item.Id || ''} userId={getUserId() || ''} />
                         <ItemAdminButton item={item} />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md"
+                            onClick={() => setShareOpen(true)}
+                            title={t('share', '分享')}
+                        >
+                            <Share2 className="h-5 w-5" />
+                        </Button>
                     </div>
                     <p>{item.Overview}</p>
                     <DescriptionItem
@@ -235,6 +246,12 @@ const SeriesPage = ({ item, config }: SeriesPageProps) => {
             <MoreLikeThisRow
                 title={<h3 className="text-3xl font-bold">{t('more_like_this')}</h3>}
                 itemId={item.Id || ''}
+            />
+            <ShareDialog
+                open={shareOpen}
+                onOpenChange={setShareOpen}
+                mediaId={item.Id || ''}
+                mediaName={item.Name || ''}
             />
         </BaseMediaPage>
     );

@@ -1,0 +1,15 @@
+{
+    "skipIntro": "跳过片头",
+    "skipOutro": "跳过片尾",
+    "audioTracks": "音轨",
+    "subtitles": "字幕",
+    "off": "关闭",
+    "playNextItem": "播放下一集",
+    "upNext": "将在 {{seconds}} 秒后播放下一集",
+    "startNow": "立即开始",
+    "dismiss": "取消",
+    "seasonEpisode": "第 {{season}} 季 第 {{episode}} 集",
+    "previousItem": "上一集",
+    "nextItem": "下一集",
+    "nowPlaying": "正在播放"
+}

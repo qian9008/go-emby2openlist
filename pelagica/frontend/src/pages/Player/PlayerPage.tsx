@@ -2,7 +2,7 @@
 import { useReportPlaybackProgress } from '@/hooks/api/usePlaybackProgress';
 import { usePlaybackStart } from '@/hooks/api/usePlaybackStart';
 import { usePlaybackStop } from '@/hooks/api/usePlaybackStop';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import VideoPlayer, { type SubtitleTrack } from '@/pages/Player/VideoPlayer';
 import PlayerControls from '@/pages/Player/PlayerControls';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -24,6 +24,7 @@ export type VideoJsPlayer = ReturnType<typeof import('video.js').default>;
 const PlayerPage = () => {
     const params = useParams<{ itemId: string }>();
     const itemId = params.itemId;
+    const [searchParams] = useSearchParams();
     const hasUserSelectedSubtitleRef = useRef(false);
     const hasUserSelectedAudioRef = useRef(false);
     const [player, setPlayer] = useState<VideoJsPlayer | null>(null);
@@ -131,8 +132,8 @@ const PlayerPage = () => {
 
             if (isFS) {
                 // 1. 尝试使用 Screen Orientation API 进行方向横屏锁定
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('landscape').catch((err) => {
+                if (screen.orientation && (screen.orientation as any).lock) {
+                    (screen.orientation as any).lock('landscape').catch((err: any) => {
                         console.warn('无法系统锁定屏幕方向，退回到 CSS 旋转判定:', err);
                         checkOrientation();
                     });
@@ -141,10 +142,10 @@ const PlayerPage = () => {
                 }
             } else {
                 setShouldRotate(false);
-                if (screen.orientation && screen.orientation.unlock) {
+                if (screen.orientation && (screen.orientation as any).unlock) {
                     try {
-                        screen.orientation.unlock();
-                    } catch (err) {
+                        (screen.orientation as any).unlock();
+                    } catch (err: any) {
                         console.warn('无法解锁屏幕方向:', err);
                     }
                 }
@@ -211,7 +212,8 @@ const PlayerPage = () => {
         return getPrimaryImageUrl(item?.Id);
     }, [item?.Id]);
 
-    const startTicks = item?.UserData?.PlaybackPositionTicks || 0;
+    const shouldResume = searchParams.get('resume') !== 'false';
+    const startTicks = shouldResume ? (item?.UserData?.PlaybackPositionTicks || 0) : 0;
 
     const handleToggleFullscreen = () => {
         if (!containerRef.current) return;
@@ -382,7 +384,7 @@ const PlayerPage = () => {
                 })}
                 poster={posterUrl}
                 onReady={setPlayer}
-                startTicks={item.UserData?.PlaybackPositionTicks || 0}
+                startTicks={startTicks}
                 subtitles={subtitleTracks}
                 isAudioSwitchRef={isAudioSwitchRef}
                 subtitleTrackIndex={subtitleTrackIndex}

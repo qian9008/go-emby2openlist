@@ -22,6 +22,7 @@ import SearchPage from './pages/Search/SearchPage.tsx';
 import PelagicaThemeLoader from './components/PelagicaThemeProvider.tsx';
 import ThemeBrowserPage from './pages/ThemeBroser/ThemeBrowserPage.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
+import SharedLibraryPage from './pages/SharedLibrary/SharedLibraryPage.tsx';
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ createRoot(document.getElementById('root')!).render(
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/library" element={<LibraryPage />} />
+                            <Route path="/shared-library" element={<SharedLibraryPage />} />
                             <Route path="/item/:itemId" element={<ItemPage />} />
                             <Route path="/person/:itemId" element={<PersonPage />} />
                             <Route path="/login" element={<LoginPage />} />

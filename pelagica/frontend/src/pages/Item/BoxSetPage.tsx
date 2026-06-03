@@ -41,7 +41,7 @@ const BoxSetPage = ({ item, config }: BoxSetPageProps) => {
                                 ? 'relative w-full max-w-[18rem] md:max-w-[24rem] mx-auto md:mx-0 shadow-lg rounded-md overflow-hidden'
                                 : 'relative w-48 min-w-[12rem] h-72 md:w-72 md:min-w-[18rem] md:h-108 mx-auto md:mx-0 shadow-lg rounded-md overflow-hidden'
                         }
-                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio } : undefined}
+                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio ?? undefined } : undefined}
                     >
                         <img
                             src={getPrimaryImageUrl(
@@ -62,7 +62,7 @@ const BoxSetPage = ({ item, config }: BoxSetPageProps) => {
                                 ? 'w-full max-w-[18rem] md:max-w-[24rem] mx-auto md:mx-0 rounded-md bg-muted flex items-center justify-center shadow-lg'
                                 : 'w-48 min-w-[12rem] h-72 md:w-72 md:min-w-[18rem] md:h-108 mx-auto md:mx-0 rounded-md bg-muted flex items-center justify-center shadow-lg'
                         }
-                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio } : undefined}
+                        style={isLandscape ? { aspectRatio: item.PrimaryImageAspectRatio ?? undefined } : undefined}
                     >
                         <ImageOff className="text-muted-foreground" size={32} />
                     </div>

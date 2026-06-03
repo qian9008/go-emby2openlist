@@ -20,7 +20,7 @@ interface SourcePickerButtonProps {
     mediaSources?: MediaSource[] | null;
     isCurrentlyPlaying: boolean;
     playLabel: string;
-    resumeLabel: string;
+    playFromBeginningLabel?: string;
 }
 
 const SourcePickerButton = ({
@@ -28,7 +28,7 @@ const SourcePickerButton = ({
     mediaSources,
     isCurrentlyPlaying,
     playLabel,
-    resumeLabel,
+    playFromBeginningLabel = '从头播放',
 }: SourcePickerButtonProps) => {
     const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(
         mediaSources?.[0]?.Id ?? undefined
@@ -39,11 +39,11 @@ const SourcePickerButton = ({
     const hasMultipleSources = (mediaSources?.length ?? 0) > 1;
 
     return (
-        <ButtonGroup className="relative inline-flex">
-            <Button className={hasMultipleSources ? 'rounded-r-none w-min' : 'w-min'} asChild>
-                <Link to={`/play/${selectedSource?.Id ?? itemId}`}>
+        <ButtonGroup className={cn("relative inline-flex", isCurrentlyPlaying && "w-full sm:w-[240px] h-10")}>
+            <Button className={hasMultipleSources ? cn('rounded-r-none shrink-0', isCurrentlyPlaying && 'flex-1') : cn('shrink-0', isCurrentlyPlaying && 'flex-1')} asChild>
+                <Link to={`/play/${selectedSource?.Id ?? itemId}${isCurrentlyPlaying ? '?resume=false' : ''}`}>
                     <Play />
-                    {isCurrentlyPlaying ? resumeLabel : playLabel}
+                    {isCurrentlyPlaying ? playFromBeginningLabel : playLabel}
                 </Link>
             </Button>
 

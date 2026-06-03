@@ -246,6 +246,11 @@ const LibraryItem = ({
                     
                     {/* 属性标签（年份、评分、时长） */}
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-muted-foreground">
+                        {(item as any).ShareOwnerName && (
+                            <span className="font-semibold text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded text-[10px]">
+                                {t('shared_by', '由')} {(item as any).ShareOwnerName} {t('share', '分享')}
+                            </span>
+                        )}
                         {isFolder ? (
                             <span className="font-medium text-amber-500/90 bg-amber-500/10 px-1.5 py-0.5 rounded text-[10px]">
                                 {t('library:folder', '文件夹')}
@@ -328,10 +333,15 @@ const LibraryItem = ({
             <p className="mt-2 text-sm line-clamp-1 text-ellipsis break-all">
                 {getItemDisplayName(item, titleMode) || t('library:no_title')}
             </p>
-            <div className="flex flex-wrap items-center">
-                <span className="text-xs text-muted-foreground mr-3 line-clamp-1">
+            <div className="flex items-center justify-between mt-1 flex-wrap gap-1">
+                <span className="text-xs text-muted-foreground mr-2 line-clamp-1">
                     {isFolder ? t('library:folder', '文件夹') : detailLine}
                 </span>
+                {(item as any).ShareOwnerName && (
+                    <span className="text-[10px] text-primary font-medium bg-primary/10 border border-primary/25 px-1.5 py-0.5 rounded-full truncate">
+                        {(item as any).ShareOwnerName}
+                    </span>
+                )}
             </div>
         </Link>
     );

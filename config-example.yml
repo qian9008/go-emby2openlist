@@ -1,6 +1,7 @@
 emby:
-  host: http://192.168.0.109:8096            # emby 访问地址
-  mount-path: /data                          # rclone/cd2 挂载的本地磁盘路径, 如果 emby 是容器部署, 这里要配的就是容器内部的挂载路径
+  host: http://192.168.50.99:8092            # emby 访问地址
+  admin-api-key:c49a593100e944c4a1773eba0ab17c1b                             # 管理员 API Key, 用于分享系统跨权限查询媒体信息, 可在 Emby 后台 API Key 管理中获取
+  mount-path: /openlist                          # rclone/cd2 挂载的本地磁盘路径, 如果 emby 是容器部署, 这里要配的就是容器内部的挂载路径
   episodes-unplay-prior: true                # 是否修改剧集排序, 让未播的剧集靠前排列; 启用该配置时, 会忽略原接口的分页机制
   resort-random-items: true                  # 是否重排序随机列表, 对 emby 的排序结果进行二次重排序, 使得列表足够随机
   # 代理异常处理策略
@@ -36,8 +37,8 @@ emby:
   # emby 本地媒体根目录
   # 检测到该路径为前缀的媒体时, 代理回源处理
   local-media-roots:
-    - /data/local
-    - /data/other
+    - /openlist
+    #- /data/other
   # 自定义 css js 配置
   custom-css-js:
     # 调试模式开关
@@ -46,13 +47,13 @@ emby:
 
 # openlist 访问配置
 openlist:
-  host: http://192.168.0.109:5244            # openlist 访问地址
-  token: openlist-xxxxx                      # openlist api key 可以在 openlist 管理后台查看
-  365-enable: false                          # 是否在获取资源时自动将缩略图修改为 500x500 并下载到本地
+  host: http://192.168.50.55:5244            # openlist 访问地址
+  token: openlist-8b6f820d-fb45-4c01-b296-d29f0c92ba91ZU92Fe5yuHbv3bQhffAgtuRgt2JP3t8QeQqBrioV7qcMomsTa6HlmzIXhTQQzh53                      # openlist api key 可以在 openlist 管理后台查看
+  365-enable: true                          # 是否在获取资源时自动将缩略图修改为 500x500 并下载到本地
   # 将 openlist 目录树映射生成到磁盘, 并对特殊容器进行特定的转换
   # 具体使用方式可参考仓库 Readme 文档
   local-tree-gen:
-    enable: false                            # 功能是否开启
+    enable: true                            # 功能是否开启
     # 是否开启 ffmpeg 辅助
     #
     # 主要目的是在生成虚拟容器时, 解析视频的元数据, 供 emby 读取
@@ -64,10 +65,10 @@ openlist:
     # 若媒体元数据可通过 TMDB 刮削, 则配置于此, 不区分大小写
     #
     # 默认写入视频时长 3 小时, 若开启 ffmpeg 辅助, 则会尝试解析视频真实时长, !!有风控风险谨慎开启!!
-    virtual-containers: mp4,mkv
+    #virtual-containers: mp4,mkv
     # strm 媒体容器, 生成的是与媒体名称相同的 strm 文件
     # 通过 emby 源端口也可能正常播放
-    strm-containers: ts
+    strm-containers: mp4,mkv,ts
     # 音乐媒体容器, 生成的是与媒体同名的空文件
     # 必须使用本项目反代 openlist 才可以正常播放
     # 必须开启 ffmpeg 辅助才能解析音频时长以及音乐标签数据到空文件中, !!有风控风险谨慎开启!!
@@ -81,8 +82,8 @@ openlist:
     # 建议配置为 openlist 数据量的 3/4 左右
     auto-remove-max-count: 6000
     refresh-interval: 10                     # 与远程同步刷新的间隔, 单位: 分钟
-    scan-prefixes:                           # 指定要扫描的目录树前缀, 不指定则全量扫描
-      - /电影/G
+    scan-prefixes:                     # 指定要扫描的目录树前缀, 不指定则全量扫描
+      - /3652/精品
       - /电视剧
     # 允许处理的容器, 为空则允许所有容器
     # 只有指定的容器会被处理, 其他容器会被忽略, 避免触发源文件下载到本地
@@ -92,7 +93,7 @@ openlist:
 
 # 该配置项目前只对阿里云盘生效, 如果你使用的是其他网盘, 请直接将 enable 设置为 false
 video-preview:
-  enable: true                               # 是否开启 openlist 转码资源信息获取
+  enable: false                               # 是否开启 openlist 转码资源信息获取
   containers:                                # 对哪些视频容器获取转码资源信息
     - mp4
     - mkv
@@ -105,7 +106,7 @@ path:
   # 冒号左边表示本地挂载路径, 冒号右边表示 openlist 的真实路径
   # 这个配置请再三确认配置正确, 可以减少很多不必要的网络请求
   emby2openlist: 
-    - /movie:/电影
+    - /openlist/3652/精品:/3652/精品
     - /music:/音乐
     - /show:/综艺
     - /series:/电视剧

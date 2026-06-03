@@ -1,0 +1,13 @@
+{
+    "title": "媒体库",
+    "no_items_title": "未找到任何内容",
+    "no_items_description": "此媒体库中没有任何内容。",
+    "sort_name": "名称",
+    "sort_date_added": "添加日期",
+    "sort_premiere_date": "首映日期",
+    "sort_community_rating": "社区评分",
+    "sort_critic_rating": "影评人评分",
+    "sort_runtime": "播放时长",
+    "ascending": "升序",
+    "descending": "降序"
+}

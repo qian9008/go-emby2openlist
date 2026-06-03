@@ -1,7 +1,7 @@
 package constant
 
 const (
-	CurrentVersion = "v2.7.1"
+	CurrentVersion = "v2.7.3"
 	RepoAddr       = "https://github.com/AmbitiousJun/go-emby2openlist"
 )
 
@@ -51,6 +51,13 @@ const (
 	Route_CustomJs                = Route_SelfBase + "/custom.js"
 	Route_CustomCss               = Route_SelfBase + "/custom.css"
 	Route_UpdateOpenlistLocalTree = Route_SelfBase + "/openlist/local_tree/update"
+
+	// 分享系统路由
+	Route_ShareUsers    = `^/api/share/users$`
+	Route_ShareCreate   = `^/api/share/create$`
+	Route_ShareMine     = `^/api/share/mine$`
+	Route_SharedWithMe  = `^/api/share/shared-with-me$`
+	Route_ShareById     = `^/api/share/(\d+)$`
 )
 
 const (

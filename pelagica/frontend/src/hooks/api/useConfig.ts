@@ -331,21 +331,26 @@ const DEFAULT_CONFIG: AppConfig = {
 const CONFIG_QUERY_KEY = ['config'] as const;
 
 const fetchConfig = async (): Promise<AppConfig> => {
-    const response = await fetch('/api/config');
-    if (!response.ok) {
-        console.warn('Config file not found, using default configuration');
+    try {
+        const response = await fetch('/api/config');
+        if (!response.ok) {
+            console.warn('Config file not found, using default configuration');
+            return DEFAULT_CONFIG;
+        }
+        const data: AppConfig = await response.json();
+        // Merge with defaults to ensure all required fields exist
+        return {
+            ...DEFAULT_CONFIG,
+            ...data,
+            itemPage: {
+                ...DEFAULT_ITEM_PAGE_SETTINGS,
+                ...data.itemPage,
+            },
+        };
+    } catch (error) {
+        console.warn('Failed to fetch config, using default configuration:', error);
         return DEFAULT_CONFIG;
     }
-    const data: AppConfig = await response.json();
-    // Merge with defaults to ensure all required fields exist
-    return {
-        ...DEFAULT_CONFIG,
-        ...data,
-        itemPage: {
-            ...DEFAULT_ITEM_PAGE_SETTINGS,
-            ...data.itemPage,
-        },
-    };
 };
 
 export const useConfig = () => {

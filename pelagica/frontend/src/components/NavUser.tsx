@@ -420,6 +420,10 @@ export function NavUser() {
                                 align="start"
                                 sideOffset={4}
                             >
+                                <DropdownMenuItem onClick={() => i18n.changeLanguage('zh')}>
+                                    <FlagIcon countryCode="cn" />
+                                    简体中文
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => i18n.changeLanguage('en')}>
                                     <FlagIcon countryCode="us" />
                                     English

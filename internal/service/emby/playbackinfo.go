@@ -7,11 +7,13 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"time"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/https"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/jsons"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs"
@@ -76,6 +78,7 @@ func TransferPlaybackInfo(c *gin.Context) {
 
 	// 3 处理 JSON 响应
 	resJson := res.Data
+	logs.Info("resJson 响应内容: %s", resJson.String())
 	mediaSources, ok := resJson.Attr("MediaSources").Done()
 	if !ok || mediaSources.Type() != jsons.JsonTypeArr {
 		checkErr(c, errors.New("获取不到 MediaSources 属性"))
@@ -380,6 +383,30 @@ func useCacheSpacePlaybackInfo(c *gin.Context, itemInfo ItemInfo) bool {
 //
 // 防止转码资源信息丢失
 func LoadCacheItems(c *gin.Context) {
+	// 尝试解析 itemId 并进行分享权限提权校验
+	uri := c.Request.URL.Path
+	itemId := filepath.Base(uri)
+
+	var isShared bool
+	currentUser, errUser := share.GetCurrentUser(c)
+	if errUser == nil && currentUser.Id != "" {
+		if share.IsSharedTo(itemId, currentUser.Id) {
+			isShared = true
+		}
+	}
+
+	if isShared {
+		logs.Info("用户 %s 查询共享媒体详情 %s, 权限已由 Admin 穿透代获取", currentUser.Name, itemId)
+		itemBytes, err := share.GetItemInfoByAdmin(itemId)
+		if err == nil {
+			c.Header("Content-Type", "application/json;charset=utf-8")
+			c.Writer.Write(itemBytes)
+			c.Writer.Flush()
+			return
+		}
+		logs.Error("使用管理员获取共享媒体 %s 详情失败: %v", itemId, err)
+	}
+
 	// 代理请求
 	res, ok := proxyAndSetRespHeader(c)
 	if !ok {

@@ -11,7 +11,7 @@ import {
     SidebarMenuItem,
     SidebarMenuSub,
 } from '@/components/ui/sidebar';
-import { ChartLine, ChevronRight, Home, Library, Search } from 'lucide-react';
+import { ChartLine, ChevronRight, Home, Library, Search, Users } from 'lucide-react';
 import { Link } from 'react-router';
 import { NavUser } from './NavUser';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -178,6 +178,14 @@ const AppSidebar = () => {
                                         </CollapsibleContent>
                                     )}
                                 </Collapsible>
+                            </SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link to={'/shared-library'}>
+                                        <Users />
+                                        {t('shared_library')}
+                                    </Link>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                             <SidebarMenuItem>
                                 <SidebarMenuButton asChild>

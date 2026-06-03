@@ -25,11 +25,16 @@ export interface Colors {
 }
 
 export const fetchThemes = async (): Promise<ThemeSummary[]> => {
-    const response = await fetch('/api/themes');
-    if (!response.ok) {
-        throw new Error('Failed to fetch themes');
+    try {
+        const response = await fetch('/api/themes');
+        if (!response.ok) {
+            throw new Error('Failed to fetch themes');
+        }
+        return response.json();
+    } catch (error) {
+        console.warn('Failed to fetch themes:', error);
+        return [];
     }
-    return response.json();
 };
 
 export const fetchThemeById = async (id: string): Promise<Theme> => {
