@@ -153,6 +153,29 @@ func ExtractMusicCover(path string) ([]byte, error) {
 	return append([]byte(nil), outputBytes...), nil
 }
 
+// ExtractVideoCover 解析视频第一帧（第10秒处）海报
+func ExtractVideoCover(path string) ([]byte, error) {
+	if !execOk {
+		return nil, errors.New("ffmpeg 未初始化")
+	}
+	mu.Lock()
+	defer mu.Unlock()
+
+	cmd := exec.Command(execPath, "-http_proxy", getProxyUrlByPath(path), "-user_agent", constant.CommonDlUserAgent, "-threads", "1", "-ss", "00:00:10", "-i", path, "-an", "-vframes", "1", "-f", "image2", "-vcodec", "mjpeg", "pipe:1")
+
+	outputBytes, err := cmd.Output()
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			stderr := exitErr.Stderr
+			if bytes.Contains(stderr, []byte(OpenError)) {
+				return nil, errors.New(string(stderr[bytes.Index(stderr, []byte(OpenError)):]))
+			}
+		}
+	}
+
+	return append([]byte(nil), outputBytes...), nil
+}
+
 // GenSilentMP3Bytes 使用 ffmpeg 生成静音 MP3 并返回字节内容
 func GenSilentMP3Bytes(durationSec float64) ([]byte, error) {
 	args := []string{

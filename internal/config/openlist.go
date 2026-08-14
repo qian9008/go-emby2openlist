@@ -13,6 +13,11 @@ type Openlist struct {
 	// Host openlist 访问地址（如果 openlist 使用本地代理模式, 则这个地址必须配置公网可访问地址）
 	Host string `yaml:"host"`
 
+	// Enable365 是否启用 365 缩略图下载
+	Enable365 bool `yaml:"365-enable"`
+	// Exclude365Paths 排除获取 365 缩略图的路径列表 (如局域网路径)
+	Exclude365Paths []string `yaml:"exclude-365-paths"`
+
 	// LocalTreeGen 本地目录树生成相关
 	LocalTreeGen *LocalTreeGen `yaml:"local-tree-gen"`
 }
@@ -26,6 +31,16 @@ func (a *Openlist) Init() error {
 	}
 
 	return nil
+}
+
+// IsExclude365Path 判断路径是否在排除 365 缩略图获取的列表中
+func (a *Openlist) IsExclude365Path(p string) bool {
+	for _, root := range a.Exclude365Paths {
+		if strings.HasPrefix(p, root) {
+			return true
+		}
+	}
+	return false
 }
 
 type LocalTreeGen struct {
