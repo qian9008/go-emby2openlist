@@ -1,0 +1,3 @@
+[submodule "pelagica"]
+	path = pelagica
+	url = https://github.com/qian9008/pelagica
