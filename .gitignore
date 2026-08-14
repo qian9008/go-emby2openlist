@@ -3,9 +3,26 @@ config.yml
 ssl/*crt
 ssl/*key
 .DS_Store
+node_modules/
 custom-js/*.js
 custom-css/*.css
 openlist-local-tree
 /lib/
 dist
 **/node_modules/
+
+# Local runtime files
+.codegraph/*.pid
+README.old.md
+
+# Compiled binaries
+ge2o
+ge2o.exe
+main
+main.exe
+pelagica-backend
+pelagica-backend.exe
+
+# Shared Database and Pelagica backend data
+shares.json
+/config/

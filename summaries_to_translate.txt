@@ -1,0 +1,335 @@
+Add a media path to a library.
+Adds a listings provider.
+Adds a tuner host.
+Adds a virtual folder.
+Adds an additional user to a session.
+Adds items to a collection.
+Adds items to a playlist.
+Applies search criteria to an item and refreshes metadata.
+Attempts to retrieve authentication information.
+Authenticates a user by name.
+Authenticates a user with quick connect.
+Authorizes a pending quick connect request.
+Cancels a live tv series timer.
+Cancels a live tv timer.
+Cancels a package installation.
+Closes a media source.
+Completes the startup wizard.
+Create a new SyncPlay group.
+Create a new api key.
+Creates a live tv series timer.
+Creates a live tv timer.
+Creates a new Backup.
+Creates a new collection.
+Creates a new playlist.
+Creates a user.
+Creates an instant playlist based on a given album.
+Creates an instant playlist based on a given artist.
+Creates an instant playlist based on a given genre.
+Creates an instant playlist based on a given item.
+Creates an instant playlist based on a given playlist.
+Creates an instant playlist based on a given song.
+Delete a custom splashscreen.
+Delete an item's image.
+Delete listing provider.
+Delete the user's image.
+Deletes a device.
+Deletes a live tv recording.
+Deletes a tuner host.
+Deletes a user's saved personal rating for an item.
+Deletes a user.
+Deletes an external lyric file.
+Deletes an external subtitle file.
+Deletes an item from the library and filesystem.
+Deletes items from the library and filesystem.
+Disable a plugin.
+Discover tuners.
+Downloads a remote image for an item.
+Downloads a remote lyric.
+Downloads a remote subtitle.
+Downloads item media.
+Enables a disabled plugin.
+Finds movies and trailers similar to a given trailer.
+Generates or gets the splashscreen.
+Get Default directory browser.
+Get Devices.
+Get Display Preferences.
+Get Item User Data.
+Get a playlist user.
+Get a playlist's users.
+Get a playlist.
+Get all auth providers.
+Get all channel features.
+Get all keys.
+Get all password reset providers.
+Get artist image by name.
+Get book remote search.
+Get box set remote search.
+Get channel features.
+Get channel items.
+Get channel mapping options.
+Get genre image by name.
+Get guide info.
+Get info for a device.
+Get item counts.
+Get item image infos.
+Get movie remote search.
+Get music album remote search.
+Get music artist remote search.
+Get music genre image by name.
+Get music video remote search.
+Get options for a device.
+Get person by name.
+Get person image by name.
+Get person remote search.
+Get recording group.
+Get series remote search.
+Get studio image by name.
+Get task by id.
+Get tasks.
+Get the item's external id info.
+Get the original file of an item.
+Get theme songs and videos for an item.
+Get theme songs for an item.
+Get theme videos for an item.
+Get trailer remote search.
+Get tuner host types.
+Get user profile image.
+Get user view grouping options.
+Get user views.
+Get video attachment.
+Get years.
+Gets a SyncPlay group by id.
+Gets a dashboard configuration page.
+Gets a default MetadataOptions object.
+Gets a fallback font file.
+Gets a genre, by name.
+Gets a hls live stream.
+Gets a hls video playlist.
+Gets a hls video segment.
+Gets a list of all currently present backups in the backup directory.
+Gets a list of available fallback font files.
+Gets a list of available server log files.
+Gets a list of currently installed plugins.
+Gets a list of next up episodes.
+Gets a list of physical paths from virtual folders.
+Gets a list of publicly visible users for display on a login screen.
+Gets a list of sessions.
+Gets a list of upcoming episodes.
+Gets a list of users.
+Gets a live tv channel stream.
+Gets a live tv channel.
+Gets a live tv program.
+Gets a live tv recording stream.
+Gets a live tv recording.
+Gets a live tv series timer.
+Gets a log file.
+Gets a music genre, by name.
+Gets a named configuration.
+Gets a package by name or assembly GUID.
+Gets a plugin's image.
+Gets a plugin's manifest.
+Gets a studio by name.
+Gets a timer.
+Gets a trickplay tile image.
+Gets a user by Id.
+Gets a video hls playlist stream.
+Gets a video stream using HTTP live streaming.
+Gets a video stream.
+Gets a year.
+Gets activity log entries.
+Gets additional parts for a video.
+Gets all SyncPlay groups.
+Gets all album artists from a given item, folder, or the entire library.
+Gets all artists from a given item, folder, or the entire library.
+Gets all genres from a given item, folder, or the entire library.
+Gets all media segments based on an itemId.
+Gets all music genres from a given item, folder, or the entire library.
+Gets all package repositories.
+Gets all parents of an item.
+Gets all persons.
+Gets all studios from a given item, folder, or the entire library.
+Gets all user media folders.
+Gets all virtual folders.
+Gets an HLS subtitle playlist.
+Gets an artist by name.
+Gets an audio hls playlist stream.
+Gets an audio stream using HTTP live streaming.
+Gets an audio stream.
+Gets an image tiles playlist for trickplay.
+Gets an item from a user's library.
+Gets an item's lyrics.
+Gets application configuration.
+Gets available channels.
+Gets available countries.
+Gets available drives from the server's file system.
+Gets available lineups.
+Gets available live tv channels.
+Gets available live tv epgs.
+Gets available live tv services.
+Gets available packages.
+Gets available remote image providers for an item.
+Gets available remote images for an item.
+Gets branding configuration.
+Gets branding css.
+Gets critic review for an item.
+Gets default listings provider info.
+Gets episodes for a tv season.
+Gets information about the request endpoint.
+Gets information about the server.
+Gets intros to play before the main media item plays.
+Gets items based on a query.
+Gets known countries.
+Gets known cultures.
+Gets known parental ratings.
+Gets latest channel items.
+Gets latest media.
+Gets legacy query filters.
+Gets live playback media info for an item.
+Gets live tv recording groups.
+Gets live tv recording series.
+Gets live tv recordings.
+Gets live tv series timers.
+Gets local trailers for an item.
+Gets localization options.
+Gets metadata editor info for an item.
+Gets movie recommendations.
+Gets network paths.
+Gets plugin configuration.
+Gets public information about the server.
+Gets query filters.
+Gets recommended live tv epgs.
+Gets recording folders.
+Gets seasons for a tv series.
+Gets similar items.
+Gets special features for an item.
+Gets subtitles in a specified format.
+Gets suggestions.
+Gets the TMDb image configuration options.
+Gets the configuration pages.
+Gets the contents of a given directory in the file system.
+Gets the current UTC time.
+Gets the current quick connect state.
+Gets the default values for a new timer.
+Gets the descriptor from an existing archive is present.
+Gets the first user.
+Gets the initial startup wizard configuration.
+Gets the item's image.
+Gets the library options info.
+Gets the live tv timers.
+Gets the original items of a playlist.
+Gets the parent path of a given path.
+Gets the remote lyrics.
+Gets the remote subtitles.
+Gets the root folder from a user's library.
+Gets the search hint result.
+Gets the specified audio segment for an audio item.
+Gets the user based on auth token.
+Initiate a new quick connect request.
+Initiates the forgot password process for a local user.
+Installs a package.
+Instructs a session to browse to an item or view.
+Instructs a session to play an item.
+Issues a command to a client to display a message to the user.
+Issues a full general command to a client.
+Issues a general command to a client.
+Issues a playstate command to a client.
+Issues a system command to a client.
+Join an existing SyncPlay group.
+Leave the joined SyncPlay group.
+Marks an item as a favorite.
+Marks an item as played for user.
+Marks an item as unplayed for user.
+Merges videos into a single record.
+Modify a user of a playlist's users.
+Moves a playlist item.
+Notify SyncPlay group that member is buffering.
+Notify SyncPlay group that member is ready for playback.
+Opens a media source.
+Pings a playback session.
+Pings the system.
+Redeems a forgot password pin.
+Refreshes metadata for an item.
+Remove a media path.
+Remove a user from a playlist's users.
+Remove an api key.
+Removes a virtual folder.
+Removes alternate video sources.
+Removes an additional user from a session.
+Removes items from a collection.
+Removes items from a playlist.
+Renames a virtual folder.
+Reports a session's playback progress.
+Reports playback has started within a session.
+Reports playback has stopped within a session.
+Reports playback progress within a session.
+Reports that a session has begun playing an item.
+Reports that a session has ended.
+Reports that a session has stopped playing an item.
+Reports that a session is viewing an item.
+Reports that new episodes of a series have been added by an external source.
+Reports that new movies have been added by an external source.
+Request SyncPlay group to ignore member during group-wait.
+Request next item in SyncPlay group.
+Request pause in SyncPlay group.
+Request previous item in SyncPlay group.
+Request seek in SyncPlay group.
+Request stop in SyncPlay group.
+Request to change playlist item in SyncPlay group.
+Request to move an item in the playlist in SyncPlay group.
+Request to queue items to the playlist of a SyncPlay group.
+Request to remove items from the playlist in SyncPlay group.
+Request to set new playlist in SyncPlay group.
+Request to set repeat mode in SyncPlay group.
+Request to set shuffle mode in SyncPlay group.
+Request unpause in SyncPlay group.
+Resets a tv tuner.
+Restarts the application.
+Restores to a backup by restarting the server and applying the backup.
+Search remote lyrics.
+Search remote subtitles.
+Set channel mappings.
+Set item image.
+Sets remote access and UPnP.
+Sets the enabled and existing package repositories.
+Sets the initial startup wizard configuration.
+Sets the user image.
+Sets the user name and password.
+Shuts down the application.
+Start specified task.
+Starts a library scan.
+Stop specified task.
+Stops an active encoding.
+Tests the network with a request with the size of the bitrate.
+Uninstalls a plugin by version.
+Uninstalls a plugin.
+Unmarks item as a favorite.
+Update Display Preferences.
+Update Item User Data.
+Update device options.
+Update library options.
+Update session ping.
+Update specified task triggers.
+Updates a live tv series timer.
+Updates a live tv timer.
+Updates a media path.
+Updates a playlist.
+Updates a user configuration.
+Updates a user policy.
+Updates a user's password.
+Updates a user's rating for an item.
+Updates a user.
+Updates an item's content type.
+Updates an item.
+Updates application configuration.
+Updates branding configuration.
+Updates capabilities for a device.
+Updates named configuration.
+Updates plugin configuration.
+Updates the index for an item image.
+Upload a document.
+Upload an external lyric file.
+Upload an external subtitle file.
+Uploads a custom splashscreen.
+The body is expected to the image contents base64 encoded.
+Validates path.

@@ -1,0 +1,146 @@
+{
+  "POST /Auth/Keys": {
+    "summary": "创建 新 API密钥。",
+    "eng": [
+      "API"
+    ]
+  },
+  "DELETE /Auth/Keys/{key}": {
+    "summary": "移除 API密钥。",
+    "eng": [
+      "API"
+    ]
+  },
+  "GET /Branding/Css": {
+    "summary": "获取 品牌CSS。",
+    "eng": [
+      "CSS"
+    ]
+  },
+  "GET /Branding/Css.css": {
+    "summary": "获取 品牌CSS。",
+    "eng": [
+      "CSS"
+    ]
+  },
+  "GET /Audio/{itemId}/hls1/{playlistId}/{segmentId}.{container}": {
+    "summary": "获取 视频流 使用 HTTP实时流媒体。",
+    "eng": [
+      "HTTP"
+    ]
+  },
+  "GET /Audio/{itemId}/main.m3u8": {
+    "summary": "获取 音频流 使用 HTTP实时流媒体。",
+    "eng": [
+      "HTTP"
+    ]
+  },
+  "GET /Audio/{itemId}/master.m3u8": {
+    "summary": "获取 音频HLS播放列表流。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "HEAD /Audio/{itemId}/master.m3u8": {
+    "summary": "获取 音频HLS播放列表流。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "GET /Videos/{itemId}/hls1/{playlistId}/{segmentId}.{container}": {
+    "summary": "获取 视频流 使用 HTTP实时流媒体。",
+    "eng": [
+      "HTTP"
+    ]
+  },
+  "GET /Videos/{itemId}/live.m3u8": {
+    "summary": "获取 HLS直播流。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "GET /Videos/{itemId}/main.m3u8": {
+    "summary": "获取 视频流 使用 HTTP实时流媒体。",
+    "eng": [
+      "HTTP"
+    ]
+  },
+  "GET /Videos/{itemId}/master.m3u8": {
+    "summary": "获取 视频HLS播放列表流。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "HEAD /Videos/{itemId}/master.m3u8": {
+    "summary": "获取 视频HLS播放列表流。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "GET /Audio/{itemId}/hls/{segmentId}/stream.aac": {
+    "summary": "获取 指定音频片段 为 audio 项目。",
+    "eng": [
+      "audio"
+    ]
+  },
+  "GET /Audio/{itemId}/hls/{segmentId}/stream.mp3": {
+    "summary": "获取 指定音频片段 为 audio 项目。",
+    "eng": [
+      "audio"
+    ]
+  },
+  "GET /Videos/{itemId}/hls/{playlistId}/{segmentId}.{segmentContainer}": {
+    "summary": "获取 HLS视频分段。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "GET /Videos/{itemId}/hls/{playlistId}/stream.m3u8": {
+    "summary": "获取 HLS视频播放列表。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "POST /Branding/Splashscreen": {
+    "summary": "上传 自定义启动画面. 请求体 是 预期 到 图像 内容 Base64编码。",
+    "eng": [
+      "Base"
+    ]
+  },
+  "GET /Packages/{name}": {
+    "summary": "获取 包 按 名称 或 程序集 GUID。",
+    "eng": [
+      "GUID"
+    ]
+  },
+  "POST /Startup/RemoteAccess": {
+    "summary": "设置远程访问和UPnP。",
+    "eng": [
+      "UPnP"
+    ]
+  },
+  "GET /Videos/{itemId}/{mediaSourceId}/Subtitles/{index}/subtitles.m3u8": {
+    "summary": "获取 HLS字幕播放列表。",
+    "eng": [
+      "HLS"
+    ]
+  },
+  "GET /GetUtcTime": {
+    "summary": "获取 当前UTC时间。",
+    "eng": [
+      "UTC"
+    ]
+  },
+  "GET /Tmdb/ClientConfiguration": {
+    "summary": "获取 TMDB图像配置选项。",
+    "eng": [
+      "TMDB"
+    ]
+  },
+  "POST /Users/ForgotPassword/Pin": {
+    "summary": "兑换 忘记密码PIN码。",
+    "eng": [
+      "PIN"
+    ]
+  }
+}

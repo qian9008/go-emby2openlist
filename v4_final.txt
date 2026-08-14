@@ -1,0 +1,171 @@
+Total summaries: 388
+Remaining English: 22
+
+=== Remaining English ===
+POST   /Auth/Keys
+       创建 新 API密钥。  eng=['API']
+
+DELETE /Auth/Keys/{key}
+       移除 API密钥。  eng=['API']
+
+GET    /Branding/Css
+       获取 品牌CSS。  eng=['CSS']
+
+GET    /Branding/Css.css
+       获取 品牌CSS。  eng=['CSS']
+
+GET    /Audio/{itemId}/hls1/{playlistId}/{segmentId}.{container}
+       获取 视频流 使用 HTTP实时流媒体。  eng=['HTTP']
+
+GET    /Audio/{itemId}/main.m3u8
+       获取 音频流 使用 HTTP实时流媒体。  eng=['HTTP']
+
+GET    /Audio/{itemId}/master.m3u8
+       获取 音频HLS播放列表流。  eng=['HLS']
+
+HEAD   /Audio/{itemId}/master.m3u8
+       获取 音频HLS播放列表流。  eng=['HLS']
+
+GET    /Videos/{itemId}/hls1/{playlistId}/{segmentId}.{container}
+       获取 视频流 使用 HTTP实时流媒体。  eng=['HTTP']
+
+GET    /Videos/{itemId}/live.m3u8
+       获取 HLS直播流。  eng=['HLS']
+
+GET    /Videos/{itemId}/main.m3u8
+       获取 视频流 使用 HTTP实时流媒体。  eng=['HTTP']
+
+GET    /Videos/{itemId}/master.m3u8
+       获取 视频HLS播放列表流。  eng=['HLS']
+
+HEAD   /Videos/{itemId}/master.m3u8
+       获取 视频HLS播放列表流。  eng=['HLS']
+
+GET    /Videos/{itemId}/hls/{playlistId}/{segmentId}.{segmentContainer}
+       获取 HLS视频分段。  eng=['HLS']
+
+GET    /Videos/{itemId}/hls/{playlistId}/stream.m3u8
+       获取 HLS视频播放列表。  eng=['HLS']
+
+POST   /Branding/Splashscreen
+       上传 自定义启动画面. 请求体 是 预期 到 图像 内容 Base64编码。  eng=['Base']
+
+GET    /Packages/{name}
+       获取 包 按 名称 或 程序集 GUID。  eng=['GUID']
+
+POST   /Startup/RemoteAccess
+       设置远程访问和UPnP。  eng=['UPnP']
+
+GET    /Videos/{itemId}/{mediaSourceId}/Subtitles/{index}/subtitles.m3u8
+       获取 HLS字幕播放列表。  eng=['HLS']
+
+GET    /GetUtcTime
+       获取 当前UTC时间。  eng=['UTC']
+
+GET    /Tmdb/ClientConfiguration
+       获取 TMDB图像配置选项。  eng=['TMDB']
+
+POST   /Users/ForgotPassword/Pin
+       兑换 忘记密码PIN码。  eng=['PIN']
+
+=== Sample translations ===
+DELETE /Auth/Keys/{key}
+       移除 API密钥。
+GET /Artists
+       获取 所有 艺术家 从 指定 项目, 文件夹, 或 整个媒体库。
+GET /Artists/AlbumArtists
+       获取 所有 专辑艺术家 从 指定 项目, 文件夹, 或 整个媒体库。
+GET /Artists/{name}
+       获取 艺术家 按 名称。
+GET /Audio/{itemId}/hls1/{playlistId}/{segmentId}.{container}
+       获取 视频流 使用 HTTP实时流媒体。
+GET /Audio/{itemId}/main.m3u8
+       获取 音频流 使用 HTTP实时流媒体。
+GET /Audio/{itemId}/master.m3u8
+       获取 音频HLS播放列表流。
+GET /Audio/{itemId}/stream
+       获取 音频流。
+GET /Audio/{itemId}/stream.{container}
+       获取 音频流。
+GET /Auth/Keys
+       获取 所有密钥。
+GET /Backup
+       获取 列表 所有当前存在的备份 在 备份目录。
+GET /Backup/Manifest
+       获取 描述符 从 现有归档 是 存在。
+GET /Branding/Configuration
+       获取 品牌配置。
+GET /Branding/Css
+       获取 品牌CSS。
+GET /Branding/Css.css
+       获取 品牌CSS。
+GET /Channels
+       获取 可用频道。
+GET /Channels/Features
+       获取 所有 频道功能。
+GET /Channels/Items/Latest
+       获取 最新频道项目。
+GET /Channels/{channelId}/Features
+       获取 频道功能。
+GET /Channels/{channelId}/Items
+       获取 频道项目。
+GET /Devices
+       获取 设备。
+GET /Devices/Info
+       获取 信息 为 设备。
+GET /Devices/Options
+       获取 选项 为 设备。
+GET /DisplayPreferences/{displayPreferencesId}
+       获取 显示偏好。
+GET /Environment/DefaultDirectoryBrowser
+       获取 默认目录浏览器。
+GET /Environment/DirectoryContents
+       获取 内容 指定 目录 在 文件系统。
+GET /Environment/Drives
+       获取 可用驱动器 从 服务器的文件系统。
+GET /Environment/NetworkShares
+       获取 网络路径。
+GET /Environment/ParentPath
+       获取 父路径 指定 路径。
+GET /Genres
+       获取 所有 流派 从 指定 项目, 文件夹, 或 整个媒体库。
+GET /Genres/{genreName}
+       获取 流派, 按 名称。
+GET /Items/Filters
+       获取 遗留查询过滤器。
+GET /Items/Filters2
+       获取 查询过滤器。
+GET /System/ActivityLog/Entries
+       获取 活动日志条目。
+GET /System/Configuration
+       获取 应用程序配置。
+GET /System/Configuration/MetadataOptions/Default
+       获取 默认元数据选项对象。
+GET /System/Configuration/{key}
+       获取 命名配置。
+GET /Videos/{itemId}/hls1/{playlistId}/{segmentId}.{container}
+       获取 视频流 使用 HTTP实时流媒体。
+GET /Videos/{itemId}/live.m3u8
+       获取 HLS直播流。
+GET /Videos/{itemId}/main.m3u8
+       获取 视频流 使用 HTTP实时流媒体。
+GET /Videos/{itemId}/master.m3u8
+       获取 视频HLS播放列表流。
+GET /web/ConfigurationPage
+       获取 控制台配置页面。
+GET /web/ConfigurationPages
+       获取 配置页面。
+POST /Backup/Create
+       创建 新 备份。
+POST /Backup/Restore
+       恢复 到 备份 按 重启 服务器 和 应用 备份。
+POST /ClientLog/Document
+       上传 文档。
+POST /Collections
+       创建 新 收藏。
+POST /Collections/{collectionId}/Items
+       添加 项目 到 收藏。
+POST /Environment/ValidatePath
+       验证 路径。
+POST /System/Configuration/Branding
+       更新 品牌配置。

@@ -1,0 +1,2491 @@
+"Optional. The image types to include in the output.
+(Optional) Determines if images should be replaced. Only applicable if mode is FullRefresh.
+(Optional) Determines if metadata should be replaced. Only applicable if mode is FullRefresh.
+(Optional) Determines if trickplay images should be replaced. Only applicable if mode is FullRefresh.
+(Optional) Specifies the image refresh mode.
+(Optional) Specifies the metadata refresh mode.
+(Unused) Image index.
+A DTO representing device information.
+A MediaBrowser.Model.Dlna.DeviceProfile represents a set of metadata which determines which content a certain device is able to play.
+<br />
+Specifically, it defines the supported <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.ContainerProfiles">containers</see> and
+<see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.CodecProfiles">codecs</see> (video and/or audio, including codec profiles and levels)
+the device is able to direct play (without transcoding or remuxing),
+as well as which <see cref="P:MediaBrowser.Model.Dlna.DeviceProfile.TranscodingProfiles">containers/codecs to transcode to</see> in case it isn't.
+A class for subtitle profile information.
+A class for transcoding profile information.
+Note for client developers: Conditions defined in MediaBrowser.Model.Dlna.CodecProfile has higher priority and can override values defined here.
+A class representing an authentication result.
+A class representing an parental rating score.
+A class representing metadata editor information.
+A dto representing custom options for a device.
+A hint for when to retry the operation in full seconds.
+A list of playable media types, comma delimited. Audio, Video, Book, Photo.
+A list of supported remote control commands, comma delimited.
+A short plain-text reason why the server is not available.
+API key header parameter
+Accepts plugin configuration as JSON body.
+Access forbidden.
+Activity log created message.
+Activity log entry start message.
+Data is the timing data encoded as "$initialDelay,$interval" in ms.
+Activity log entry stop message.
+Activity log returned.
+ActivityLog
+Add a media path to a library.
+Add virtual folder dto.
+Additional parts returned.
+Adds a listings provider.
+Adds a tuner host.
+Adds a virtual folder.
+Adds an additional user to a session.
+Adds items to a collection.
+Adds items to a playlist.
+Album artists returned.
+All channel features returned.
+Alternate sources deleted.
+Always burn-in subtitle when transcoding.
+An Microsoft.AspNetCore.Mvc.OkResult containing the item's local trailers.
+An activity log entry.
+An entity representing a user's access schedule.
+An enum representing a subtitle playback mode.
+An enum representing an algorithm to downmix surround sound to stereo.
+An enum representing an unrated item.
+An enum representing formats of spatial audio.
+An enum representing the axis that should be scrolled.
+An enum representing the options to disable embedded subs.
+An enum representing the sorting order.
+An enum representing types of video ranges.
+An enum representing video ranges.
+An enum that represents a day of the week, weekdays, weekends, or all days.
+An optional filter to include or exclude files from the results. true/false.
+An optional filter to include or exclude folders from the results. true/false.
+Api key created.
+Api key deleted.
+Api keys retrieved.
+Api model for MediaSegment's.
+ApiKey
+Application configuration returned.
+Applies search criteria to an item and refreshes metadata.
+Artist name.
+Artist returned.
+Artists
+Artists returned.
+Attachment Index.
+Attachment retrieved.
+Attempts to retrieve authentication information.
+Audio
+Audio stream returned.
+Auth providers retrieved.
+Authenticates a user by name.
+Authenticates a user with quick connect.
+Authorizes a pending quick connect request.
+Available countries returned.
+Available lineups returned.
+Available live tv channels returned.
+Available live tv services returned.
+Available packages returned.
+Backup
+Backup archive manifest.
+Backup created.
+Backup restore started.
+Backups available.
+Bad Request
+Book remote search executed.
+Box set remote search executed.
+Branding
+Branding configuration returned.
+Branding configuration updated.
+Branding configuration.
+Branding css returned.
+Cancels a live tv series timer.
+Cancels a live tv timer.
+Cancels a package installation.
+Capabilities posted.
+Capabilities updated.
+Channel Id.
+Channel features returned.
+Channel id.
+Channel items returned.
+Channel mapping options dto.
+Channel mapping options returned.
+Channels
+Channels returned.
+Class BasePluginConfiguration.
+Class BufferRequestDto.
+Class ChapterInfo.
+Class CountryInfo.
+Class CultureDto.
+Class EncodingOptions.
+Class FileSystemEntryInfo.
+Class FontFile.
+Class GroupInfoDto.
+Class GroupStateUpdate.
+Class IgnoreWaitRequestDto.
+Class ImageInfo.
+Class ImageProviderInfo.
+Class InstallationInfo.
+Class JoinGroupRequestDto.
+Class LibrarySummary.
+Class LibraryUpdateInfo.
+Class MediaAttachment.
+Class MediaStream.
+Class MetadataOptions.
+Class MovePlaylistItemRequestDto.
+Class NewGroupRequestDto.
+Class NextItemRequestDto.
+Class PackageInfo.
+Class ParentalRating.
+Class PingRequestDto.
+Class PlayQueueUpdate.
+Class PlayRequest.
+Class PlayRequestDto.
+Class PlaybackInfoResponse.
+Class PlaybackProgressInfo.
+Class PlaybackStartInfo.
+Class PlaybackStopInfo.
+Class PreviousItemRequestDto.
+Class QueueItem.
+Class QueueRequestDto.
+Class ReadyRequest.
+Class RemoteImageInfo.
+Class RemoteImageResult.
+Class RemoveFromPlaylistRequestDto.
+Class RepositoryInfo.
+Class SearchHintResult.
+Class SeekRequestDto.
+Class SendCommand.
+Class SeriesTimerInfoDto.
+Class ServiceInfo.
+Class SessionUserInfo.
+Class SetPlaylistItemRequestDto.
+Class SetRepeatModeRequestDto.
+Class SetShuffleModeRequestDto.
+Class SystemInfo.
+Class TaskExecutionInfo.
+Class TaskInfo.
+Class TaskTriggerInfo.
+Class ThemeMediaResult.
+Class TrickplayOptions.
+Class UserConfiguration.
+Class UserDataChangeInfo.
+Class UserDto.
+Class UserItemDataDto.
+Class UtcTimeResponse.
+Class holding information on a running transcode.
+Class to hold data on user permissions for playlists.
+Client capabilities dto.
+Client log document response dto.
+Client.
+ClientLog
+Closes a media source.
+Collection
+Collection created.
+Collection type.
+Completes the startup wizard.
+Configuration
+Configuration key.
+Configuration returned.
+Configuration saved.
+Configuration updated.
+Configuration.
+ConfigurationPage returned.
+ConfigurationPages returned.
+Container type.
+Contains information about a specific folder.
+Contains informations about a libraries storage informations.
+Contains informations about the systems storage.
+Could not find a log file with the name.
+Country.
+Create a new SyncPlay group.
+Create a new api key.
+Create new playlist dto.
+Created channel mapping returned.
+Created listings provider returned.
+Created tuner host returned.
+Creates a live tv series timer.
+Creates a live tv timer.
+Creates a new Backup.
+Creates a new collection.
+Creates a new playlist.
+Creates a user.
+Creates an instant playlist based on a given album.
+Creates an instant playlist based on a given artist.
+Creates an instant playlist based on a given genre.
+Creates an instant playlist based on a given item.
+Creates an instant playlist based on a given playlist.
+Creates an instant playlist based on a given song.
+Critic reviews returned.
+DTO for playlists.
+Dashboard
+Default directory browser info.
+Default directory browser returned.
+Default listings provider info returned.
+Default values returned.
+Defines all possible methods for locking database access for concurrent queries.
+Defines properties used to start a restore process.
+Defines the MediaBrowser.Common.Net.NetworkConfiguration.
+Defines the MediaBrowser.Common.Plugins.IPlugin.
+Defines the MediaBrowser.Model.Configuration.PathSubstitution.
+Defines the MediaBrowser.Model.Dlna.CodecProfile.
+Defines the MediaBrowser.Model.Dlna.ContainerProfile.
+Defines the MediaBrowser.Model.Dlna.DirectPlayProfile.
+Defines the MediaBrowser.Model.Updates.VersionInfo class.
+Defines the display preferences for any item that supports them (usually Folders).
+Defines the optional contents of the backup archive.
+Defines the options for a custom database connector.
+Defines the types of content an individual Jellyfin.Database.Implementations.Entities.MediaSegment represents.
+Delete a custom splashscreen.
+Delete an item's image.
+Delete listing provider.
+Delete the user's image.
+Deletes a device.
+Deletes a live tv recording.
+Deletes a tuner host.
+Deletes a user's saved personal rating for an item.
+Deletes a user.
+Deletes an external lyric file.
+Deletes an external subtitle file.
+Deletes an item from the library and filesystem.
+Deletes items from the library and filesystem.
+Delivery method to use during playback of a specific subtitle format.
+Determines the output format of the image - original,gif,jpg,png.
+Determines whether media can be played remotely..
+Determines whether the device supports a unique identifier.
+Device Id.
+Device Options.
+Device deleted.
+Device info retrieved.
+Device not found.
+Device options retrieved.
+Device options updated.
+Devices
+Devices retrieved.
+Directory contents returned.
+Disable a plugin.
+Discover tuners.
+Display preferences id.
+Display preferences retrieved.
+Display preferences updated.
+DisplayPreferences
+Document saved.
+Downloads a remote image for an item.
+Downloads a remote lyric.
+Downloads a remote subtitle.
+Downloads item media.
+DynamicHls
+Empty array returned.
+Enable adaptive bitrate streaming.
+Enable trickplay image playlists being added to master playlist.
+Enables a disabled plugin.
+Encoding stopped successfully.
+Enum ChannelType.
+Enum FileSystemEntryType.
+Enum GroupQueueMode.
+Enum GroupRepeatMode.
+Enum GroupShuffleMode.
+Enum GroupState.
+Enum GroupUpdateType.
+Enum ImageOutputFormat.
+Enum ImageResolution.
+Enum ImageType.
+Enum IsoType.
+Enum ItemFilter.
+Enum LocationType.
+Enum MediaStreamType.
+Enum MetadataFields.
+Enum PlayCommand.
+Enum PlayQueueUpdateReason.
+Enum PlaybackOrder.
+Enum PlaybackRequestType.
+Enum PlaystateCommand.
+Enum SendCommandType.
+Enum SyncPlayUserAccessType.
+Enum TaskCompletionStatus.
+Enum TaskState.
+Enum TaskTriggerInfoType.
+Enum TrickplayScanBehavior.
+Enum VideoType.
+Enum containing deinterlace methods.
+Enum containing encoder presets.
+Enum containing hardware acceleration types.
+Enum containing tonemapping algorithms.
+Enum containing tonemapping modes.
+Enum containing tonemapping ranges.
+Environment
+Error processing upload.
+Error reading MimeType from uploaded image.
+Event logging disabled.
+Exclude artist ids.
+External id info retrieved.
+Fallback font file retrieved.
+File returned.
+File stream returned.
+Filter
+Filter by device Id.
+Filter by items that are played, or not.
+Filter by sessions that a given user is allowed to remote control.
+Filters retrieved.
+Finds movies and trailers similar to a given trailer.
+Folder added.
+Folder not found.
+Folder removed.
+Folder renamed.
+For backwards compatibility parameters can be sent via Query or Body, with Query having higher precedence.
+Query parameters are obsolete.
+Forbidden
+Force keep alive websocket messages.
+Forgot Password Pin enter request body DTO.
+Forgot Password request body DTO.
+Found shares.
+Full general command sent to session.
+GUID of the associated assembly.
+General command sent to session.
+General command websocket message.
+Generates or gets the splashscreen.
+Genre name.
+Genres
+Genres returned.
+Get Default directory browser.
+Get Devices.
+Get Display Preferences.
+Get Item User Data.
+Get a playlist user.
+Get a playlist's users.
+Get a playlist.
+Get all auth providers.
+Get all channel features.
+Get all keys.
+Get all password reset providers.
+Get artist image by name.
+Get book remote search.
+Get box set remote search.
+Get channel features.
+Get channel items.
+Get channel mapping options.
+Get genre image by name.
+Get guide info.
+Get info for a device.
+Get item counts.
+Get item image infos.
+Get movie remote search.
+Get music album remote search.
+Get music artist remote search.
+Get music genre image by name.
+Get music video remote search.
+Get options for a device.
+Get person by name.
+Get person image by name.
+Get person remote search.
+Get programs dto.
+Get recording group.
+Get series remote search.
+Get studio image by name.
+Get task by id.
+Get tasks.
+Get the item's external id info.
+Get the original file of an item.
+Get theme songs and videos for an item.
+Get theme songs for an item.
+Get theme videos for an item.
+Get trailer remote search.
+Get tuner host types.
+Get user profile image.
+Get user view grouping options.
+Get user views.
+Get video attachment.
+Get years.
+Gets a SyncPlay group by id.
+Gets a dashboard configuration page.
+Gets a default MetadataOptions object.
+Gets a fallback font file.
+Gets a genre, by name.
+Gets a hls live stream.
+Gets a hls video playlist.
+Gets a hls video segment.
+Gets a list of all currently present backups in the backup directory.
+Gets a list of available fallback font files.
+Gets a list of available server log files.
+Gets a list of currently installed plugins.
+Gets a list of next up episodes.
+Gets a list of physical paths from virtual folders.
+Gets a list of publicly visible users for display on a login screen.
+Gets a list of sessions.
+Gets a list of upcoming episodes.
+Gets a list of users.
+Gets a live tv channel stream.
+Gets a live tv channel.
+Gets a live tv program.
+Gets a live tv recording stream.
+Gets a live tv recording.
+Gets a live tv series timer.
+Gets a log file.
+Gets a music genre, by name.
+Gets a named configuration.
+Gets a package by name or assembly GUID.
+Gets a plugin's image.
+Gets a plugin's manifest.
+Gets a studio by name.
+Gets a timer.
+Gets a trickplay tile image.
+Gets a user by Id.
+Gets a value indicating whether the current item is playing.
+Gets a value indicating whether the plugin can be uninstalled.
+Gets a video hls playlist stream.
+Gets a video stream using HTTP live streaming.
+Gets a video stream.
+Gets a year.
+Gets activity log entries.
+Gets additional parts for a video.
+Gets all SyncPlay groups.
+Gets all album artists from a given item, folder, or the entire library.
+Gets all artists from a given item, folder, or the entire library.
+Gets all genres from a given item, folder, or the entire library.
+Gets all media segments based on an itemId.
+Gets all music genres from a given item, folder, or the entire library.
+Gets all package repositories.
+Gets all parents of an item.
+Gets all persons.
+Gets all studios from a given item, folder, or the entire library.
+Gets all user media folders.
+Gets all virtual folders.
+Gets an HLS subtitle playlist.
+Gets an artist by name.
+Gets an audio hls playlist stream.
+Gets an audio stream using HTTP live streaming.
+Gets an audio stream.
+Gets an image tiles playlist for trickplay.
+Gets an item from a user's library.
+Gets an item's lyrics.
+Gets application configuration.
+Gets available channels.
+Gets available countries.
+Gets available drives from the server's file system.
+Gets available lineups.
+Gets available live tv channels.
+Gets available live tv epgs.
+Gets available live tv services.
+Gets available packages.
+Gets available remote image providers for an item.
+Gets available remote images for an item.
+Gets branding configuration.
+Gets branding css.
+Gets critic review for an item.
+Gets default listings provider info.
+Gets episodes for a tv season.
+Gets information about the request endpoint.
+Gets information about the server.
+Gets intros to play before the main media item plays.
+Gets items based on a query.
+Gets known countries.
+Gets known cultures.
+Gets known parental ratings.
+Gets latest channel items.
+Gets latest media.
+Gets legacy query filters.
+Gets live playback media info for an item.
+Gets live tv recording groups.
+Gets live tv recording series.
+Gets live tv recordings.
+Gets live tv series timers.
+Gets local trailers for an item.
+Gets localization options.
+Gets metadata editor info for an item.
+Gets movie recommendations.
+Gets network paths.
+Gets or Sets the kind of locking behavior jellyfin should perform. Possible options are "NoLock", "Pessimistic", "Optimistic".
+Defaults to "NoLock".
+Gets or Sets the name of the backup archive to restore from. Must be present in MediaBrowser.Common.Configuration.IApplicationPaths.BackupPath.
+Gets or Sets the type of database jellyfin should use.
+Gets or sets Metadata for the lyrics.
+Gets or sets UI language culture.
+Gets or sets a checksum for the binary.
+Gets or sets a collection of individual lyric lines.
+Gets or sets a long description of the plugin containing features or helpful explanations.
+Gets or sets a short overview of what the plugin does.
+Gets or sets a timestamp of when the binary was built.
+Gets or sets a url used for previewing a smaller version.
+Gets or sets a value indicating the interface name prefixes that should be ignored. The list can be comma separated and values are case-insensitive. <seealso cref="P:MediaBrowser.Common.Net.NetworkConfiguration.IgnoreVirtualInterfaces" />.
+Gets or sets a value indicating the status of the plugin.
+Gets or sets a value indicating whether 10bit HEVC decoding is enabled.
+Gets or sets a value indicating whether 10bit VP9 decoding is enabled.
+Gets or sets a value indicating whether 12bit HEVC RExt decoding is enabled.
+Gets or sets a value indicating whether 8/10bit HEVC RExt decoding is enabled.
+Gets or sets a value indicating whether <seealso cref="P:MediaBrowser.Common.Net.NetworkConfiguration.RemoteIPFilter" /> contains a blacklist or a whitelist. Default is a whitelist.
+Gets or sets a value indicating whether AV1 encoding is enabled.
+Gets or sets a value indicating whether Autodiscovery is enabled.
+Gets or sets a value indicating whether HEVC encoding is enabled.
+Gets or sets a value indicating whether IPv6 is enabled.
+Gets or sets a value indicating whether M2TS mode is enabled.
+Gets or sets a value indicating whether VPP tonemapping is enabled.
+Gets or sets a value indicating whether [enable case-sensitive item ids].
+Gets or sets a value indicating whether [enable internet providers].
+Gets or sets a value indicating whether [enable synchronize].
+Gets or sets a value indicating whether [play default audio track].
+Gets or sets a value indicating whether [record any channel].
+Gets or sets a value indicating whether [record any time].
+Gets or sets a value indicating whether [record new only].
+Gets or sets a value indicating whether [remember indexing].
+Gets or sets a value indicating whether [remember sorting].
+Gets or sets a value indicating whether [show sidebar].
+Gets or sets a value indicating whether [supports content downloading].
+Gets or sets a value indicating whether [supports external stream].
+Gets or sets a value indicating whether [supports latest media].
+Gets or sets a value indicating whether [supports library monitor].
+Gets or sets a value indicating whether a sort ascending/descending toggle is supported.
+Gets or sets a value indicating whether access from outside of the LAN is permitted.
+Gets or sets a value indicating whether address names that match MediaBrowser.Common.Net.NetworkConfiguration.VirtualInterfaceNames should be ignored for the purposes of binding.
+Gets or sets a value indicating whether always burn in subtitles when transcoding.
+Gets or sets a value indicating whether audio VBR is enabled.
+Gets or sets a value indicating whether breaking the video stream on non-keyframes is supported.
+Gets or sets a value indicating whether clients should be allowed to upload logs.
+Gets or sets a value indicating whether default enabled.
+Gets or sets a value indicating whether disabled providers should be included.
+Gets or sets a value indicating whether enable automatic port mapping.
+Gets or sets a value indicating whether enable remote access.
+Gets or sets a value indicating whether hardware encoding is enabled.
+Gets or sets a value indicating whether old authorization methods are allowed.
+Gets or sets a value indicating whether or not to use HW accelerated MJPEG encoding.
+Gets or sets a value indicating whether or not to use HW acceleration.
+Gets or sets a value indicating whether quick connect is available for use on this server.
+Gets or sets a value indicating whether retrieve total record count.
+Gets or sets a value indicating whether segment deletion is enabled.
+Gets or sets a value indicating whether session supports a persistent identifier.
+Gets or sets a value indicating whether session supports media control.
+Gets or sets a value indicating whether slow server responses should be logged as a warning.
+Gets or sets a value indicating whether subtitle extraction is enabled.
+Gets or sets a value indicating whether subtitles are allowed in the manifest.
+Gets or sets a value indicating whether the Intel H264 low-power hardware encoder should be used.
+Gets or sets a value indicating whether the Intel HEVC low-power hardware encoder should be used.
+Gets or sets a value indicating whether the archive contains the Database contents.
+Gets or sets a value indicating whether the archive contains the Metadata contents.
+Gets or sets a value indicating whether the archive contains the Subtitle contents.
+Gets or sets a value indicating whether the archive contains the Trickplay contents.
+Gets or sets a value indicating whether the audio is passed through.
+Gets or sets a value indicating whether the client playback is unpaused.
+Gets or sets a value indicating whether the client should be ignored.
+Gets or sets a value indicating whether the configurations page is enabled in the main menu.
+Gets or sets a value indicating whether the content length should be estimated.
+Gets or sets a value indicating whether the enhanced NVDEC is enabled.
+Gets or sets a value indicating whether the entire playlist should be cleared.
+Gets or sets a value indicating whether the framerate is doubled when deinterlacing.
+Gets or sets a value indicating whether the media is remote.
+Differentiate internet url vs local network.
+Gets or sets a value indicating whether the playing item should be removed as well. Used only when clearing the playlist.
+Gets or sets a value indicating whether the playlist is public.
+Gets or sets a value indicating whether the playlist is publicly readable.
+Gets or sets a value indicating whether the plugin can be uninstalled.
+Gets or sets a value indicating whether the published server uri is based on information in HTTP requests.
+Gets or sets a value indicating whether the repository is enabled.
+Gets or sets a value indicating whether the server should force connections over HTTPS.
+Gets or sets a value indicating whether the session has a custom device name.
+Gets or sets a value indicating whether the session supports media control.
+Gets or sets a value indicating whether the session supports remote control.
+Gets or sets a value indicating whether the startup wizard is completed.
+Gets or sets a value indicating whether the subtitle is for hearing impaired.
+Gets or sets a value indicating whether the subtitle is forced.
+Gets or sets a value indicating whether the system native hardware decoder should be used.
+Gets or sets a value indicating whether the user can edit the playlist.
+Gets or sets a value indicating whether the user has edit permissions.
+Gets or sets a value indicating whether the video is passed through.
+Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UpdateUserItemDataDto is likes.
+Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is likes.
+Gets or sets a value indicating whether this MediaBrowser.Model.Dto.UserItemDataDto is played.
+Gets or sets a value indicating whether this MediaBrowser.Model.Session.PlaybackStopInfo is failed.
+Gets or sets a value indicating whether this MediaBrowser.Model.Users.PinRedeemResult is success.
+Gets or sets a value indicating whether this instance can filter.
+Gets or sets a value indicating whether this instance can manage collections.
+Gets or sets a value indicating whether this instance can manage subtitles.
+Gets or sets a value indicating whether this instance can search.
+Gets or sets a value indicating whether this instance can seek.
+Gets or sets a value indicating whether this instance can self restart.
+Gets or sets a value indicating whether this instance has configured easy password.
+Gets or sets a value indicating whether this instance has configured password.
+Gets or sets a value indicating whether this instance has password.
+Gets or sets a value indicating whether this instance has pending restart.
+Gets or sets a value indicating whether this instance has update available.
+Gets or sets a value indicating whether this instance is HD.
+Gets or sets a value indicating whether this instance is active.
+Gets or sets a value indicating whether this instance is administrator.
+Gets or sets a value indicating whether this instance is default.
+Gets or sets a value indicating whether this instance is disabled.
+Gets or sets a value indicating whether this instance is enabled.
+Gets or sets a value indicating whether this instance is external URL.
+Gets or sets a value indicating whether this instance is external.
+Gets or sets a value indicating whether this instance is favorite.
+Gets or sets a value indicating whether this instance is first run.
+Gets or sets a value indicating whether this instance is folder.
+Gets or sets a value indicating whether this instance is for the hearing impaired.
+Gets or sets a value indicating whether this instance is forced.
+Gets or sets a value indicating whether this instance is hidden.
+Gets or sets a value indicating whether this instance is interlaced.
+Gets or sets a value indicating whether this instance is kids.
+Gets or sets a value indicating whether this instance is live.
+Gets or sets a value indicating whether this instance is movie.
+Gets or sets a value indicating whether this instance is muted.
+Gets or sets a value indicating whether this instance is news.
+Gets or sets a value indicating whether this instance is paused.
+Gets or sets a value indicating whether this instance is place holder.
+Gets or sets a value indicating whether this instance is port authorized.
+Gets or sets a value indicating whether this instance is post padding required.
+Gets or sets a value indicating whether this instance is pre padding required.
+Gets or sets a value indicating whether this instance is premiere.
+Gets or sets a value indicating whether this instance is repeat.
+Gets or sets a value indicating whether this instance is series.
+Gets or sets a value indicating whether this instance is sports.
+Gets or sets a value indicating whether this instance is visible.
+Gets or sets a value indicating whether this lyric is synced.
+Gets or sets a value indicating whether this plugin has a valid image.
+Gets or sets a value indicating whether this request is authorized.
+Gets or sets a value indicating whether this session is active.
+Gets or sets a value indicating whether this user can manage lyrics.
+Gets or sets a value indicating whether throttling is enabled.
+Gets or sets a value indicating whether timestamps should be copied.
+Gets or sets a value indicating whether to allow audio stream copy.
+Gets or sets a value indicating whether to auto open the live stream.
+Gets or sets a value indicating whether to enable automatic port forwarding.
+Gets or sets a value indicating whether to enable direct play.
+Gets or sets a value indicating whether to enable direct stream.
+Gets or sets a value indicating whether to enable prometheus metrics exporting.
+Gets or sets a value indicating whether to enable the splashscreen.
+Gets or sets a value indicating whether to enable transcoding.
+Gets or sets a value indicating whether to enable video stream copy.
+Gets or sets a value indicating whether to only extract key frames.
+Significantly faster, but is not compatible with all decoders and/or video files.
+Gets or sets a value indicating whether to reset the password.
+Gets or sets a value indicating whether to show backdrops on this item.
+Gets or sets a value indicating whether to use HTTPS.
+Gets or sets a value indicating whether to use the fallback font.
+Gets or sets a value indicating whether tonemapping is enabled.
+Gets or sets a value indicating whether validate if path is writable.
+Gets or sets a value indicating whether variable bitrate encoding is supported.
+Gets or sets a value indicating whether videotoolbox tonemapping is enabled.
+Gets or sets a value used to specify the URL prefix that your Jellyfin instance can be accessed at.
+Gets or sets characters to be removed from strings to create a sort name.
+Gets or sets characters to be replaced with a ' ' in strings to create a sort name.
+Gets or sets filter by library series id.
+Gets or sets filter by programs that are currently airing, or not.
+Gets or sets filter by programs that have completed airing, or not.
+Gets or sets filter by series timer id.
+Gets or sets filter for kids.
+Gets or sets filter for movies.
+Gets or sets filter for news.
+Gets or sets filter for series.
+Gets or sets filter for sports.
+Gets or sets include image information in output.
+Gets or sets include user data.
+Gets or sets is path file.
+Gets or sets item ids of the playlist.
+Gets or sets item ids to add to the playlist.
+Gets or sets library folder path information.
+Gets or sets library options.
+Gets or sets list of mappings.
+Gets or sets list of provider channels.
+Gets or sets list of tuner channels.
+Gets or sets media path.
+Gets or sets media update type.
+Created, Modified, Deleted.
+Gets or sets name.
+Gets or sets number of tile images to allow in X dimension.
+Gets or sets number of tile images to allow in Y dimension.
+Gets or sets optional. Filter by user id.
+Gets or sets package information for the installation.
+Gets or sets provider name.
+Gets or sets seconds for which segments should be kept before being deleted.
+Gets or sets sort order.
+Gets or sets specify additional fields of information to return in the output.
+Gets or sets specify one or more sort orders, comma delimited. Options: Name, StartDate.
+Gets or sets the ABI that this version was built against.
+Gets or sets the DIDL mode.
+Gets or sets the DLNA profile type.
+Gets or sets the DateTime that this request was created.
+Gets or sets the Dlna profile type.
+Gets or sets the Dolby Vision bl present flag.
+Gets or sets the Dolby Vision bl signal compatibility id.
+Gets or sets the Dolby Vision el present flag.
+Gets or sets the Dolby Vision level.
+Gets or sets the Dolby Vision profile.
+Gets or sets the Dolby Vision rpu present flag.
+Gets or sets the Dolby Vision version major.
+Gets or sets the Dolby Vision version minor.
+Gets or sets the FFmpeg path as set by the user via the UI.
+Gets or sets the H264 CRF.
+Gets or sets the H265 CRF.
+Gets or sets the Id of the Parent that has a backdrop if the item does not have one.
+Gets or sets the Id of the recording.
+Gets or sets the Id.
+Gets or sets the Library Id.
+Gets or sets the MIME type.
+Gets or sets the MediaBrowser.Model.Dlna.CodecType which this container must meet.
+Gets or sets the MediaBrowser.Model.Dlna.DlnaProfileType which this container must meet.
+Gets or sets the Plugin name to search for database providers.
+Gets or sets the PublishedServerUriBySubnet
+Gets or sets PublishedServerUri to advertise for specific subnets.
+Gets or sets the QSV device.
+Gets or sets the Rotation in degrees.
+Gets or sets the Storage information of the cache folder.
+Gets or sets the Storage information of the folder where images are cached.
+Gets or sets the Storage information of the folder where logfiles are saved to.
+Gets or sets the Storage information of the folder where metadata is stored.
+Gets or sets the Storage information of the program data folder.
+Gets or sets the Storage information of the transcoding cache.
+Gets or sets the Storage information of the web UI resources folder.
+Gets or sets the URL.
+Gets or sets the UTC time when to execute the command.
+Gets or sets the VA-API device.
+Gets or sets the VPP tone-mapping brightness.
+Gets or sets the VPP tone-mapping contrast.
+Gets or sets the access token.
+Gets or sets the action.
+Gets or sets the additional users.
+Gets or sets the air days.
+Gets or sets the air time.
+Gets or sets the album artist.
+Gets or sets the album artists.
+Gets or sets the album count.
+Gets or sets the album id.
+Gets or sets the album image tag.
+Gets or sets the album this song is on.
+Gets or sets the album.
+Gets or sets the algorithm used for downmixing audio to stereo.
+Gets or sets the app store url.
+Gets or sets the application version.
+Gets or sets the artist count.
+Gets or sets the artist items.
+Gets or sets the artist provider ids.
+Gets or sets the artists.
+Gets or sets the aspect ratio.
+Gets or sets the audio boost applied when downmixing audio.
+Gets or sets the audio channels.
+Gets or sets the audio codec.
+Gets or sets the audio language preference.
+Gets or sets the audio stream index.
+Gets or sets the audio.
+Gets or sets the author of the lyric data.
+Gets or sets the automatic refresh levels.
+Gets or sets the average frame rate.
+Gets or sets the backdrop image item identifier.
+Gets or sets the backdrop image tag.
+Gets or sets the backdrop image tags.
+Gets or sets the backup engine version this backup was created with.
+Gets or sets the behavior used by trickplay provider on library scan/update.
+Gets or sets the bit depth.
+Gets or sets the bit rate.
+Gets or sets the bitrate.
+Gets or sets the blurhash.
+Gets or sets the blurhashes for the image tags.
+Maps image type to dictionary mapping image tag to blurhash value.
+Gets or sets the book count.
+Gets or sets the box set count.
+Gets or sets the cache path.
+Gets or sets the capabilities.
+Gets or sets the cast receiver application id.
+Gets or sets the cast receiver application name.
+Gets or sets the category.
+Gets or sets the changelog for this version.
+Gets or sets the channel id of the recording.
+Gets or sets the channel identifier.
+Gets or sets the channel layout.
+Gets or sets the channel name of the recording.
+Gets or sets the channel primary image tag.
+Gets or sets the channels to return guide information for.
+Gets or sets the channels.
+Gets or sets the chapter image resolution.
+Gets or sets the chapters.
+Gets or sets the child count.
+Gets or sets the client capabilities.
+Gets or sets the client.
+Gets or sets the codec profiles.
+Gets or sets the codec tag.
+Gets or sets the codec time base.
+Gets or sets the codec(s) that this profile applies to.
+Gets or sets the codec.
+Gets or sets the codecs hardware encoding is used for.
+Gets or sets the color primaries.
+Gets or sets the color range.
+Gets or sets the color space.
+Gets or sets the color transfer.
+Gets or sets the comment.
+Gets or sets the community rating.
+Gets or sets the completed installations.
+Gets or sets the completion percentage.
+Gets or sets the configuration.
+Gets or sets the connection string for the custom database provider.
+Gets or sets the container profiles. Failing to meet these optional conditions causes transcoding to occur.
+Gets or sets the container(s) which this container must meet.
+Gets or sets the container(s) which this profile will be applied to.
+Gets or sets the container.
+Gets or sets the content type options.
+Gets or sets the content type.
+Gets or sets the content types.
+Gets or sets the contents of the backup archive.
+Gets or sets the controlling user identifier.
+Gets or sets the cors hosts.
+Gets or sets the countries.
+Gets or sets the critic rating.
+Gets or sets the cultures.
+Gets or sets the cumulative run time ticks.
+Gets or sets the current FFmpeg path being used by the system and displayed on the transcode page.
+Gets or sets the current plain text password.
+Gets or sets the current program.
+Gets or sets the current sha1-hashed password.
+Gets or sets the custom CSS.
+Gets or sets the custom name.
+Gets or sets the custom prefs.
+Gets or sets the custom rating.
+Gets or sets the data.
+Gets or sets the date created.
+Gets or sets the date last modified.
+Gets or sets the date modified.
+Gets or sets the date revoked.
+Gets or sets the date this backup was created with.
+Gets or sets the date.
+Gets or sets the day of week.
+Gets or sets the day pattern.
+Gets or sets the days.
+Gets or sets the default image options.
+Gets or sets the default sort orders.
+Gets or sets the deinterlace method.
+Gets or sets the delay after which throttling happens.
+Gets or sets the delay in seconds that we will wait after a file system change to try and discover what has been added/removed
+Some delay is necessary with some items because their creation is not atomic.  It involves the creation of several
+different directories and files.
+Gets or sets the delivery URL.
+Gets or sets the delivery method.
+Gets or sets the description of the recording.
+Gets or sets the description.
+Gets or sets the device id.
+Gets or sets the device identifier.
+Gets or sets the device play protocols.
+Gets or sets the device profile.
+Gets or sets the direct play profiles.
+Gets or sets the display name of the external id provider (IE: IMDB, MusicBrainz, etc).
+Gets or sets the display name of the operating system.
+Gets or sets the display name.
+Gets or sets the display order.
+Gets or sets the display preferences id.
+Gets or sets the dummy chapter duration in seconds, use 0 (zero) or less to disable generation altogether.
+Gets or sets the duration in seconds that we will wait after a library updated event before executing the library changed notification.
+Gets or sets the enabled users.
+Gets or sets the encoder preset.
+Gets or sets the encoding context.
+Gets or sets the end date of the recording, in UTC.
+Gets or sets the end date.
+Gets or sets the end hour.
+Gets or sets the end of the segment.
+Gets or sets the end time UTC.
+Gets or sets the entered pin to have the password reset.
+Gets or sets the entered username to have its password reset.
+Gets or sets the episode count.
+Gets or sets the episode title.
+Gets or sets the error code.
+Gets or sets the error message.
+Gets or sets the etag.
+Gets or sets the external channel identifier.
+Gets or sets the external id infos.
+Gets or sets the external identifier.
+Gets or sets the external program identifier.
+Gets or sets the external series timer identifier.
+Gets or sets the external urls.
+Gets or sets the ffmpeg output quality level.
+Gets or sets the file extensions on-demand metadata based keyframe extraction is enabled for.
+Gets or sets the filename.
+Gets or sets the filesystem path of an X.509 certificate to use for SSL.
+Gets or sets the filter for remote IP connectivity. Used in conjunction with <seealso cref="P:MediaBrowser.Common.Net.NetworkConfiguration.IsRemoteIPFilterBlacklist" />.
+Gets or sets the folders added to.
+Gets or sets the folders removed from.
+Gets or sets the format.
+Gets or sets the framerate.
+Gets or sets the gain required for audio normalization.
+Gets or sets the genre ids to return guide information for.
+Gets or sets the genres to return guide information for.
+Gets or sets the genres.
+Gets or sets the group identifier.
+Gets or sets the group name.
+Gets or sets the guid of the assembly associated with this plugin.
+This is used to identify the proper item for automatic updates.
+Gets or sets the hardware acceleration type.
+Gets or sets the height of the primary image.
+Gets or sets the height.
+Gets or sets the home page URL.
+Gets or sets the how many metadata refreshes can run concurrently.
+Gets or sets the how the library scan fans out.
+Gets or sets the icon URL.
+Gets or sets the icon url.
+Gets or sets the id for the lyric.
+Gets or sets the id of the associated item.
+Gets or sets the id of the media segment.
+Gets or sets the id of the selected cast receiver.
+Gets or sets the id.
+Gets or sets the identifier.
+Gets or sets the image fetchers.
+Gets or sets the image path.
+Gets or sets the image saving convention.
+Gets or sets the image tag.
+Gets or sets the image tags.
+Gets or sets the image types to include in the output.
+Gets or sets the image url for the package.
+Gets or sets the images.
+Gets or sets the index by.
+Gets or sets the index number end.
+Gets or sets the index number.
+Gets or sets the index of the audio stream.
+Gets or sets the index of the first record in Items.
+Gets or sets the index of the image.
+Gets or sets the index of the now playing audio stream.
+Gets or sets the index of the now playing subtitle stream.
+Gets or sets the index of the subtitle stream.
+Gets or sets the index.
+Gets or sets the interface addresses which Jellyfin will bind to. If empty, all interfaces will be used.
+Gets or sets the internal HTTP server port.
+Gets or sets the internal HTTPS server port.
+Gets or sets the internal metadata path.
+Gets or sets the interval, in ms, between each new trickplay image.
+Gets or sets the interval.
+Gets or sets the item count.
+Gets or sets the item id.
+Gets or sets the item identifier.
+Gets or sets the item ids.
+Gets or sets the item.
+Gets or sets the items added.
+Gets or sets the items by name path.
+Gets or sets the items removed.
+Gets or sets the items to enqueue.
+Gets or sets the items updated.
+Gets or sets the items.
+Gets or sets the jellyfin version this backup was created with.
+Gets or sets the jpeg quality to use for image tiles.
+Gets or sets the key of the value.
+Gets or sets the key.
+Gets or sets the known proxies.
+Gets or sets the language.
+Gets or sets the last activity date.
+Gets or sets the last execution result.
+Gets or sets the last known version that was ran using the configuration.
+Gets or sets the last login date.
+Gets or sets the last name of the user.
+Gets or sets the last paused date.
+Gets or sets the last playback check in.
+Gets or sets the last played date.
+Gets or sets the last user identifier.
+Gets or sets the length of the packet.
+Gets or sets the length of the song in ticks.
+Gets or sets the level.
+Gets or sets the library item id.
+Gets or sets the library name.
+Gets or sets the limit for parallel image encoding.
+Gets or sets the limit.
+Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition to apply if this profile is met.
+Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this container will be applied to.
+Gets or sets the list of MediaBrowser.Model.Dlna.ProfileCondition which this profile must meet.
+Gets or sets the list of MediaSegment Providers.
+Gets or sets the list of cast receiver applications.
+Gets or sets the list of extra options for the custom provider.
+Gets or sets the list of lyric fetchers.
+Gets or sets the list of playable media types.
+Gets or sets the list of supported commands.
+Gets or sets the list of updates.
+Gets or sets the live stream id.
+Gets or sets the live stream identifier.
+Gets or sets the local address.
+Gets or sets the local trailer count.
+Gets or sets the locations.
+Gets or sets the locked fields.
+Gets or sets the log path.
+Gets or sets the log severity.
+Gets or sets the login disclaimer.
+Gets or sets the long error message.
+Gets or sets the lyric offset compared to audio in ticks.
+Gets or sets the matched term.
+Gets or sets the max audio channels.
+Gets or sets the max number of images to return, per image type.
+Gets or sets the max parental rating.
+Gets or sets the max streaming bitrate.
+Gets or sets the maximum allowed bitrate for all streamed content.
+Gets or sets the maximum allowed bitrate for statically streamed (= direct played) music files.
+Gets or sets the maximum allowed bitrate for statically streamed content (= direct played files).
+Gets or sets the maximum allowed bitrate for transcoded music streams.
+Gets or sets the maximum amount of items to cache.
+Gets or sets the maximum audio channels.
+Gets or sets the maximum number of records the channel allows retrieving at a time.
+Gets or sets the maximum number of records to return.
+Gets or sets the maximum percentage of an item that can be played while still saving playstate. If this percentage is crossed playstate will be reset to the beginning and the item will be marked watched.
+Gets or sets the maximum premiere end date.
+Gets or sets the maximum premiere start date.
+Gets or sets the maximum runtime ticks.
+Gets or sets the maximum size of the muxing queue.
+Gets or sets the media source id.
+Gets or sets the media sources.
+Gets or sets the media streams.
+Gets or sets the media type.
+Gets or sets the media types.
+Gets or sets the media version identifier.
+Gets or sets the media versions.
+Gets or sets the menu icon.
+Gets or sets the menu section.
+Gets or sets the message id.
+Gets or sets the metadata country code.
+Gets or sets the metadata fetchers.
+Gets or sets the metadata language.
+Gets or sets the metadata path.
+Gets or sets the metadata readers.
+Gets or sets the metadata savers.
+Gets or sets the method.
+Gets or sets the minimum amount of segments.
+Gets or sets the minimum duration that an item must have in order to be eligible for playstate updates..
+Gets or sets the minimum minutes of a book that must be played in order for playstate to be updated.
+Gets or sets the minimum percentage of an item that must be played in order for playstate to be updated.
+Gets or sets the minimum premiere end date.
+Gets or sets the minimum premiere start date.
+Gets or sets the minimum width.
+Gets or sets the mode in which to add the new items.
+Gets or sets the movie count.
+Gets or sets the music video count.
+Gets or sets the name of the application.
+Gets or sets the name of the channel.
+Gets or sets the name of the configuration file.
+Gets or sets the name of the device.
+Gets or sets the name of the library.
+Gets or sets the name of the new playlist.
+Gets or sets the name of the provider.
+Gets or sets the name of the recording.
+Gets or sets the name of the season.
+Gets or sets the name of the series.
+Gets or sets the name of the server.
+Gets or sets the name of the server.
+This is not used by the server and is for client-side usage only.
+Gets or sets the name of the service.
+Gets or sets the name of the sort.
+Gets or sets the name of the three letter ISO region.
+Gets or sets the name of the two letter ISO region.
+Gets or sets the name of the user.
+Gets or sets the name of this device profile. User profiles must have a unique name.
+Gets or sets the name.
+Gets or sets the new plain text password.
+Gets or sets the new position.
+Gets or sets the now playing item.
+Gets or sets the now playing live stream identifier.
+Gets or sets the now playing media version identifier.
+Gets or sets the now playing position ticks.
+Gets or sets the now playing queue full items.
+Gets or sets the now playing queue.
+Gets or sets the now viewing item.
+Gets or sets the number of days we should retain activity logs.
+Gets or sets the number of days we should retain log files.
+Gets or sets the number of threads to be used by ffmpeg.
+Gets or sets the number.
+Gets or sets the official rating.
+Gets or sets the open token.
+Gets or sets the operating system.
+Gets or sets the options required to use a custom database provider.
+Gets or sets the original title.
+Gets or sets the overview.
+Gets or sets the owner id.
+Gets or sets the owner.
+Gets or sets the package name.
+Gets or sets the parent art image tag.
+Gets or sets the parent backdrop image tags.
+Gets or sets the parent id.
+Gets or sets the parent index number.
+Gets or sets the parent logo image tag.
+Gets or sets the parent primary image item identifier.
+Gets or sets the parent primary image tag.
+Gets or sets the parent thumb image tag.
+Gets or sets the parent thumb item id.
+Gets or sets the parental rating options.
+Gets or sets the part count.
+Gets or sets the password required to access the X.509 certificate data in the file specified by MediaBrowser.Common.Net.NetworkConfiguration.CertificatePath.
+Gets or sets the password.
+Gets or sets the path info.
+Gets or sets the path to add.
+Gets or sets the path to the backup on the system.
+Gets or sets the path to the fallback font.
+Gets or sets the path.
+Gets or sets the people.
+Gets or sets the pin expiration date.
+Gets or sets the pin file.
+Gets or sets the ping time.
+Gets or sets the pixel format.
+Gets or sets the plain text password.
+Gets or sets the play access.
+Gets or sets the play command.
+Gets or sets the play count.
+Gets or sets the play method.
+Gets or sets the play session id.
+Gets or sets the play session identifier.
+Gets or sets the play state.
+Gets or sets the playable media types.
+Gets or sets the playback order.
+Gets or sets the playback position ticks.
+Gets or sets the playback userId.
+Gets or sets the played percentage.
+Gets or sets the playing item identifier.
+Gets or sets the playing queue.
+Gets or sets the playlist identifier of the item.
+Gets or sets the playlist identifier of the playing item.
+Gets or sets the playlist identifiers of the items. Ignored when clearing the playlist.
+Gets or sets the playlist item id.
+Gets or sets the playlist item identifier of the playing item.
+Gets or sets the playlist item identifier.
+Gets or sets the playlist users.
+Gets or sets the plugin assembly to search for providers.
+Gets or sets the plugin id.
+Gets or sets the policy.
+Gets or sets the position of the playing item in the queue.
+Gets or sets the position ticks.
+Gets or sets the post padding seconds.
+Gets or sets the pre padding seconds.
+Gets or sets the preferred language for the metadata.
+Gets or sets the preferred metadata language.
+Gets or sets the premiere date.
+Gets or sets the primary image aspect ratio, after image enhancements.
+Gets or sets the primary image aspect ratio.
+Gets or sets the primary image blurhash.
+Gets or sets the primary image item identifier.
+Gets or sets the primary image tag.
+Gets or sets the priority.
+Gets or sets the process priority for the ffmpeg process.
+Gets or sets the product name. This is the AssemblyProduct name.
+Gets or sets the production year.
+Gets or sets the profile conditions.
+Gets or sets the profile.
+Gets or sets the program count.
+Gets or sets the program data path.
+Gets or sets the program identifier.
+Gets or sets the program information.
+Gets or sets the progress.
+Gets or sets the provider channel id.
+Gets or sets the provider id.
+Gets or sets the provider ids.
+Gets or sets the provider name to search within if set.
+Gets or sets the providers.
+Gets or sets the public HTTP port.
+Gets or sets the public HTTPS port.
+Gets or sets the quick connect secret.
+Gets or sets the rating score.
+Gets or sets the rating.
+Gets or sets the real frame rate.
+Gets or sets the record index to start at. All items with a lower index will be dropped from the results.
+Gets or sets the recursive item count.
+Gets or sets the reference frames.
+Gets or sets the remaining minutes of a book that can be played while still saving playstate. If this percentage is crossed playstate will be reset to the beginning and the item will be marked watched.
+Gets or sets the remote end point.
+Gets or sets the repeat mode.
+Gets or sets the repository name.
+Gets or sets the repository url.
+Gets or sets the role.
+Gets or sets the run time ticks.
+Gets or sets the sample rate.
+Gets or sets the score.
+Gets or sets the screenshot image tags.
+Gets or sets the season identifier.
+Gets or sets the segment length.
+Gets or sets the series count.
+Gets or sets the series id.
+Gets or sets the series primary image tag.
+Gets or sets the series studio.
+Gets or sets the series thumb image tag.
+Gets or sets the series timer identifier.
+Gets or sets the series.
+Gets or sets the server id.
+Gets or sets the server identifier.
+Gets or sets the server name.
+Gets or sets the server version.
+Gets or sets the services.
+Gets or sets the session id.
+Gets or sets the session info.
+Gets or sets the share permissions.
+Gets or sets the short overview.
+Gets or sets the shuffle mode.
+Gets or sets the size.
+Gets or sets the software used to create the LRC file.
+Gets or sets the song artist.
+Gets or sets the song count.
+Gets or sets the sort by.
+Gets or sets the source URL.
+Gets or sets the special feature count.
+Gets or sets the specific media type for this id. This is used to distinguish between the different
+external id types for providers with multiple ids.
+A null value indicates there is no specific media type associated with the external id, or this is the
+default id for the external provider so there is no need to specify a type.
+Gets or sets the start date of the recording, in UTC.
+Gets or sets the start date.
+Gets or sets the start hour.
+Gets or sets the start of the segment.
+Gets or sets the start position ticks that the first item should be played at.
+Gets or sets the start position ticks.
+Gets or sets the start time UTC.
+Gets or sets the start time in ticks.
+Gets or sets the state of the task.
+Gets or sets the status message.
+Gets or sets the status.
+Gets or sets the storage informations about the folders used in a library.
+Gets or sets the storage informations of all libraries.
+Gets or sets the stringified PreviousVersion to be stored/loaded,
+because System.Version itself isn't xml-serializable.
+Gets or sets the studios.
+Gets or sets the sub container(s) which this container must meet.
+Gets or sets the sub score.
+Gets or sets the sub-container(s) which this profile will be applied to.
+Gets or sets the subnets that are deemed to make up the LAN.
+Gets or sets the subtitle data.
+Gets or sets the subtitle fetchers.
+Gets or sets the subtitle format.
+Gets or sets the subtitle language preference.
+Gets or sets the subtitle language.
+Gets or sets the subtitle profiles.
+Gets or sets the subtitle stream index.
+Gets or sets the supported commands.
+Gets or sets the supported image types.
+Gets or sets the taglines.
+Gets or sets the tags.
+Gets or sets the target width resolutions, in px, to generates preview images for.
+Gets or sets the temporary transcoding path.
+Gets or sets the thread count used for encoding.
+Gets or sets the threshold for the slow response time warning in ms.
+Gets or sets the threshold in minutes after a inactive session gets closed automatically.
+If set to 0 the check for inactive sessions gets disabled.
+Gets or sets the thumb image item identifier.
+Gets or sets the thumb image tag.
+Gets or sets the time base.
+Gets or sets the time of day.
+Gets or sets the timer identifier.
+Gets or sets the title of the song.
+Gets or sets the title.
+Gets or sets the tone-mapping algorithm.
+Gets or sets the tone-mapping desaturation.
+Gets or sets the tone-mapping mode.
+Gets or sets the tone-mapping parameters.
+Gets or sets the tone-mapping peak.
+Gets or sets the tone-mapping range.
+Gets or sets the total number of records available.
+Gets or sets the total record count.
+Gets or sets the trailer count.
+Gets or sets the trailer urls.
+Gets or sets the transcode path.
+Gets or sets the transcode reasons.
+Gets or sets the transcoding info.
+Gets or sets the transcoding profiles.
+Gets or sets the transcoding seek info mode.
+Gets or sets the trickplay manifest.
+Gets or sets the trickplay options.
+Gets or sets the triggers.
+Gets or sets the tuner channel id.
+Gets or sets the type of the channel.
+Gets or sets the type of the client.
+Gets or sets the type of the collection.
+Gets or sets the type of the device.
+Gets or sets the type of the image.
+Gets or sets the type of the iso.
+Gets or sets the type of the item.
+Gets or sets the type of the location.
+Gets or sets the type of the rating.
+Gets or sets the type of the source.
+Gets or sets the type of the video.
+Gets or sets the type of the view.
+Gets or sets the type options.
+Gets or sets the type.
+Gets or sets the unique id.
+Gets or sets the unique internal identifier.
+Gets or sets the unique key for this id. This key should be unique across all providers.
+Gets or sets the unplayed item count.
+Gets or sets the user data for this item based on the user it's being requested for.
+Gets or sets the user data list.
+Gets or sets the user id.
+Gets or sets the user identifier.
+Gets or sets the user primary image tag.
+Gets or sets the user's password.
+Gets or sets the user.
+Gets or sets the username.
+Gets or sets the users reset.
+Gets or sets the value to substitute.
+Gets or sets the value to substitution with.
+Gets or sets the value.
+Gets or sets the version of the creator used.
+Gets or sets the version.
+Gets or sets the versions.
+Gets or sets the video codec.
+Gets or sets the video height.
+Gets or sets the video width.
+Gets or sets the video3 D format.
+Gets or sets the volume level.
+Gets or sets the vote count.
+Gets or sets the web UI resources path.
+Gets or sets the web socket port number.
+Gets or sets the width of the primary image.
+Gets or sets the width.
+Gets or sets the year.
+Gets or sets view option id.
+Gets or sets view option name.
+Gets or sets when the request has been made by the client.
+Gets or sets whether async login is enabled or not.
+Gets or sets whether the item has a logo, this will hold the Id of the Parent that has one.
+Gets or sets whether the item has any backdrops, this will hold the Id of the Parent that has one.
+Gets or sets whether the item has fan art, this will hold the Id of the Parent that has one.
+Gets or sets whether this instance is anamorphic.
+Gets or sets who the LRC file was created by.
+Gets or sets words to be removed from strings to create a sort name.
+Gets plugin configuration.
+Gets public information about the server.
+Gets query filters.
+Gets recommended live tv epgs.
+Gets recording folders.
+Gets seasons for a tv series.
+Gets similar items.
+Gets special features for an item.
+Gets subtitles in a specified format.
+Gets suggestions.
+Gets the Description.
+Gets the Device Identifier.
+Gets the TMDb image configuration options.
+Gets the UTC time of the last change to the playing queue.
+Gets the UTC time when request has been received.
+Gets the UTC time when response has been sent.
+Gets the UTC time when this command has been emitted.
+Gets the address.
+Gets the amount of thumbnails per column.
+Gets the amount of thumbnails per row.
+Gets the command.
+Gets the configuration pages.
+Gets the contents of a given directory in the file system.
+Gets the current UTC time.
+Gets the current quick connect state.
+Gets the date when this DTO has been created.
+Gets the default values for a new timer.
+Gets the descriptor from an existing archive is present.
+Gets the display name.
+Gets the end character index of the cue.
+Gets the end timestamp the lyric is synced to in ticks.
+Gets the endpoint address.
+Gets the first user.
+Gets the framerate used as reference.
+Prefer AverageFrameRate, if that is null or an unrealistic value
+then fallback to RealFrameRate.
+Gets the free space of the underlying storage device of the Jellyfin.Api.Models.SystemInfoDtos.FolderStorageDto.Path.
+Gets the full path to the data folder, where the plugin can store any miscellaneous files needed.
+Gets the group identifier.
+Gets the group name.
+Gets the group state.
+Gets the height of an individual thumbnail.
+Gets the id of the associated user.
+Gets the id of this instance.
+Gets the initial startup wizard configuration.
+Gets the interval in milliseconds between each trickplay thumbnail.
+Gets the item identifier.
+Gets the item's image.
+Gets the kind of storage device of the Jellyfin.Api.Models.SystemInfoDtos.FolderStorageDto.Path.
+Gets the library options info.
+Gets the live tv timers.
+Gets the lyrics.
+Gets the name of the plugin.
+Gets the name of the three letter ISO language.
+Gets the name of the two letter ISO language.
+Gets the name.
+Gets the original items of a playlist.
+Gets the parent path of a given path.
+Gets the participants.
+Gets the path of the folder in question.
+Gets the path to the assembly file.
+Gets the path.
+Gets the peak bandwidth usage in bits per second.
+Gets the playing item index in the playlist.
+Gets the playlist identifier of the item.
+Gets the playlist identifier of the playing item.
+Gets the playlist.
+Gets the plugin version.
+Gets the position ticks.
+Gets the provider name.
+Gets the reason of the state change.
+Gets the remote lyrics.
+Gets the remote subtitles.
+Gets the repeat mode.
+Gets the request type that originated this update.
+Gets the requesting app name.
+Gets the requesting app version.
+Gets the requesting device id.
+Gets the requesting device name.
+Gets the resulting filename.
+Gets the root folder from a user's library.
+Gets the search hint result.
+Gets the search hints.
+Gets the secret value used to uniquely identify this request. Can be used to retrieve authentication information.
+Gets the server identifier.
+Gets the shuffle mode.
+Gets the specified audio segment for an audio item.
+Gets the start character index of the cue.
+Gets the start position ticks.
+Gets the start time in ticks.
+Gets the state of the group.
+Gets the supported image types.
+Gets the text of this lyric line.
+Gets the time-aligned cues for the song's lyrics.
+Gets the timestamp the lyric is synced to in ticks.
+Gets the total amount of non-black thumbnails.
+Gets the total record count.
+Gets the type.
+Gets the unique id.
+Gets the update data.
+Gets the used space of the underlying storage device of the Jellyfin.Api.Models.SystemInfoDtos.FolderStorageDto.Path.
+Gets the user based on auth token.
+Gets the user facing code used so the user can quickly differentiate this request from others.
+Gets the version as a System.Version.
+Gets the video dovi title.
+Gets the width of an individual thumbnail.
+Group id.
+Group join successful.
+Group leave successful.
+Group returned.
+Group state update sent to all group members.
+Group update data
+Groups returned.
+Guide info returned.
+Height of box to fill.
+Hls audio segment returned.
+Hls live stream retrieved.
+Hls segment not found.
+Hls video playlist returned.
+Hls video segment returned.
+HlsSegment
+If specified, only children of the parent are returned.
+If specified, only results with the specified item types are returned. This allows multiple, comma delimited.
+If specified, only results with the specified media types are returned. This allows multiple, comma delimited.
+If specified, results with these item types are filtered out. This allows multiple, comma delimited.
+Image
+Image deleted.
+Image index updated.
+Image index.
+Image saved.
+Image stream returned.
+Image type.
+Image updated.
+Indicates if the client can seek.
+Indicates if the player is muted.
+Indicates if the player is paused.
+Information retrieved.
+Initial startup wizard configuration retrieved.
+Initial user retrieved.
+Initiate a new quick connect request.
+Initiates the forgot password process for a local user.
+Installation Id.
+Installation cancelled.
+Installed plugins returned.
+Installs a package.
+Instant playlist returned.
+InstantMix
+Instruction sent to session.
+Instructs a session to browse to an item or view.
+Instructs a session to play an item.
+Intros returned.
+Issues a command to a client to display a message to the user.
+Issues a full general command to a client.
+Issues a general command to a client.
+Issues a playstate command to a client.
+Issues a system command to a client.
+Item Id.
+Item Ids to add to the collection.
+Item content type updated.
+Item counts returned.
+Item deleted.
+Item id list. This allows multiple, comma delimited.
+Item id, comma delimited.
+Item id.
+Item ids, comma delimited.
+Item images returned.
+Item is not found.
+Item marked as favorite.
+Item marked as played.
+Item marked as unplayed.
+Item metadata editor returned.
+Item metadata refresh queued.
+Item metadata refreshed.
+Item moved to new index.
+Item not found.
+Item parents returned.
+Item rating updated.
+Item returned.
+Item to refresh not found.
+Item unmarked as favorite.
+Item updated.
+ItemLookup
+ItemRefresh
+ItemUpdate
+Items
+Items added to collection.
+Items added to playlist.
+Items deleted.
+Items removed from collection.
+Items removed.
+Items returned.
+Join an existing SyncPlay group.
+Keep alive websocket messages.
+Known countries returned.
+Known cultures returned.
+Known parental ratings returned.
+Latest channel items returned.
+Latest media returned.
+Leave the joined SyncPlay group.
+Legacy filters retrieved.
+Library
+Library already exists.
+Library changed message.
+Library content type.
+Library doesn't exist.
+Library option info dto.
+Library options info returned.
+Library options result dto.
+Library scan started.
+Library type options dto.
+Library updated.
+LibraryStructure
+List of entries returned.
+List of sessions returned.
+Listing provider deleted.
+Listing provider id.
+Live tv channel returned.
+Live tv epgs returned.
+Live tv recordings returned.
+LiveTv
+Livestream closed.
+Localization
+Localization options returned.
+Location.
+Log file retrieved.
+Lyric deleted.
+Lyric downloaded.
+Lyric model.
+Lyric not found.
+LyricLineCue model, holds information about the timing of words within a LyricLine.
+LyricMetadata model.
+LyricResponse model.
+Lyrics
+Lyrics retrieved.
+Lyrics returned.
+Lyrics uploaded.
+Manifest type for backups internal structure.
+Marks an item as a favorite.
+Marks an item as played for user.
+Marks an item as unplayed for user.
+Media Path dto.
+Media Source ID.
+Media Update Info Dto.
+Media downloaded.
+Media folders returned.
+Media path added.
+Media path removed.
+Media path updated.
+Media source opened.
+Media streaming protocol.
+Lowercase for backwards compatibility.
+Media types.
+MediaInfo
+MediaSegments
+Member state updated.
+Merges videos into a single record.
+Message sent.
+Metadata options returned.
+Missing token.
+Modify a user of a playlist's users.
+Moves a playlist item.
+Movie recommendations returned.
+Movie remote search executed.
+Movies
+Music album remote search executed.
+Music artist remote search executed.
+Music genre name.
+Music genres returned.
+Music video remote search executed.
+MusicGenres
+Name of the app using the authentication key.
+Name of the file being uploaded.
+Named configuration updated.
+New Display Preferences object.
+New group created.
+New image index.
+New listings info.
+New series timer info.
+New timer info.
+New tuner host.
+New user data object.
+Next item update sent to all group members.
+No branding css configured.
+No playlist or user permissions found.
+Not Found
+Not a valid jellyfin Archive.
+Not a valid path.
+Notify SyncPlay group that member is buffering.
+Notify SyncPlay group that member is ready for playback.
+Old image index.
+Only discover new tuners.
+Open live stream dto.
+Opens a media source.
+Optional filter by IsDisabled=true or false.
+Optional filter by IsHidden=true or false.
+Optional filter by MediaType. Allows multiple, comma delimited.
+Optional filter by Series Status. Allows multiple, comma delimited.
+Optional filter by VideoType (videofile, dvd, bluray, iso). Allows multiple, comma delimited.
+Optional filter by index number.
+Optional filter by items that are 3D, or not.
+Optional filter by items that are 4K or not.
+Optional filter by items that are HD or not.
+Optional filter by items that are locked.
+Optional filter by items that are marked as favorite, or not.
+Optional filter by items that are marked as favorite, or not. userId is required.
+Optional filter by items that are missing episodes or not.
+Optional filter by items that are placeholders.
+Optional filter by items that are played, or not.
+Optional filter by items that are unaired episodes or not.
+Optional filter by items that have a TMDb id or not.
+Optional filter by items that have a TVDb id or not.
+Optional filter by items that have an IMDb id or not.
+Optional filter by items that have an overview or not.
+Optional filter by items that have official ratings.
+Optional filter by items that have or do not have a parental rating.
+Optional filter by items whose name is equally or lesser than a given input string.
+Optional filter by items whose name is sorted equally or greater than a given input string.
+Optional filter by items whose name is sorted equally than a given input string.
+Optional filter by items with special features.
+Optional filter by items with subtitles.
+Optional filter by items with theme songs.
+Optional filter by items with theme videos.
+Optional filter by items with trailers.
+Optional filter by maximum official rating (PG, PG-13, TV-MA, etc).
+Optional filter by minimum community rating.
+Optional filter by minimum critic rating.
+Optional filter by minimum official rating (PG, PG-13, TV-MA, etc).
+Optional filter by parent index number.
+Optional filter by season number.
+Optional filter for kids.
+Optional filter for live tv kids.
+Optional filter for live tv movies.
+Optional filter for live tv news.
+Optional filter for live tv series.
+Optional filter for live tv sports.
+Optional filter for movies.
+Optional filter for news.
+Optional filter for series.
+Optional filter for sports.
+Optional filter of requested segment types.
+Optional filter tasks that are enabled, or not.
+Optional filter tasks that are hidden, or not.
+Optional filter whether to include artists.
+Optional filter whether to include genres.
+Optional filter whether to include media.
+Optional filter whether to include people.
+Optional filter whether to include studios.
+Optional version. Defaults to latest version.
+Optional, include image information in output.
+Optional, include user data.
+Optional, the max number of images to return, per image type.
+Optional.
+Optional. A specific maximum video framerate to encode to, e.g. 23.976. Generally this should be omitted unless the device has specific requirements.
+Optional. A specific video framerate to encode to, e.g. 23.976. Generally this should be omitted unless the device has specific requirements.
+Optional. Adds current program info to each channel.
+Optional. Apply a background color for transparent images.
+Optional. Apply a foreground layer on top of the image.
+Optional. Attach user data.
+Optional. Blur image.
+Optional. Create the collection within a specific folder.
+Optional. Determines whether or not parent items should be searched for theme media.
+Optional. Enable the total record count.
+Optional. Filter based on a search term.
+Optional. Filter by MediaType. Allows multiple, comma delimited.
+Optional. Filter by channel id.
+Optional. Filter by channel type.
+Optional. Filter by channels that are disliked, or not.
+Optional. Filter by channels that are favorite.
+Optional. Filter by channels that are favorites, or not.
+Optional. Filter by channels that are liked, or not.
+Optional. Filter by channels that support getting latest items.
+Optional. Filter by channels that support media deletion.
+Optional. Filter by folders that are marked hidden, or not.
+Optional. Filter by items that are missing episodes or not.
+Optional. Filter by library series id.
+Optional. Filter by programs that are currently airing, or not.
+Optional. Filter by programs that have completed airing, or not.
+Optional. Filter by recording group.
+Optional. Filter by recording status.
+Optional. Filter by recordings belonging to a series timer.
+Optional. Filter by recordings that are in progress, or not.
+Optional. Filter by season id.
+Optional. Filter by series id.
+Optional. Filter by series timer id.
+Optional. Filter by sessions that were active in the last n seconds.
+Optional. Filter by special season.
+Optional. Filter by the maximum height of the item.
+Optional. Filter by the maximum width of the item.
+Optional. Filter by the minimum height of the item.
+Optional. Filter by the minimum width of the item.
+Optional. Filter by timers belonging to a series timer.
+Optional. Filter by timers that are active.
+Optional. Filter by timers that are scheduled.
+Optional. Filter by user and attach user data.
+Optional. Filter by user id, and attach user data.
+Optional. Filter by user id.
+Optional. Filter for is library item.
+Optional. Filter for kids.
+Optional. Filter for movies.
+Optional. Filter for news.
+Optional. Filter for series.
+Optional. Filter for sports.
+Optional. Filter log entries if it has user id, or not.
+Optional. Folder Id.
+Optional. Get counts from a specific user's library.
+Optional. Get counts of favorite items.
+Optional. If specific items are needed, specify a list of item id's to retrieve. This allows multiple, comma delimited.
+Optional. If specified results will be filtered to exclude those containing the specified PersonType. Allows multiple, comma-delimited.
+Optional. If specified results will be filtered to include only those containing the specified PersonType. Allows multiple, comma-delimited.
+Optional. If specified, along with Person, results will be filtered to include only those containing the specified person and PersonType. Allows multiple, comma-delimited.
+Optional. If specified, person results will be filtered on items related to said persons.
+Optional. If specified, results will be excluded based on item type. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on LocationType. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on OfficialRating. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on album id. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on album. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on artist id. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on artists. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on genre id. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on genre. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on item type. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on production year. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on studio id. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on studio. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on tag. This allows multiple, pipe delimited.
+Optional. If specified, results will be filtered based on the LocationType. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on the item type. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered based on those containing image types. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered by excluding item ids. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered in based on item type. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered out based on item type. This allows multiple, comma delimited.
+Optional. If specified, results will be filtered to include only those containing the specified album artist id.
+Optional. If specified, results will be filtered to include only those containing the specified artist id.
+Optional. If specified, results will be filtered to include only those containing the specified contributing artist id.
+Optional. If specified, results will be filtered to include only those containing the specified person id.
+Optional. If specified, results will be filtered to include only those containing the specified person ids.
+Optional. If specified, results will be filtered to include only those containing the specified person.
+Optional. If specified, results will be included based on item type. This allows multiple, comma delimited.
+Optional. If true, the original file will be streamed statically without any encoding. Use either no url extension or the original file extension. true/false.
+Optional. Include all languages.
+Optional. Include image information in output.
+Optional. Include total record count.
+Optional. Include user data.
+Optional. Incorporate favorite and like status into channel sorting.
+Optional. Is item airing.
+Optional. Is item kids.
+Optional. Is item movie.
+Optional. Is item news.
+Optional. Is item series.
+Optional. Is item sports.
+Optional. Key to sort by.
+Optional. Only show subtitles which are a perfect match.
+Optional. Parent id.
+Optional. Percent to render for the percent played overlay.
+Optional. Quality setting, from 0-100. Defaults to 90 and should suffice in most cases.
+Optional. Return items that are siblings of a supplied item.
+Optional. Return total record count.
+Optional. Search recursive.
+Optional. Search term.
+Optional. Skip through the list until a given item is found.
+Optional. Sort Order - Ascending, Descending.
+Optional. Sort Order - Ascending,Descending.
+Optional. Sort by SortName or Priority.
+Optional. Sort in Ascending or Descending order.
+Optional. Sort order.
+Optional. Specify a level for the encoder profile (varies by encoder), e.g. 3, 3.1.
+Optional. Specify a maximum number of audio channels to encode to, e.g. 2.
+Optional. Specify a specific an encoder profile (varies by encoder), e.g. main, baseline, high.
+Optional. Specify a specific audio sample rate, e.g. 44100.
+Optional. Specify a specific number of audio channels to encode to, e.g. 2.
+Optional. Specify a starting offset, in ticks. 1 tick = 10000 ms.
+Optional. Specify a subtitle codec to encode to.
+Optional. Specify a video bitrate to encode to, e.g. 500000. If omitted this will be left to encoder defaults.
+Optional. Specify a video codec to encode to, e.g. h264.
+Optional. Specify a video codec to encode to, e.g. h264. If omitted the server will auto-select using the url's extension.
+Optional. Specify additional fields of information to return in the output.
+Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimited. Options: Budget, Chapters, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines, TrailerUrls.
+Optional. Specify additional fields of information to return in the output. This allows multiple, comma delimited. Options: Budget, Chapters, DateCreated, Genres, HomePageUrl, IndexOptions, MediaStreams, Overview, ParentId, Path, People, ProviderIds, PrimaryImageAspectRatio, Revenue, SortName, Studios, Taglines.
+Optional. Specify additional filters to apply.
+Optional. Specify additional filters to apply. This allows multiple, comma delimited. Options: IsFolder, IsNotFolder, IsUnplayed, IsPlayed, IsFavorite, IsResumable, Likes, Dislikes.
+Optional. Specify an audio bitrate to encode to, e.g. 128000. If omitted this will be left to encoder defaults.
+Optional. Specify an audio codec to encode to, e.g. mp3.
+Optional. Specify an audio codec to encode to, e.g. mp3. If omitted the server will auto-select using the url's extension.
+Optional. Specify one or more channel id's, comma delimited.
+Optional. Specify one or more sort orders, comma delimited.
+Optional. Specify one or more sort orders, comma delimited. Options: Album, AlbumArtist, Artist, Budget, CommunityRating, CriticRating, DateCreated, DatePlayed, PlayCount, PremiereDate, ProductionYear, SortName, Random, Revenue, Runtime.
+Optional. Specify one or more sort orders, comma delimited. Options: Name, StartDate.
+Optional. Specify the repository to install from.
+Optional. Specify the subtitle delivery method.
+Optional. Specify this to localize the search to a specific item or folder. Omit to use the root.
+Optional. Starting date of shows to show in Next Up section.
+Optional. Supply a user id to search within a user's library or omit to search all.
+Optional. Supply the cache tag from the item object to receive strong caching headers.
+Optional. The MediaBrowser.Model.Dlna.EncodingContext.
+Optional. The MediaBrowser.Model.Drawing.ImageFormat of the returned image.
+Optional. The audio codec to transcode to.
+Optional. The audio container.
+Optional. The container to transcode to.
+Optional. The current position, in ticks. 1 tick = 10000 ms.
+Optional. The date the item was played.
+Optional. The dlna device profile id to utilize.
+Optional. The end position of the subtitle in ticks.
+Optional. The fields to return.
+Optional. The fixed horizontal resolution of the encoded video.
+Optional. The fixed vertical resolution of the encoded video.
+Optional. The image provider to use.
+Optional. The image types to include in the output.
+Optional. The index of the audio stream to play.
+Optional. The index of the audio stream to use. If omitted the first audio stream will be used.
+Optional. The index of the subtitle stream to play.
+Optional. The index of the subtitle stream to use. If omitted no subtitles will be used.
+Optional. The index of the video stream to use. If omitted the first video stream will be used.
+Optional. The limit of how many cpu cores to use.
+Optional. The limit.
+Optional. The max height.
+Optional. The max number of images to return, per image type.
+Optional. The max width.
+Optional. The maximum audio bit depth.
+Optional. The maximum audio sample rate.
+Optional. The maximum horizontal resolution of the encoded video.
+Optional. The maximum number of audio channels to transcode.
+Optional. The maximum number of audio channels.
+Optional. The maximum number of records to return.
+Optional. The maximum premiere date. Format = ISO.
+Optional. The maximum premiere end date.
+Optional. The maximum premiere start date.
+Optional. The maximum streaming bitrate.
+Optional. The maximum vertical resolution of the encoded video.
+Optional. The maximum video bit depth.
+Optional. The media source id.
+Optional. The minimum date. Format = ISO.
+Optional. The minimum last saved date for the current user. Format = ISO.
+Optional. The minimum last saved date. Format = ISO.
+Optional. The minimum premiere date. Format = ISO.
+Optional. The minimum premiere end date.
+Optional. The minimum premiere start date.
+Optional. The number of how many audio channels to transcode to.
+Optional. The position, in ticks, where playback stopped. 1 tick = 10000 ms.
+Optional. The record index to start at. All items with a lower index will be dropped from the results.
+Optional. The start index.
+Optional. The streaming options.
+Optional. The transcoding protocol.
+Optional. The transcoding reason.
+Optional. The user id.
+Optional. To attach default values based on a program.
+Optional. Unplayed count overlay to render.
+Optional. User Id.
+Optional. User id.
+Optional. Whether or not to replace all images. Default: True.
+Optional. Whether to add a VTT time map.
+Optional. Whether to break on non key frames.
+Optional. Whether to copy the timestamps.
+Optional. Whether to deinterlace the video.
+Optional. Whether to enable Audio Encoding.
+Optional. Whether to enable remote media.
+Optional. Whether to enable subtitles in the manifest.
+Optional. Whether to enable the MpegtsM2Ts mode.
+Optional. Whether to exclude the currently active sessions.
+Optional. Whether to require a non anamorphic stream.
+Optional. Whether to require avc.
+Optional. filter by user id.
+Optional. include image information in output.
+Optional. include user data.
+Optional. the max number of images to return, per image type.
+Options to configure jellyfins managed database.
+Original playlist returned.
+Package
+Package found.
+Package installing message.
+Package name.
+Package not found.
+Package repositories returned.
+Package repositories saved.
+Package retrieved.
+Password reset process started.
+Password reset providers retrieved.
+Password successfully reset.
+Password.
+Path not found.
+Path validated.
+Pause update sent to all group members.
+Person name.
+Person not found.
+Person remote search executed.
+Person returned.
+Personal rating removed.
+Persons
+Persons returned.
+Physical paths returned.
+Pin reset process started.
+Ping updated.
+Pings a playback session.
+Pings the system.
+Play command websocket message.
+Play progress recorded.
+Play queue update sent to all group members.
+Play start recorded.
+Playback info dto.
+Playback info returned.
+Playback progress recorded.
+Playback session id.
+Playback session pinged.
+Playback start recorded.
+Playback stop recorded.
+Playlist created.
+Playlist not found.
+Playlist updated.
+Playlists
+Playstate
+Playstate command sent to session.
+Playstate message.
+Plugin configuration page not found.
+Plugin configuration returned.
+Plugin configuration updated.
+Plugin disabled.
+Plugin enabled.
+Plugin id.
+Plugin image returned.
+Plugin installation cancelled message.
+Plugin installation completed message.
+Plugin installation failed message.
+Plugin load status.
+Plugin manifest returned.
+Plugin not found or plugin configuration not found.
+Plugin not found or plugin does not have configuration.
+Plugin not found.
+Plugin uninstalled message.
+Plugin uninstalled.
+Plugin version.
+Plugins
+Preset views.
+Previous item update sent to all group members.
+Program id.
+Program returned.
+Provider id.
+Provider type.
+Public users returned.
+Query result container.
+Queue update sent to all group members.
+Quick connect code to authorize.
+Quick connect is not active on this server.
+Quick connect request successfully created.
+Quick connect result authorized successfully.
+Quick connect result returned.
+Quick connect state returned.
+QuickConnect
+Recommended epgs returned.
+Recording deleted.
+Recording folders returned.
+Recording groups returned.
+Recording id.
+Recording not found.
+Recording returned.
+Recording stream returned.
+Redeems a forgot password pin.
+Redirected to remote audio stream.
+Refresh progress message.
+Refreshes metadata for an item.
+Remote Images returned.
+Remote image downloaded.
+Remote image not found.
+Remote search query.
+RemoteImage
+Remove a media path.
+Remove a user from a playlist's users.
+Remove an api key.
+Removes a virtual folder.
+Removes alternate video sources.
+Removes an additional user from a session.
+Removes items from a collection.
+Removes items from a playlist.
+Renames a virtual folder.
+Report success.
+Reports a session's playback progress.
+Reports playback has started within a session.
+Reports playback has stopped within a session.
+Reports playback progress within a session.
+Reports that a session has begun playing an item.
+Reports that a session has ended.
+Reports that a session has stopped playing an item.
+Reports that a session is viewing an item.
+Reports that new episodes of a series have been added by an external source.
+Reports that new movies have been added by an external source.
+Represents the external id information for serialization to the client.
+Represents the list of possible group update types
+Represents the list of possible inbound websocket types
+Represents the list of possible outbound websocket types
+Represents the possible websocket types
+Represents the server configuration.
+Request SyncPlay group to ignore member during group-wait.
+Request body.
+Request next item in SyncPlay group.
+Request pause in SyncPlay group.
+Request previous item in SyncPlay group.
+Request seek in SyncPlay group.
+Request stop in SyncPlay group.
+Request to change playlist item in SyncPlay group.
+Request to move an item in the playlist in SyncPlay group.
+Request to queue items to the playlist of a SyncPlay group.
+Request to remove items from the playlist in SyncPlay group.
+Request to set new playlist in SyncPlay group.
+Request to set repeat mode in SyncPlay group.
+Request to set shuffle mode in SyncPlay group.
+Request unpause in SyncPlay group.
+Resets a tv tuner.
+Restart required.
+Restarts the application.
+Restores to a backup by restarting the server and applying the backup.
+Retrieve total record count.
+Return item limit.
+Returned remote image providers.
+Root folder returned.
+Scale of 0-100.
+Scheduled task ended message.
+Scheduled tasks info message.
+Scheduled tasks info start message.
+Data is the timing data encoded as "$initialDelay,$interval" in ms.
+Scheduled tasks info stop message.
+Scheduled tasks retrieved.
+ScheduledTasks
+Search
+Search hint returned.
+Search recursively.
+Search remote lyrics.
+Search remote subtitles.
+Secret previously returned from the Initiate endpoint.
+Seek update sent to all group members.
+Series remote search executed.
+Series timer cancelled message.
+Series timer created message.
+Series timer info created.
+Series timer not found.
+Series timer returned.
+Series timer updated.
+Server restarted.
+Server restarting down message.
+Server shut down.
+Server shutting down message.
+Server still loading.
+Session
+Session end reported to server.
+Session info DTO.
+Session reported to server.
+Sessions message.
+Sessions start message.
+Data is the timing data encoded as "$initialDelay,$interval" in ms.
+Sessions stop message.
+Set channel mapping dto.
+Set channel mappings.
+Set item image.
+Sets remote access and UPnP.
+Sets the enabled and existing package repositories.
+Sets the initial startup wizard configuration.
+Sets the user image.
+Sets the user name and password.
+Shuts down the application.
+Similar items returned.
+Skips over a given number of items within the results. Use for paging.
+Something went wrong. No Lyrics will be returned.
+Sort Order - Ascending, Descending.
+Sort Order - Ascending,Descending.
+Special features returned.
+Special view option dto.
+Specify this to localize the search to a specific item or folder. Omit to use the root.
+Splashscreen returned successfully.
+Start specified task.
+Starts a library scan.
+Startup
+Startup remote access dto.
+Startup wizard completed.
+Stop specified task.
+Stop update sent to all group members.
+Stops an active encoding.
+Stores the state of an quick connect request.
+Stream id.
+Stream not found.
+Stream returned.
+Studio name.
+Studio returned.
+Studios
+Studios returned.
+Subtitle
+Subtitle deleted.
+Subtitle downloaded.
+Subtitle playlist retrieved.
+Subtitle uploaded.
+Subtitles retrieved.
+Success
+Successfully deleted the custom splashscreen.
+Successfully uploaded new splashscreen.
+Suggestions
+Suggestions returned.
+Supply at least 2 video ids.
+Supply the cache tag from the item object to receive strong caching headers.
+Sync play command.
+SyncPlay
+System
+System command sent to session.
+Task Id.
+Task not found.
+Task retrieved.
+Task started.
+Task stopped.
+Task triggers updated.
+Test buffer returned.
+Tests the network with a request with the size of the bitrate.
+The (route) format of the returned subtitle.
+The (route) item id.
+The (route) media source id.
+The (route) start position of the subtitle in ticks.
+The (route) subtitle stream index.
+The DTO containing username and password.
+The GUID of the associated assembly.
+The Id of the item.
+The ItemId.
+The Jellyfin.Api.Models.PlaylistDtos.UpdatePlaylistDto id.
+The Jellyfin.Api.Models.PlaylistDtos.UpdatePlaylistUserDto.
+The Jellyfin.Api.Models.UserDtos.QuickConnectDto request.
+The M:Jellyfin.Api.Controllers.UserController.AuthenticateUserByName(Jellyfin.Api.Models.UserDtos.AuthenticateUserByName) request.
+The M:Jellyfin.Api.Controllers.UserController.UpdateUserPassword(System.Nullable{System.Guid},Jellyfin.Api.Models.UserDtos.UpdateUserPassword) request.
+The MediaBrowser.Model.Session.ClientCapabilities.
+The MediaBrowser.Model.Session.GeneralCommand.
+The MediaBrowser.Model.Session.MessageCommand object containing Header, Message Text, and TimeoutMs.
+The MediaBrowser.Model.Session.PlaystateCommand.
+The access token to delete.
+The audio container.
+The audio stream index.
+The authenticate user by name request body.
+The backup options.
+The base item kind.
+The bitrate. Defaults to 102400.
+The branding options DTO for API use.
+This DTO excludes SplashscreenLocation to prevent it from being updated via API.
+The cast receiver application model.
+The channels to return guide information for.
+The collection id.
+The collection type options.
+The command to send.
+The configuration page info.
+The content type of the item.
+The create playlist payload.
+The create user by name request body.
+The current item information.
+The custom value option for custom database providers.
+The data to start a restore process.
+The desired segment length.
+The device id of the client requesting. Used to stop encoding processes when needed.
+The different kinds of messages that are used in the WebSocket api.
+The fixed image height to return.
+The fixed image width to return.
+The forgot password pin request containing the entered pin.
+The forgot password request containing the entered username.
+The format of the returned subtitle.
+The genre ids to return guide information for.
+The genre name.
+The genres to return guide information for.
+The group to join.
+The id of the MediaSource.
+The id of the group.
+The ids of the items to play, comma delimited.
+The image index.
+The image type.
+The image url.
+The imdbId.
+The index of the desired tile.
+The index of the subtitle file.
+The item id.
+The item ids, comma delimited.
+The item ids.
+The item limit.
+The item the lyric belongs to.
+The item the subtitle belongs to.
+The items to add.
+The items to remove.
+The language of the subtitles.
+The length of the requested segment in ticks.
+The library name and options.
+The library options.
+The list of package repositories.
+The live stream id.
+The livestream id.
+The lyric id.
+The max number of categories to return.
+The max number of items to return per category.
+The maximum image height to return.
+The maximum image width to return.
+The maximum number of audio channels.
+The maximum streaming bitrate.
+The media path dto.
+The media source id.
+The media type.
+The media types.
+The media update info path.
+The media version id, if playing an alternate version.
+The media version id, if using an alternate version.
+The minimum number of segments.
+The name of the collection.
+The name of the fallback font file to get.
+The name of the folder.
+The name of the item.
+The name of the library and path infos.
+The name of the library.
+The name of the log file to get.
+The name of the package.
+The name of the page.
+The name of the virtual folder.
+The new index.
+The new item properties.
+The new item to play.
+The new name.
+The new ping.
+The new playback position.
+The new playlist to play in the group.
+The new position for the item.
+The new repeat mode.
+The new shuffle mode.
+The new user configuration.
+The new user policy.
+The next media type that will play.
+The open live stream dto.
+The open token.
+The optional controlling user id.
+The optional position ticks.
+The path to remove.
+The path.
+The paths of the virtual folder.
+The person kind.
+The play method.
+The play session id.
+The playback info.
+The playback progress info.
+The playback start info.
+The playback stop info.
+The player status.
+The playlist id.
+The playlist name.
+The playlist.
+The position of the requested segment in ticks.
+The quick connect request body.
+The remote lyric info dto.
+The remote provider item id.
+The remote search result.
+The repeat mode.
+The request body.
+The search term to filter on.
+The search term.
+The segment container.
+The segment id.
+The segment length.
+The series id.
+The server discovery info model.
+The server is currently starting or is temporarily not available.
+The session Id.
+The session id.
+The set channel mapping dto.
+The settings of the new group.
+The settings to set.
+The specific media type of an MediaBrowser.Model.Providers.ExternalIdInfo.
+The start index.
+The start position of the subtitle in ticks.
+The start time in ticks.
+The starting position of the first item.
+The startup configuration DTO.
+The startup remote access dto.
+The startup user DTO.
+The status of a series.
+The streaming parameters.
+The subtitle id.
+The subtitle segment length.
+The subtitle stream index.
+The tag.
+The tmdbId.
+The trickplay api model.
+The tvdbId.
+The type of item to browse to.
+The type of play command to issue (PlayNow, PlayNext, PlayLast). Clients who have not yet implemented play next and play last may play now.
+The type of the collection.
+The type.
+The update paths.
+The update user password request body.
+The updated startup configuration.
+The updated user model.
+The user id of the user to get the next up episodes for.
+The user id of the user to get the upcoming episodes for.
+The user id supplied as query parameter; this is required when not using an API key.
+The user id.
+The user the authorize. Access to the requested user is required.
+The userId.
+The video container. Possible values are: ts, webm, asf, wmv, ogv, mp4, m4v, mkv, mpeg, mpg, avi, 3gp, wmv, wtv, m2ts, mov, iso, flv.
+The video id.
+The width of a single tile.
+The year.
+Theme songs and videos returned.
+Theme songs returned.
+Theme videos returned.
+These represent sort orders.
+This exists simply to identify a set of known commands.
+This is a serializable stub class that is used by the api to provide information about installed plugins.
+This is strictly used as a data transfer object from the api layer.
+This holds information about a BaseItem in a format that is convenient for the client.
+This is used by the api to get information about a Person within a BaseItem.
+This is used by the api to get information about a item user data.
+Tile image not found at specified index.
+Tiles playlist returned.
+Time returned.
+TimeSync
+Timer cancelled message.
+Timer cancelled.
+Timer created message.
+Timer created.
+Timer deleted.
+Timer id.
+Timer returned.
+Timer updated.
+Timers returned.
+Tmdb
+Token is not owned by a user.
+Total record count.
+Trailer remote search executed.
+Trailers
+Trickplay
+Triggers.
+Tuner host deleted.
+Tuner host id.
+Tuner host types returned.
+Tuner id.
+Tuner reset.
+Tuners returned.
+TvShows
+Unauthorized
+Unauthorized access.
+Uninstalls a plugin by version.
+Uninstalls a plugin.
+UniversalAudio
+Unknown quick connect secret.
+Unknown user id.
+Unmarks item as a favorite.
+Unpause update sent to all group members.
+Untyped sync play command.
+Update Display Preferences.
+Update Item User Data.
+Update device options.
+Update existing playlist dto. Fields set to `null` will not be updated and keep their current values.
+Update existing playlist user dto. Fields set to `null` will not be updated and keep their current values.
+Update library options dto.
+Update library options.
+Update session ping.
+Update specified task triggers.
+Updated user name and password.
+Updates a live tv series timer.
+Updates a live tv timer.
+Updates a media path.
+Updates a playlist.
+Updates a user configuration.
+Updates a user policy.
+Updates a user's password.
+Updates a user's rating for an item.
+Updates a user.
+Updates an item's content type.
+Updates an item.
+Updates application configuration.
+Updates branding configuration.
+Updates capabilities for a device.
+Updates named configuration.
+Updates plugin configuration.
+Updates the index for an item image.
+Upload a document.
+Upload an external lyric file.
+Upload an external subtitle file.
+Upload size too large.
+Upload subtitles dto.
+Uploads a custom splashscreen.
+The body is expected to the image contents base64 encoded.
+Used to control the data that gets attached to DtoBaseItems.
+Used to hold information about a user's list of configured virtual folders.
+User
+User Id to filter by. Use System.Guid.Empty to not filter by user.
+User Id.
+User added to session.
+User authenticated.
+User configuration update forbidden.
+User configuration updated.
+User created.
+User data changed message.
+User deleted message.
+User deleted.
+User does not have permission to delete splashscreen..
+User does not have permission to delete the image.
+User does not have permission to get endpoint information.
+User does not have permission to get log files.
+User does not have permission to get server logs.
+User does not have permission to restart server.
+User does not have permission to retrieve information.
+User does not have permission to shutdown server.
+User does not have permission to upload splashscreen..
+User id not provided.
+User id.
+User information was not supplied.
+User is not allowed to update the password.
+User not found.
+User permission found.
+User permissions removed from playlist.
+User policy update forbidden.
+User policy updated.
+User policy was not supplied.
+User removed from session.
+User returned.
+User update forbidden.
+User updated message.
+User updated.
+User view grouping options returned.
+User views returned.
+User's permissions modified.
+UserLibrary
+UserViews
+Users returned.
+Validate listings.
+Validate login.
+Validate path object.
+Validate request object.
+Validates path.
+Video ID.
+Video not found.
+Video or attachment not found.
+Video stream returned.
+VideoAttachments
+Videos
+Videos merged.
+Virtual folders retrieved.
+When searching within folders, this determines whether or not the search will be recursive. true/false.
+Whether or not to allow automatic stream copy if requested values match the original source. Defaults to true.
+Whether or not to allow copying of the audio stream url.
+Whether or not to allow copying of the video stream url.
+Whether or not to copy timestamps when transcoding with an offset. Defaults to false.
+Whether or not to group items into a parent container.
+Whether or not to hide items behind their boxsets.
+Whether or not to include external views such as channels or live tv.
+Whether or not to include hidden content.
+Whether or not to lock the new collection.
+Whether this M:Jellyfin.Api.Controllers.UserLibraryController.UpdateUserItemRating(System.Nullable{System.Guid},System.Guid,System.Nullable{System.Boolean}) is likes.
+Whether this is a new library.
+Whether to allow to copy the audio stream. Default: true.
+Whether to allow to copy the video stream. Default: true.
+Whether to always burn in subtitles when transcoding.
+Whether to auto open the livestream.
+Whether to disable sending the first episode in a series as next up.
+Whether to enable Audio Encoding.
+Whether to enable direct play. Default: true.
+Whether to enable direct stream. Default: true.
+Whether to enable in the main menu.
+Whether to enable redirection. Defaults to true.
+Whether to enable the total record count.
+Whether to enable the total records count. Defaults to true.
+Whether to enable transcoding. Default: true.
+Whether to include resumable episodes in next up results.
+Whether to include watched episodes in next up results.
+Whether to refresh the library.
+Width of box to fill.
+Year not found.
+Year query returned.
+Year returned.
+Years
+return item user data.
+return updated user item data.

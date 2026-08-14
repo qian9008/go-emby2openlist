@@ -1,8 +1,16 @@
 emby:
+<<<<<<< HEAD
+  host: http://192.168.50.99:8092            # jellyfine 访问地址
+  admin-api-key: c49a593100e944c4a1773eba0ab17c1b                             # 管理员 API Key, 用于分享系统跨权限查询媒体信息, 可在 Emby 后台 API Key 管理中获取
+  mount-path: /openlist                   # rclone/cd2 挂载的本地磁盘路径, 如果 emby 是容器部署, 这里要配的就是容器内部的挂载路径
+  episodes-unplay-prior: true                # 是否修改剧集排序, 让未播的剧集靠前排列; 启用该配置时, 会忽略原接口的分页机制
+  resort-random-items: true                  # 是否重排序随机列表, 对 emby 的排序结果进行二次重排序, 使得列表足够随机
+=======
   host: http://192.168.0.109:8096 # emby 访问地址
   mount-path: /data # rclone/cd2 挂载的本地磁盘路径, 如果 emby 是容器部署, 这里要配的就是容器内部的挂载路径
   episodes-unplay-prior: true # 是否修改剧集排序, 让未播的剧集靠前排列; 启用该配置时, 会忽略原接口的分页机制
   resort-random-items: true # 是否重排序随机列表, 对 emby 的排序结果进行二次重排序, 使得列表足够随机
+>>>>>>> upstream/main
   # 代理异常处理策略
   # origin: 代理回源服务器处理
   # reject: 拒绝处理
@@ -36,8 +44,8 @@ emby:
   # emby 本地媒体根目录
   # 检测到该路径为前缀的媒体时, 代理回源处理
   local-media-roots:
-    - /data/local
-    - /data/other
+    - /media
+    #- /data/other
   # 自定义 css js 配置
   custom-css-js:
     # 调试模式开关
@@ -46,12 +54,22 @@ emby:
 
 # openlist 访问配置
 openlist:
+<<<<<<< HEAD
+  host: http://192.168.50.55:5244            # openlist 访问地址
+  token: openlist-8b6f820d-fb45-4c01-b296-d29f0c92ba91ZU92Fe5yuHbv3bQhffAgtuRgt2JP3t8QeQqBrioV7qcMomsTa6HlmzIXhTQQzh53                      # openlist api key 可以在 openlist 管理后台查看
+  365-enable: true                          # 是否在获取资源时自动将缩略图修改为 500x500 并下载到本地
+  # 将 openlist 目录树映射生成到磁盘, 并对特殊容器进行特定的转换
+  # 具体使用方式可参考仓库 Readme 文档
+  local-tree-gen:
+    enable: true                            # 功能是否开启
+=======
   host: http://192.168.0.109:5244 # openlist 访问地址
   token: openlist-xxxxx # openlist api key 可以在 openlist 管理后台查看
   # 将 openlist 目录树映射生成到磁盘, 并对特殊容器进行特定的转换
   # 具体使用方式可参考仓库 Readme 文档
   local-tree-gen:
     enable: false # 功能是否开启
+>>>>>>> upstream/main
     # 是否开启 ffmpeg 辅助
     #
     # 主要目的是在生成虚拟容器时, 解析视频的元数据, 供 emby 读取
@@ -63,10 +81,10 @@ openlist:
     # 若媒体元数据可通过 TMDB 刮削, 则配置于此, 不区分大小写
     #
     # 默认写入视频时长 3 小时, 若开启 ffmpeg 辅助, 则会尝试解析视频真实时长, !!有风控风险谨慎开启!!
-    virtual-containers: mp4,mkv
+    #virtual-containers: mp4,mkv
     # strm 媒体容器, 生成的是与媒体名称相同的 strm 文件
     # 通过 emby 源端口也可能正常播放
-    strm-containers: ts
+    strm-containers: mp4,mkv,ts
     # 音乐媒体容器, 生成的是与媒体同名的空文件
     # 必须使用本项目反代 openlist 才可以正常播放
     # 必须开启 ffmpeg 辅助才能解析音频时长以及音乐标签数据到空文件中, !!有风控风险谨慎开启!!
@@ -79,10 +97,17 @@ openlist:
     # 程序会认为 openlist 出现挂载异常, 不对本地目录树进行删除操作
     # 建议配置为 openlist 数据量的 3/4 左右
     auto-remove-max-count: 6000
+<<<<<<< HEAD
+    refresh-interval: 10                     # 与远程同步刷新的间隔, 单位: 分钟
+    scan-prefixes:                     # 指定要扫描的目录树前缀, 不指定则全量扫描
+      - /3652/test
+      #- /电视剧
+=======
     refresh-interval: 10 # 与远程同步刷新的间隔, 单位: 分钟
     scan-prefixes: # 指定要扫描的目录树前缀, 不指定则全量扫描
       - /电影/G
       - /电视剧
+>>>>>>> upstream/main
     # 允许处理的容器, 为空则允许所有容器
     # 只有指定的容器会被处理, 其他容器会被忽略, 避免触发源文件下载到本地
     allow-containers: ass,srt,sub
@@ -91,8 +116,13 @@ openlist:
 
 # 该配置项目前只对阿里云盘生效, 如果你使用的是其他网盘, 请直接将 enable 设置为 false
 video-preview:
+<<<<<<< HEAD
+  enable: false                               # 是否开启 openlist 转码资源信息获取
+  containers:                                # 对哪些视频容器获取转码资源信息
+=======
   enable: true # 是否开启 openlist 转码资源信息获取
   containers: # 对哪些视频容器获取转码资源信息
+>>>>>>> upstream/main
     - mp4
     - mkv
   ignore-template-ids: # 忽略哪些转码清晰度
@@ -103,8 +133,13 @@ path:
   # emby 挂载路径和 openlist 真实路径之间的前缀映射
   # 冒号左边表示本地挂载路径, 冒号右边表示 openlist 的真实路径
   # 这个配置请再三确认配置正确, 可以减少很多不必要的网络请求
+<<<<<<< HEAD
+  emby2openlist: 
+    #- /openlist/3652/test:/3652/test
+=======
   emby2openlist:
     - /movie:/电影
+>>>>>>> upstream/main
     - /music:/音乐
     - /show:/综艺
     - /series:/电视剧
@@ -141,6 +176,22 @@ log:
   # 可以将该项设置为 true
   disable-color: false
 
+  # 是否输出所有详细请求日志（默认为 false）
+  # 
+  # 设置为 false 时，程序会自动过滤掉极其繁杂的日常高频成功请求（例如：图片获取、播放进度轮询、字幕获取、WebSocket 握手等），
+  # 从而让您的终端保持清爽、重点突出。
+  # 无论如何，一旦请求发生错误（状态码 >= 400），日志仍然会被完整打印。
+  verbose: false
+
+  # 自定义忽略日志输出的路径片段
+  #
+  # 您可以添加想要忽略成功日志输出的路径或关键字。
+  # 示例：
+  # ignore-paths:
+  #   - /web/modules
+  #   - /favicon.ico
+  ignore-paths: []
+
 ge2o:
   # api 本地密钥, 必须配置后才能启用接口调用
   api-secret: my-secret
@@ -150,3 +201,12 @@ ge2o:
     disable: false
     # 是否禁用 emby 快速进入 web 平台的辅助按钮
     disable-emby-btn: false
+  # Pelagica 后端服务转发地址
+  pelagica-backend-url: http://127.0.0.1:4321
+  # 是否在 go-emby2openlist 启动时自动在后台拉起 Pelagica 后端子进程
+  start-pelagica-backend: true
+  # Pelagica 后端可执行程序路径 (如 ./pelagica-backend 或 ./pelagica-backend.exe)
+  pelagica-backend-path: ./pelagica-backend
+  # Pelagica 前端静态网页资源目录 (例如编译生成的 dist 文件夹路径)
+  # 若配置此项，访问反代根路径 "/" 时将自动呈现新前端 Pelagica。留空则代表不启用前端托管。
+  pelagica-frontend-dir: ""

@@ -1,482 +1,547 @@
-<div align="center">
-  <img height="150px" src="./assets/logo.png"></img>
-</div>
+# go-emby2openlist
 
-<h1 align="center">go-emby2openlist</h1>
+`go-emby2openlist` 是一个面向 Emby / Jellyfin + OpenList 的反向代理服务。它的核心目标是：让客户端在浏览媒体库时仍然像连接原始 Emby/Jellyfin 一样使用，但播放网盘媒体时尽量改走 OpenList 直链，从而减少服务器中转流量和转码压力。
 
-<div align="center">
-  <a href="https://github.com/AmbitiousJun/go-emby2openlist/tree/v2.8.1"><img src="https://img.shields.io/github/v/tag/AmbitiousJun/go-emby2openlist"></img></a>
-  <a href="https://hub.docker.com/r/ambitiousjun/go-emby2openlist/tags"><img src="https://img.shields.io/docker/image-size/ambitiousjun/go-emby2openlist/v2.8.1"></img></a>
-  <a href="https://hub.docker.com/r/ambitiousjun/go-emby2openlist/tags"><img src="https://img.shields.io/docker/pulls/ambitiousjun/go-emby2openlist"></img></a>
-  <a href="https://github.com/AmbitiousJun/go-emby2openlist/releases/latest"><img src="https://img.shields.io/github/downloads/AmbitiousJun/go-emby2openlist/total"></img></a>
-  <img src="https://img.shields.io/github/stars/AmbitiousJun/go-emby2openlist"></img>
-  <img src="https://img.shields.io/github/license/AmbitiousJun/go-emby2openlist"></img>
-</div>
+本仓库当前还集成了 Pelagica 前端、Pelagica 后端、分享系统、本地目录树生成、外部播放器唤起等能力，适合想把“网盘媒体库 + 私有观影前端”整合成一套服务的用户。
 
-<div align="center">
-  Go 语言编写的 Emby + OpenList 网盘直链反向代理服务，深度适配阿里云盘转码播放。
-</div>
+> 项目仍然建议先在测试库验证路径映射和播放链路，再接入正式媒体库。
 
-## 小白必看
+## 它解决什么问题
 
-**网盘直链反向代理**:
+传统网盘挂载方案里，播放链路通常是：
 
-正常情况下，Emby 通过磁盘挂载的形式间接读取网盘资源，走的是服务器代理模式，看一个视频时数据链路是：
-
-> 客户端 => Emby 源服务器 => 磁盘挂载服务 => OpenList => 网盘
->
-> 客户端 <= Emby 源服务器 <= 磁盘挂载服务（将视频数据加载到本地，再给 Emby 读取） <= OpenList <= 网盘
-
-这种情况有以下局限：
-
-1. 视频经过服务器中转，你看视频的最大加载速度就是服务器的上传带宽
-2. 如果服务器性能不行，能流畅播放 1080p 就谢天谢地了，更别说 4K
-3. ...
-
-使用网盘直链反向代理后，数据链路：
-
-> 客户端 => Emby 反代服务器 => Emby 源服务器 （请求 Emby Api 接口）
->
-> 客户端 <= Emby 反代服务器 <= Emby 源服务器 （返回数据）
-
-对于普通的 Api 接口，反代服务器将请求反代到源服务器，再将合适的结果进行缓存，返回给客户端
-
-对于客户端来说，这一步和直连源服务器看不出差别
-
-> 客户端 => Emby 反代服务器 => OpenList => 网盘 （请求视频直链）
->
-> 客户端 <= Emby 反代服务器 <= OpenList <= 网盘 （返回视频直链，并给出重定向响应）
->
-> 客户端 => 网盘（客户端拿着网盘的直链直接观看，此时已经没有服务器的事情了，故不会再消耗服务器流量）
-
-这种方式的好处：
-
-1. 观看时加载速度拉满（前提是有网盘会员）
-2. 在客户端处解码，能不能看 4K 取决于你电视盒子的性能
-
-## 使用前须知
-
-1. 本项目初衷: 易用轻巧、小白友好、深度适配阿里云盘 (如果你使用本项目观看其他网盘时出现问题，也欢迎到 issue 区反馈，我会尽量适配它)
-
-2. 如果你有更复杂的需求, 推荐使用功能更完善的反向代理服务：[bpking1/embyExternalUrl](https://github.com/bpking1/embyExternalUrl)
-
-## 功能
-
-- OpenList 网盘原画直链播放
-
-- Strm 直链播放
-
-- [OpenList 本地目录树生成](#使用说明-openlist-本地目录树生成)
-
-- [自定义注入 js/css（web）](#使用说明-自定义注入-web-js-脚本)
-
-- OpenList 网盘转码直链播放（阿里云盘）
-
-  > **是否消耗三方流量包流量**：🙅
-  >
-  > **非会员是否限速**：自行测试
-  >
-  > 示例图 ↓：
-  >
-  > <img src="assets/2024-08-31-17-15-53.jpg" />
-  >
-  > 转码资源直链已达到可正常使用的标准，Emby Web, Emby for AndroidTV 以及其他大部分客户端都可以正常播放，并且不会因为直链过期而中断
-  >
-  > 局限：
-  >
-  > 如果是有多个内置音频的，转码直链只能播放其中的默认音频
-  >
-  > 视频本身的内封字幕会丢失，不过若存在转码字幕，也会适配到转码版本的 PlaybackInfo 信息中，示例图 ↓：
-  >
-  > <img src="assets/2025-04-27-20-15-06.png"/>
-
-- websocket 代理
-
-- 客户端防转码（转容器）
-
-- 缓存中间件，实际使用体验不会比直连源服务器差
-
-- 字幕缓存（字幕缓存时间固定 30 天）
-
-  > 目前还无法阻止 Emby 去本地挂载文件上读取字幕
-  >
-  > 带字幕的视频首次播放时，Emby 会调用 FFmpeg 将字幕从本地文件中提取出来，再进行缓存
-  >
-  > 也就是说：
-  >
-  > - 首次提取时，速度会很慢，有可能得等个大半天才能看到字幕（使用第三方播放器【如 `MX player`, `Fileball`】可以解决）
-  > - 带字幕的视频首次播放时，还是会消耗服务器的流量
-
-- 直链缓存（为了兼容阿里云盘，直链缓存时间目前固定为 10 分钟，其他云盘暂无测试）
-
-- 大接口缓存（OpenList 转码资源是通过代理并修改 PlaybackInfo 接口实现，请求比较耗时，每次大约 2~3 秒左右，目前已经利用 Go 语言的并发优势，尽力地将接口处理逻辑异步化，快的话 1 秒即可请求完成，该接口的缓存时间目前固定为 12 小时，后续如果出现异常再作调整）
-
-## 已测试并支持的客户端
-
-| 名称                                             | 最后测试版本 | 原画 | 其他说明（原画）                                                       | 阿里转码 | 其他说明（阿里转码）                                                                                                                                                                                             |
-| ------------------------------------------------ | ------------ | ---- | ---------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Gemby`](https://github.com/AmbitiousJun/gemby) | `v2.6.4`     | ✅   | ——                                                                     | ✅       | ——                                                                                                                                                                                                               |
-| `Emby Web`                                       | `4.8.8.0`    | ✅   | ——                                                                     | ✅       | 1. 转码字幕有概率挂载不上<br />2. 可以挂载原画字幕                                                                                                                                                               |
-| `Emby for iOS`                                   | ——           | ❓   | ~~没高级订阅测不了~~                                                   | ❓       | ~~没高级订阅测不了~~                                                                                                                                                                                             |
-| `Emby for macOS`                                 | ——           | ❓   | ~~没高级订阅测不了~~                                                   | ❓       | ~~没高级订阅测不了~~                                                                                                                                                                                             |
-| `Emby for Android`                               | `3.4.23`     | ✅   | ——                                                                     | ✅       | ——                                                                                                                                                                                                               |
-| `Emby for AndroidTV`                             | `2.0.95g`    | ✅   | 遥控器调进度可能会触发直链服务器的频繁请求限制，导致视频短暂不可播情况 | ✅       | 无法挂载字幕                                                                                                                                                                                                     |
-| `Fileball`                                       | ——           | ✅   | ——                                                                     | ✅       | ——                                                                                                                                                                                                               |
-| `Infuse`                                         | ——           | ✅   | 在设置中将缓存方式设置为`不缓存`可有效防止触发频繁请求                 | ❌       | ——                                                                                                                                                                                                               |
-| `VidHub`                                         | ——           | ✅   | 仅测试至 `1.0.7` 版本                                                  | ✅       | 仅测试至 `1.0.7` 版本                                                                                                                                                                                            |
-| `Stream Music`                                   | `1.3.8`      | ✅   | ——                                                                     | ——       | ——                                                                                                                                                                                                               |
-| `Emby for Kodi Next Gen`                         | `11.1.13`    | ✅   | ——                                                                     | ✅       | 1. 需要开启插件设置：**播放/视频转码/prores**<br />2. 播放时若未显示转码版本选择，需重置本地数据库重新全量扫描资料库<br />3. 某个版本播放失败需要切换版本时，必须重启 kodi 才能重新选择版本<br />4. 无法挂载字幕 |
-
-## 前置环境准备
-
-1. 已有自己的 Emby、OpenList 服务器
-
-2. Emby 的媒体库路径（本地磁盘路径）是和 OpenList 挂载路径能够对应上的
-
-   > 这一步前缀对应不上没关系，可以在配置中配置前缀映射 `path.emby2openlist` 解决
-
-3. 需要有一个中间服务，将网盘的文件数据挂载到系统本地磁盘上，才能被 Emby 读取到（也可借助本项目的 [OpenList 目录树生成功能](#使用说明-openlist-本地目录树生成)）
-
-   > 目前我知道的比较好用的服务有两个：[rclone](https://rclone.org/) 和 [CloudDrive2](https://www.clouddrive2.com/)(简称 cd2)
-   >
-   > 如果你的网盘跟我一样是阿里云盘，推荐使用 cd2 直接连接阿里云盘，然后根路径和 OpenList 保持即可
-   >
-   > 在 cd2 中，找到一个 `最大缓存大小` 的配置，推荐将其设为一个极小值（我是 1MB），这样在刮削的时候就不会消耗太多三方权益包的流量
-   >
-   > ⚠️ 不推荐中间服务直接去连接 OpenList 的 WebDav 服务，如果 OpenList Token 刷新失败或者是请求频繁被暂时屏蔽，会导致系统本地的挂载路径丢失，Emby 就会认为资源被删除了，然后元数据就丢了，再重新挂载回来后就需要重新刮削了。
-
-4. 服务器有安装 Docker
-
-5. Git
-
-   > 非必须，如果你想体验测试版，就需要通过 Git 拉取远程源码构建
-   >
-   > 正式版可以直接使用现成的 Docker 镜像
-
-## 使用 DockerCompose 部署安装
-
-### 通过源码构建
-
-1. 获取代码
-
-```shell
-git clone --branch v2.8.1 --depth 1 https://github.tbedu.top/https://github.com/AmbitiousJun/go-emby2openlist
-cd go-emby2openlist
+```text
+客户端 -> Emby/Jellyfin -> 挂载工具 -> OpenList -> 网盘
+客户端 <- Emby/Jellyfin <- 挂载工具 <- OpenList <- 网盘
 ```
 
-2. 拷贝配置
+这意味着视频流量会经过媒体服务器。服务器上传带宽、CPU、磁盘缓存都可能成为瓶颈。
 
-> 示例配置为完整版配置，首次部署可以参照[核心配置](https://github.com/AmbitiousJun/go-emby2openlist/issues/108#issuecomment-2928599051)优先跑通程序，再按需补充其他配置
+启用本项目后，普通 API 仍然由代理转发给 Emby/Jellyfin；遇到播放、下载、字幕、图片等关键资源请求时，代理会根据媒体路径映射到 OpenList，并尽量返回直链或代理后的资源：
 
-```shell
-cp config-example.yml config.yml
+```text
+客户端 -> go-emby2openlist -> Emby/Jellyfin       获取媒体信息
+客户端 -> go-emby2openlist -> OpenList -> 网盘    解析直链
+客户端 -> 网盘 CDN                                播放真实媒体流
 ```
 
-3. 根据自己的服务器配置好 `config.yml` 文件
+## 主要功能
 
-关于路径映射的配置示例图：
+- Emby/Jellyfin API 反向代理。
+- OpenList 原画直链播放。
+- `.strm` 媒体播放与路径映射。
+- 阿里云盘等支持预览资源的网盘转码链接代理。
+- 播放、下载、字幕、图片、WebSocket 等常用接口适配。
+- 缓存中间件，降低源站和 OpenList 高频请求压力。
+- OpenList 本地目录树生成，可生成 `.strm`、虚拟媒体文件、音乐文件占位和同名封面。
+- Pelagica 一体化前端托管：访问根路径可进入现代化媒体前端，访问 `/web` 仍可回到原 Emby/Jellyfin Web。
+- Pelagica 后端自动拉起和 `/api/*` 路由转发。
+- 私有分享系统：用户可把媒体分享给其他用户，被分享者可在“共享库”查看和播放。
+- 外部播放器唤起：支持在详情页调起 VLC、MX Player、PotPlayer、Infuse 等第三方播放器。
+- 自定义 Web JS/CSS 注入。
+- HTTP 与 HTTPS 双端口支持。
 
-![路径映射示例](assets/2024-09-05-17-20-23.png)
+## 当前版本
 
-4. 编译并运行容器
+当前代码版本：`v2.7.4`
 
-```shell
-docker-compose up -d --build
+默认端口：
+
+| 服务 | 端口 | 说明 |
+| --- | --- | --- |
+| HTTP | `8095` | 默认访问入口 |
+| HTTPS | `8094` | 启用 SSL 后使用 |
+| 调试 | `60360` | Go pprof 调试端口 |
+| Pelagica 后端 | `4321` | 默认由主程序在后台拉起 |
+
+## 适合谁使用
+
+适合：
+
+- 已经有 Emby 或 Jellyfin 服务。
+- 已经有 OpenList 服务。
+- 媒体文件路径能在 Emby/Jellyfin 与 OpenList 之间建立映射。
+- 希望减少媒体服务器转发流量。
+- 希望使用 Pelagica 作为更现代的 Web 前端。
+
+不适合：
+
+- 没有 OpenList。
+- 媒体库路径完全无法和网盘路径对应。
+- 希望所有功能零配置自动识别。
+- 对稳定性要求极高但不愿先建测试环境验证。
+
+## 架构示意
+
+```mermaid
+flowchart LR
+    C["客户端 / 浏览器 / App"] --> G["go-emby2openlist"]
+    G --> E["Emby / Jellyfin 源站"]
+    G --> O["OpenList"]
+    O --> D["网盘 / CDN"]
+    G --> P["Pelagica 后端"]
+    G --> F["Pelagica 前端静态文件"]
+    C -. "媒体直链播放" .-> D
 ```
 
-5. 浏览器访问服务器 ip + 端口 `8095`，开始使用
+## 快速部署：一体化 Docker Compose
 
-   > 如需要自定义端口，在第四步编译之前，修改 `docker-compose.yml` 文件中的 `8095:8095` 为 `[自定义端口]:8095` 即可
+推荐新用户优先使用一体化版本。它会把以下内容打包到同一个容器里：
 
-6. 日志查看
+- go-emby2openlist 代理后端
+- Pelagica 后端
+- Pelagica 前端静态页面
 
-```shell
-docker logs -f go-emby2openlist -n 1000
+### 1. 准备配置目录
+
+在项目根目录下准备配置：
+
+```bash
+mkdir -p config
+cp config-example.yml config/config.yml
 ```
 
-7. 修改配置的时候需要重新启动容器
+然后编辑：
 
-```shell
-# 修改 config.yml ...
-docker-compose restart
+```text
+config/config.yml
 ```
 
-8. 版本更新
+至少需要改好：
 
-```shell
-# 获取到最新代码后, 可以检查一下 config-example.yml 是否有新增配置
-# 及时同步自己的 config.yml 才能用上新功能
+- `emby.host`
+- `emby.admin-api-key`
+- `emby.mount-path`
+- `openlist.host`
+- `openlist.token`
+- `path.emby2openlist`
 
-# 更新到正式版
-docker-compose down
-git fetch --tag
-git checkout <版本号>
-git pull
-docker-compose up -d --build
+### 2. 启动服务
 
-# 更新到测试版 (仅尝鲜, 不稳定)
-docker-compose down
-git checkout main
-git pull origin main
-docker-compose up -d --build
+```bash
+docker compose up -d --build
 ```
 
-9. 清除过时的 Docker 镜像
+启动后访问：
 
-```shell
-docker image prune -f
+```text
+http://服务器IP:8095
 ```
 
-### 使用现有镜像
+常用管理命令：
 
-1. 准备配置
+```bash
+# 查看日志
+docker logs -f go-emby2openlist-unified
 
-> 示例配置为完整版配置，首次部署可以参照[核心配置](https://github.com/AmbitiousJun/go-emby2openlist/issues/108#issuecomment-2928599051)优先跑通程序，再按需补充其他配置
+# 修改配置后重启
+docker compose restart
 
-参考[示例配置](https://github.com/AmbitiousJun/go-emby2openlist/blob/v2.8.1/config-example.yml)，配置好自己的服务器信息，保存并命名为 `config.yml`
+# 停止服务
+docker compose down
+```
 
-2. 创建 docker-compose 文件
+## 纯代理模式
 
-在配置相同目录下，创建 `docker-compose.yml` 粘贴以下代码：
+如果你只想使用原始 go-emby2openlist 反代能力，不想启用 Pelagica 一体化前端，可以使用 `docker-compose.yml` 里已经注释的 `Proxy Only` 服务。
+
+纯代理模式适合：
+
+- 继续使用官方 Emby/Jellyfin Web。
+- 只想让官方客户端获得直链播放能力。
+- 不需要共享库和 Pelagica 页面。
+
+启用方式：
+
+1. 注释掉 `go-emby2openlist-unified`。
+2. 取消注释 `go-emby2openlist`。
+3. 确认挂载 `config.yml`、`ssl`、`custom-js`、`custom-css`、`lib`、`openlist-local-tree`。
+4. 重新执行 `docker compose up -d --build`。
+
+## 配置说明
+
+配置文件入口是：
+
+```text
+config.yml
+```
+
+一体化 Docker 模式下，容器内会读取：
+
+```text
+/config/config.yml
+```
+
+### emby
 
 ```yaml
-version: "3.1"
-services:
-  go-emby2openlist:
-    image: ambitiousjun/go-emby2openlist:v2.8.1
-    environment:
-      - TZ=Asia/Shanghai
-      - GIN_MODE=release
-      # - HTTP_PROXY=http://127.0.0.1:7890
-      # - HTTPS_PROXY=http://127.0.0.1:7890
-    container_name: go-emby2openlist
-    restart: always
-    volumes:
-      - ./config.yml:/app/config.yml
-      - ./ssl:/app/ssl
-      - ./custom-js:/app/custom-js
-      - ./custom-css:/app/custom-css
-      - ./lib:/app/lib
-      - ./openlist-local-tree:/app/openlist-local-tree
-    ports:
-      - 8095:8095 # http
-      - 8094:8094 # https
+emby:
+  host: http://192.168.1.10:8096
+  admin-api-key: your-admin-api-key
+  mount-path: /openlist
+  proxy-error-strategy: origin
+  download-strategy: direct
+  images-quality: 80
 ```
 
-3. 运行容器
+关键项：
 
-```shell
-docker-compose up -d --build
+| 配置 | 说明 |
+| --- | --- |
+| `host` | Emby/Jellyfin 源站地址 |
+| `admin-api-key` | 管理员 API Key，分享系统和跨权限媒体查询需要 |
+| `mount-path` | Emby/Jellyfin 看到的本地挂载根路径 |
+| `proxy-error-strategy` | 代理异常策略：`origin` 回源，`reject` 拒绝 |
+| `download-strategy` | 下载接口策略：`direct` 直链，`origin` 回源，`403` 禁止 |
+| `images-quality` | 图片质量，建议 `70-90` |
+| `local-media-roots` | 本地媒体根路径，命中后走源站逻辑 |
+
+### openlist
+
+```yaml
+openlist:
+  host: http://192.168.1.20:5244
+  token: your-openlist-token
+  365-enable: false
 ```
 
-## 使用说明 ssl
+关键项：
 
-**使用方式：**
+| 配置 | 说明 |
+| --- | --- |
+| `host` | OpenList 访问地址 |
+| `token` | OpenList API Token |
+| `365-enable` | 是否启用 365 缩略图处理 |
 
-1. 将证书和私钥放到程序根目录下的 `ssl` 目录中
-2. 再将两个文件的文件名分别配置到 `config.yml` 中
+### 路径映射
 
-**特别说明：**
+路径映射是最重要的配置。它告诉程序：Emby/Jellyfin 里的本地路径，对应 OpenList 里的哪个路径。
 
-在容器内部，已经将 https 端口写死为 `8094`，将 http 端口写死为 `8095`
-
-如果需要自定义端口，仍然是在 `docker-compose.yml` 中将宿主机的端口映射到这两个端口上即可
-
-**已知问题：**
-
-可能有部分客户端会出现首次用 https 成功连上了，下次再打开客户端时，就自动变回到 http 连接，目前不太清楚具体的原因
-
-## 使用说明 自定义注入 web js 脚本
-
-**使用方式：** 将自定义脚本文件以 `.js` 后缀命名放到程序根目录下的 `custom-js` 目录后重启服务自动生效
-
-**远程脚本：** 将远程脚本的 http 访问地址写入以 `.js` 后缀命名的文件后（**如编辑器报错请无视**）放到程序根目录下的 `custom-js` 目录后重启服务自动生效
-
-**注意事项：** 确保多个不同的文件必须都是相同的编码格式（推荐 UTF-8）
-
-**示例脚本：**
-
-| 描述                  | 获取脚本                                                                                                                | 自用优化版本                                                                                                          |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 生成外部播放器按钮    | [ExternalPlayers.js](https://emby-external-url.7o7o.cc/embyWebAddExternalUrl/embyLaunchPotplayer.js)                    | ---                                                                                                                   |
-| 首页轮播图            | [emby-swiper.js](https://raw.githubusercontent.com/newday-life/emby-web-mod/refs/heads/main/emby-swiper/emby-swiper.js) | [媒体库合并 + 每日清空缓存](https://github.com/AmbitiousJun/emby-css-js/raw/refs/heads/main/custom-js/emby-swiper.js) |
-| 隐藏无图片演员        | [actorPlus.js](https://raw.githubusercontent.com/newday-life/emby-web-mod/refs/heads/main/actorPlus/actorPlus.js)       | ---                                                                                                                   |
-| 键盘 w/s 控制播放音量 | [audio-keyboard.js](https://github.com/AmbitiousJun/emby-css-js/blob/main/custom-js/audio-keyboard.js)                  | ---                                                                                                                   |
-
-## 使用说明 自定义注入 web css 样式表
-
-**使用方式：** 将自定义样式表文件以 `.css` 后缀命名放到程序根目录下的 `custom-css` 目录后重启服务自动生效
-
-**远程样式表：** 将远程样式表的 http 访问地址写入以 `.css` 后缀命名的文件后（**如编辑器报错请无视**）放到程序根目录下的 `custom-css` 目录后重启服务自动生效
-
-**注意事项：** 确保多个不同的文件必须都是相同的编码格式（推荐 UTF-8）
-
-**示例样式：**
-
-| 描述                 | 获取样式                                                    | 自用优化版本                                                                                                  |
-| -------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 调整音量调整控件位置 | [音量条+控件修改.css](https://t.me/Emby_smzase1/74)         | ---                                                                                                           |
-| 节目界面样式美化     | [节目界面.txt](https://t.me/embycustomcssjs/10?comment=159) | [下拉框元素对齐](https://github.com/AmbitiousJun/emby-css-js/raw/refs/heads/main/custom-css/show-display.css) |
-
-## 使用说明 OpenList 本地目录树生成
-
-监控扫描 OpenList 目录树变更，在本地磁盘中生成并维护相应结构的目录树，可供 Emby 服务器直接扫描入库，并配合本项目进行直链反代，支持传统 Strm 文件以及附带元数据的虚拟文件生成。
-
-> ⚠️ **提示：**
->
-> 程序利用 Go 的并发优势，加快了扫描 OpenList 的速度，同时对于 ffmpeg 提取远程文件元数据操作进行了严格的并发控制，同一时刻只会有至多一个文件被提取元数据，扫库的风控风险虽大幅降低，但仍存在！
-
-### 使用步骤
-
-1. 升级到 go-emby2openlist `v2.2.0` 以上版本
-2. 修改配置，按照自己的需求配置好 `openlist.local-tree-gen` 属性
-3. 修改 `docker-compose.yml` 文件，将容器目录 `/app/openlist-local-tree` 以及 `/app/lib` 映射到宿主机中
-4. 运行程序 开始自动扫描生成目录树
-5. 将宿主机的目录树路径，映射到 Emby 容器中，即可扫描入库
-
-### 不同使用场景的配置方式
-
-由于 `openlist.local-tree-gen` 属性中的不同配置可能会有相互作用的情况，因此本说明按照具体的使用场景逐步递进地说明配置方式
-
-1. 传统 Strm
-
-   将需要转换成 strm 文件的文件容器配置到 `openlist.local-tree-gen.strm-containers` 属性中，以逗号分隔，不区分大小写，即可生效，示例配置：
-
-   ```yaml
-   openlist:
-     local-tree-gen:
-       enable: true
-       strm-containers: mp4,mkv,mp3,flac
-   ```
-
-   **优点**：无需调用 ffmpeg，扫描速度极快，Emby 源端口 8096 也可能可以正常播放
-
-   **缺点**：每个视频都需要使用 Emby 源端口至少播放一次后才能正常保存播放记录，配合反代服务体验不佳（`v2.2.12` 版本之后通过反代播放 Strm 也可正常记录播放进度）；无法获取视频的阿里转码版本
-
-2. 虚拟文件
-
-   此方式会在本地磁盘生成与远程文件**同名**的**空文件**（每个虚拟文件大小约 300B），对 Emby 来说就是大小为 0MB 的普通媒体文件。同理 Strm，将目标文件容器配置到 `openlist.local-tree-gen.virtual-containers` 属性中，以逗号分隔，不区分大小写，即可生效，示例配置：
-
-   ```yaml
-   openlist:
-     local-tree-gen:
-       enable: true
-       virtual-containers: mp4,mkv
-   ```
-
-   下面介绍虚拟文件的两种处理方式，各有优缺，自行斟酌选用：
-
-   默认情况下，程序会为每个媒体文件设置统一的时长元数据（3 小时，基本覆盖 99% 的媒体时长）。在实际使用时，Emby 能够正常记录播放进度，只不过在 UI 展示层面可能有点奇怪，如：播放时进度条完全不动（视频实际时长远远比 3 小时短）
-
-   **优点**：无需调用 ffmpeg，扫描速度极快，风控风险低；Emby 能够正常记录播放进度
-
-   **缺点**：视频时长固定写死为 3 小时，体验不佳；Emby 源端口 8096 无法播放
-
-   可以通过开启 ffmpeg，来解析远程媒体的真实时长，并写入虚拟文件中来解决上述问题：
-
-   ```yaml
-   openlist:
-     local-tree-gen:
-       enable: true
-       ffmpeg-enable: true
-       virtual-containers: mp4,mkv
-   ```
-
-   使用这种方式后，程序会在扫描文件时，自动调用 ffmpeg 提取视频的真实时长，并写入本地虚拟文件中
-
-   **优点**：视频时长真实，Emby 能够正常记录播放进度，且体验良好
-
-   **缺点**：调用 ffmpeg 解析远程参数，有一定的风控风险；扫描速度相较第一种方式略慢一些；Emby 源端口 8096 无法播放
-
-3. 音乐虚拟文件
-
-   此方式类似于方式 2，扫描时除了提取文件的真实时长之外，还会提取音乐内嵌的标签元数据，写入到本地虚拟文件中（每个文件大小约 300KB~1MB 不等），使得 Emby 能够正常扫描解析音乐标签（标题、艺术家、海报、歌词等）以及音频真实播放时长。
-
-   > ⚠️ 这种方式必须开启 ffmpeg 才能生效，且风控风险是 3 种方式中最高的一个，谨慎使用！
-   >
-   > 如果使用了此方式，但没有开启 ffmpeg，默认生成的是传统 Strm 文件
-
-   将目标文件容器配置到 `openlist.local-tree-gen.music-containers` 属性中，以逗号分隔，不区分大小写，即可生效，示例配置：
-
-   ```yaml
-   openlist:
-     local-tree-gen:
-       enable: true
-       ffmpeg-enable: true
-       music-containers: mp3,flac
-   ```
-
-   **优点**：Emby 扫描音乐虚拟文件入库之后，能正常识别出音乐标签和时长
-
-   **缺点**：调用 ffmpeg 解析远程参数，有一定的风控风险；扫描速度是三种方式中最慢的；Emby 源端口 8096 无法播放
-
-### 其他配置
-
-| 属性名                      | 描述                                                                                                                                                                                                                                                                                                                                                        | 示例值        |
-| --------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `openlist`                  | ---                                                                                                                                                                                                                                                                                                                                                         | ---           |
-| > `local-tree-gen`          | ---                                                                                                                                                                                                                                                                                                                                                         | ---           |
-| >> `auto-remove-max-count`  | 此配置相当于为本地目录树加了个保险措施，防止 openlist 存储挂载出现异常后，程序误以为远程文件被删除，而将本地已扫描完成的目录树清空的情况。<br /><br />具体配置值需以自己 openlist 的总文件数为参考（可留意首次全量扫描目录树后的日志输出），建议配置为总文件数的 3/4 左右大小，当程序即将要删除的文件数目超过这个数值时，会停止删除操作，并在日志中输出警告 | `6000`        |
-| >> `refresh-interval`       | 本地目录树刷新间隔，单位：分钟                                                                                                                                                                                                                                                                                                                              | `60`          |
-| >> `scan-prefixes`          | 指定 openlist 要扫描到本地的前缀列表，没有配置则默认全量扫描                                                                                                                                                                                                                                                                                                | ---           |
-| &gt;&gt; `allow-containers` | 容器白名单，避免非必要的文件被处理；已经配置在 `strm, virtual, music` 属性中的容器默认进白名单，无需重复配置                                                                                                                                                                                                                                                | `ass,srt,sub` |
-
-### 额外说明
-
-1. 为了保持 10MB 大小的精简 Docker 镜像，ffmpeg 默认不会被添加到镜像中。首次将 `openlist.local-tree-gen.ffmpeg-enable` 配置设置为 `true` 并运行容器后，程序会自动初始化 ffmpeg 环境，请耐心等待下载完成，中途不要停止容器
-2. 当检测出远程文件容器不在上述所说的三种生成方式任何一种之中时，程序的默认行为是将源文件下载到本地。比如在上述的例子中没有配置 `nfo` 文件格式，则远程的 `nfo` 文件会原封不动保存下载到本地。所以在使用本功能前请确认好所有的媒体大文件格式全都已经配置到了上述三种生成方式中
-
-## 开放 API
-
-### 手动更新本地目录树
-
-#### 🔗 请求地址
-
-```
-POST /ge2o/openlist/local_tree/update
+```yaml
+path:
+  emby2openlist:
+    - /openlist/movie:/电影
+    - /openlist/tv:/电视剧
 ```
 
-#### 📥 请求参数
+例子：
 
-请求体为 JSON 格式：
-
-```json
-{
-  "secret": "test",
-  "prefix": "/音乐1/陈楚生",
-  "refresh": false
-}
+```text
+Emby 看到的路径：/openlist/movie/流浪地球.mkv
+OpenList 真实路径：/电影/流浪地球.mkv
 ```
 
-#### 📌 参数说明
+那么配置就是：
 
-| 参数名  | 类型    | 必填 | 说明                                                                                                                                               |
-| ------- | ------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| secret  | string  | ✅   | 接口密钥，用于身份校验，可在 config.yaml 中自定义配置                                                                                              |
-| prefix  | string  |      | 需要更新的数据路径前缀（注：前缀必须子目录完整，比如有资源 `/A/B (2026)/C.mp4`，配置为 `/A/B` 是无法更新到的，需要配置为 `/A` 或者 `/A/B (2026)`） |
-| refresh | boolean |      | 是否强制刷新 OpenList 数据（默认 false）                                                                                                           |
-
-#### 📤 响应结果
-
-HTTP 状态码固定为 `200`，通过 body 判断结果。
-
-```json
-{
-  "success": false,
-  "message": "密钥错误"
-}
+```yaml
+- /openlist/movie:/电影
 ```
 
-## 请我喝杯 9.9💰 的 Luckin Coffee☕️
+> 如果路径映射错了，最常见表现是：详情页正常，但播放无法解析直链。
 
-<img height="500px" src="assets/2024-11-05-09-57-45.jpg"></img>
+### STRM 映射
 
-## Star History
+如果媒体库里使用 `.strm` 文件，可以通过 `emby.strm.path-map` 替换 `.strm` 文件里的远程地址片段：
 
-<a href="https://www.star-history.com/?type=date&repos=AmbitiousJun%2Fgo-emby2openlist">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=AmbitiousJun/go-emby2openlist&type=date&theme=dark&legend=top-left&sealed_token=NnSqFDlwZFomlMt84uRgyywdYAVZbYXzUtmkfOqrrxN6S7LNobHNkPWDHTs7C3pVakrGNrYbdTfcZSr8i6_CpqBwSFskZXJFoDS_a8cI9JGrHUiPEiCSyQ" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=AmbitiousJun/go-emby2openlist&type=date&legend=top-left&sealed_token=NnSqFDlwZFomlMt84uRgyywdYAVZbYXzUtmkfOqrrxN6S7LNobHNkPWDHTs7C3pVakrGNrYbdTfcZSr8i6_CpqBwSFskZXJFoDS_a8cI9JGrHUiPEiCSyQ" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=AmbitiousJun/go-emby2openlist&type=date&legend=top-left&sealed_token=NnSqFDlwZFomlMt84uRgyywdYAVZbYXzUtmkfOqrrxN6S7LNobHNkPWDHTs7C3pVakrGNrYbdTfcZSr8i6_CpqBwSFskZXJFoDS_a8cI9JGrHUiPEiCSyQ" />
- </picture>
-</a>
+```yaml
+emby:
+  strm:
+    path-map:
+      - https://old.example.com => http://new.example.com
+    internal-redirect-enable: false
+```
+
+### 缓存
+
+```yaml
+cache:
+  enable: true
+  expired: 1d
+```
+
+`expired` 支持：
+
+- `s` 秒
+- `m` 分钟
+- `h` 小时
+- `d` 天
+
+部分特殊接口会使用内置固定缓存时间，例如直链、字幕、大接口缓存。
+
+### SSL
+
+```yaml
+ssl:
+  enable: false
+  single-port: false
+  key: example.key
+  crt: example.crt
+```
+
+证书文件放在：
+
+```text
+ssl/
+```
+
+如果 `single-port: true`，程序只监听 HTTPS 端口 `8094`。
+
+### Pelagica 一体化配置
+
+```yaml
+ge2o:
+  api-secret: my-secret
+  pelagica-backend-url: http://127.0.0.1:4321
+  start-pelagica-backend: true
+  pelagica-backend-path: ./pelagica-backend
+  pelagica-frontend-dir: ""
+```
+
+说明：
+
+| 配置 | 说明 |
+| --- | --- |
+| `api-secret` | 本地 API 密钥 |
+| `pelagica-backend-url` | Pelagica 后端转发地址 |
+| `start-pelagica-backend` | 是否由主程序自动拉起 Pelagica 后端 |
+| `pelagica-backend-path` | Pelagica 后端可执行文件路径 |
+| `pelagica-frontend-dir` | Pelagica 前端静态文件目录，留空时会自动探测 `dist` |
+
+## OpenList 本地目录树生成
+
+这个功能可以把 OpenList 的目录结构同步到本地目录，方便 Emby/Jellyfin 扫描媒体库。
+
+常见用途：
+
+- 为视频生成 `.strm` 文件。
+- 为部分媒体生成空占位文件。
+- 为音乐生成可扫描文件。
+- 自动保存同名 `.jpg` 封面。
+- 保留 `.nfo`、字幕、封面等辅助文件，避免误删。
+
+示例配置：
+
+```yaml
+openlist:
+  local-tree-gen:
+    enable: true
+    ffmpeg-enable: false
+    strm-containers: mp4,mkv,ts
+    music-containers: mp3,flac
+    auto-remove-max-count: 6000
+    refresh-interval: 10
+    scan-prefixes:
+      - /电影
+      - /电视剧
+    allow-containers: ass,srt,sub
+    threads: 8
+```
+
+说明：
+
+| 配置 | 说明 |
+| --- | --- |
+| `enable` | 是否启用目录树生成 |
+| `ffmpeg-enable` | 是否启用 ffmpeg 辅助解析媒体信息 |
+| `strm-containers` | 生成 `.strm` 的视频格式 |
+| `virtual-containers` | 生成虚拟占位文件的格式 |
+| `music-containers` | 音乐格式 |
+| `auto-remove-max-count` | 自动删除保护阈值，避免异常时大量误删 |
+| `refresh-interval` | 同步间隔，单位分钟 |
+| `scan-prefixes` | 只扫描指定 OpenList 路径 |
+| `allow-containers` | 允许处理的附属文件格式 |
+| `threads` | 同步线程数 |
+
+> `ffmpeg-enable` 会触发媒体信息解析，可能增加网络请求和风控风险。除非确实需要真实时长、音乐标签等信息，否则建议先保持关闭。
+
+## 分享系统
+
+分享系统依赖 `emby.admin-api-key`。它允许用户把媒体分享给其他用户，被分享者无需拥有原媒体库权限，也能在共享库中查看和播放。
+
+核心接口：
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/share/users` | GET | 获取可分享用户 |
+| `/api/share/create` | POST | 创建分享 |
+| `/api/share/mine` | GET | 我的分享 |
+| `/api/share/shared-with-me` | GET | 分享给我的媒体 |
+| `/api/share/{id}` | GET | 分享详情 |
+| `/api/share/{id}` | DELETE | 取消分享 |
+
+前端入口：
+
+- 详情页：分享按钮。
+- 侧边栏：共享库。
+- 设置页：分享管理。
+
+## 外部播放器
+
+Pelagica 详情页集成了外部播放器按钮，可按设备环境生成不同协议链接。
+
+支持方向：
+
+- Android：VLC、MX Player 等。
+- iOS：Infuse 等。
+- Windows：PotPlayer、VLC 等。
+- macOS：IINA、VLC 等。
+
+能力：
+
+- 复制播放直链。
+- 传递续播位置。
+- 尝试附带外置字幕。
+
+## 自定义 JS / CSS
+
+目录：
+
+```text
+custom-js/
+custom-css/
+```
+
+用途：
+
+- 给官方 Web 页面注入自定义脚本。
+- 修改页面样式。
+- 接入第三方播放器脚本。
+
+调试模式：
+
+```yaml
+emby:
+  custom-css-js:
+    debug-mode: true
+```
+
+开启后，每次访问页面都会重新加载本地脚本，适合开发调试。
+
+## 本地开发
+
+### 后端
+
+```bash
+go run . -dr .
+```
+
+常用参数：
+
+| 参数 | 默认值 | 说明 |
+| --- | --- | --- |
+| `-p` | `8095` | HTTP 端口 |
+| `-ps` | `8094` | HTTPS 端口 |
+| `-dr` | `.` | 数据根目录，程序会在这里读取 `config.yml` |
+| `-version` | - | 输出版本号 |
+
+### Pelagica 前端
+
+```bash
+cd pelagica/frontend
+pnpm install
+pnpm dev
+```
+
+### Pelagica 后端
+
+```bash
+cd pelagica/backend
+go run .
+```
+
+## 构建
+
+### 构建代理后端
+
+```bash
+go build -tags=goexperiment.jsonv2 -o ge2o .
+```
+
+### 构建一体化镜像
+
+```bash
+docker build -f Dockerfile.unified -t go-emby2openlist:unified .
+```
+
+## 排错清单
+
+### 1. 页面能打开，但播放失败
+
+优先检查：
+
+- `path.emby2openlist` 是否能把 Emby/Jellyfin 的媒体路径映射到 OpenList 真实路径。
+- OpenList Token 是否有效。
+- OpenList 中对应文件是否能直接获取下载链接。
+- 日志里是否出现路径映射命中信息。
+
+### 2. 共享库里看不到内容
+
+检查：
+
+- `emby.admin-api-key` 是否配置。
+- 当前登录用户是否能被 Emby/Jellyfin `/Users` 接口识别。
+- 分享接口是否返回 401、403 或 404。
+
+### 3. Pelagica 接口 404
+
+检查：
+
+- 是否使用一体化镜像。
+- `ge2o.start-pelagica-backend` 是否为 `true`。
+- Pelagica 后端是否监听在 `4321`。
+- 前端填写的服务器地址是否指向 `go-emby2openlist`，而不是直接指向原始 Emby/Jellyfin。
+
+### 4. 日志太多
+
+可以关闭详细日志：
+
+```yaml
+log:
+  verbose: false
+  ignore-paths:
+    - /web/modules
+    - /favicon.ico
+```
+
+### 5. 控制台颜色乱码
+
+```yaml
+log:
+  disable-color: true
+```
+
+## 重要提醒
+
+- 配置前请备份 `config.yml`。
+- 路径映射是本项目最核心、也最容易出错的地方。
+- 不建议直接把 OpenList WebDAV 作为 Emby/Jellyfin 的唯一媒体挂载源，挂载波动可能导致媒体库误判文件被删除。
+- 目录树生成涉及自动创建和清理文件，请先用小目录测试。
+- 开启 ffmpeg 辅助解析前，请确认网盘风控风险可接受。
+- 如果只追求成熟稳定的单纯直链反代，也可以评估 `embyExternalUrl` 等成熟方案。
+
+## 仓库结构
+
+```text
+.
+├── main.go                         # 主程序入口
+├── internal/                       # go-emby2openlist 核心后端
+│   ├── config/                     # 配置结构
+│   ├── service/                    # Emby、OpenList、分享、m3u8 等服务
+│   ├── util/                       # 通用工具
+│   └── web/                        # 路由和代理处理
+├── pelagica/                       # 集成的 Pelagica 前后端
+│   ├── backend/
+│   └── frontend/
+├── custom-js/                      # 自定义脚本
+├── custom-css/                     # 自定义样式
+├── ssl/                            # HTTPS 证书目录
+├── openlist-local-tree/            # 本地目录树输出目录
+├── Dockerfile                      # 纯代理镜像
+├── Dockerfile.unified              # 一体化镜像
+├── docker-compose.yml              # Compose 示例
+└── config-example.yml              # 配置示例
+```
+
+## 许可证
+
+本项目遵循仓库内 `LICENSE` 文件声明的许可证。
