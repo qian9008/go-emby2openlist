@@ -1,23 +1,50 @@
 version: '3.1'
 services:
-  go-emby2openlist:
+  # =========================================================================
+  # 选项 A: 一体化融合版 (Unified - 推荐)
+  # 包含: go-emby2openlist 反代 + Pelagica 官方后端 + Pelagica 前端网页托管
+  # 只需要映射一个 /config 目录，所有配置和数据便可自动归档
+  # =========================================================================
+  go-emby2openlist-unified:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.unified
+    container_name: go-emby2openlist-unified
+    restart: always
     environment:
       - TZ=Asia/Shanghai
       - GIN_MODE=release
-      # - HTTP_PROXY=http://127.0.0.1:7890
-      # - HTTPS_PROXY=http://127.0.0.1:7890
-    container_name: go-emby2openlist
-    restart: always
     volumes:
-      - ./config.yml:/app/config.yml
-      - ./ssl:/app/ssl
-      - ./custom-js:/app/custom-js
-      - ./custom-css:/app/custom-css
-      - ./lib:/app/lib
-      - ./openlist-local-tree:/app/openlist-local-tree
+      # 挂载一体化配置根目录。容器启动前，请先将配置好的 config.yml 放到主机的 ./config 目录下
+      - ./config:/config
+      # 如果启用了本地目录树生成 strm，建议单独挂载出来，方便 Emby 扫库
+      - ./openlist-local-tree:/config/openlist-local-tree
     ports:
       - 8095:8095 # http
       - 8094:8094 # https
+
+  # =========================================================================
+  # 选项 B: 纯代理后端版 (Proxy Only - 原版)
+  # 仅包含: go-emby2openlist 代理后端，不包含任何 Pelagica 前后端页面
+  # 适合配合官方 Emby Web 网页或官方客户端使用
+  # =========================================================================
+  # go-emby2openlist:
+  #   build:
+  #     context: .
+  #       dockerfile: Dockerfile
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #     - GIN_MODE=release
+  #   container_name: go-emby2openlist
+  #   restart: always
+  #   volumes:
+  #     - ./config.yml:/app/config.yml
+  #     - ./shares.json:/app/shares.json  # 分享数据持久化，防止容器重启后丢失
+  #     - ./ssl:/app/ssl
+  #     - ./custom-js:/app/custom-js
+  #     - ./custom-css:/app/custom-css
+  #     - ./lib:/app/lib
+  #     - ./openlist-local-tree:/app/openlist-local-tree
+  #   ports:
+  #     - 8095:8095 # http
+  #     - 8094:8094 # https

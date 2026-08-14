@@ -1,0 +1,83 @@
+# syntax=docker/dockerfile:1
+# check=skip=SecretsUsedInArgOrEnv
+# ==========================================
+# Stage 1: Build Pelagica Frontend
+# ==========================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app
+COPY pelagica/frontend/package.json pelagica/frontend/pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+COPY pelagica/frontend ./
+RUN pnpm run build
+
+# ==========================================
+# Stage 2: Build Official Web Dashboard
+# ==========================================
+FROM node:20-alpine AS official-web-builder
+WORKDIR /app/web/src
+COPY web/src/package*.json ./
+RUN npm install
+COPY web/src ./
+RUN npm run build
+
+# ==========================================
+# Stage 3: Build Pelagica Backend
+# ==========================================
+FROM golang:1.26-alpine AS backend-builder
+WORKDIR /app
+COPY pelagica/backend/go.mod pelagica/backend/go.sum ./
+RUN go mod download
+COPY pelagica/backend ./
+RUN CGO_ENABLED=0 go build -o pelagica-backend ./
+
+# ==========================================
+# Stage 4: Build go-emby2openlist Proxy
+# ==========================================
+FROM golang:1.26-alpine AS proxy-builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY cmd cmd
+COPY internal internal
+COPY main.go main.go
+COPY web web
+COPY --from=official-web-builder /app/web/src/build/client ./web/dist
+RUN CGO_ENABLED=0 go build -tags=goexperiment.jsonv2 -a -installsuffix cgo -ldflags="-X main.ginMode=release" -o main .
+
+# ==========================================
+# Stage 5: Final Runner Image
+# ==========================================
+FROM alpine:latest
+
+# 安装时区和基本运行依赖
+RUN apk add --no-cache tzdata ca-certificates
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /app
+
+# 复制编译好的二进制文件与静态资源
+COPY --from=proxy-builder /app/main ./ge2o
+COPY --from=backend-builder /app/pelagica-backend ./pelagica-backend
+COPY --from=backend-builder /app/default.theme.json /default.theme.json
+COPY --from=frontend-builder /app/dist ./dist
+
+# 创建配置与缓存数据挂载目录
+RUN mkdir -p /config
+
+# 设置 Pelagica 后端环境变量
+ENV PORT=4321
+ENV ENABLE_AUTH=true
+ENV CONFIG_PATH=/config/pelagica-config.json
+ENV THEMES_DIR=/config/themes
+ENV STUDIO_THUMBS=/config/studio_thumbs
+ENV BRANDING_DIR=/config/branding
+ENV DEFAULT_THEME_PATH=/default.theme.json
+ENV THEMES_REPO_BASE_URL=https://themes.pelagica.app/
+
+# 暴露 go-emby2openlist 的默认监听端口
+EXPOSE 8095
+EXPOSE 8094
+
+# 默认运行命令（在 /app 数据目录下寻找并加载 config.yml 配置文件）
+CMD ["./ge2o", "-dr", "/config"]
