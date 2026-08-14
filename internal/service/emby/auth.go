@@ -77,6 +77,9 @@ func ApiKeyChecker() gin.HandlerFunc {
 	}
 
 	return func(c *gin.Context) {
+		if c.Request.Method == http.MethodOptions {
+			return
+		}
 		// 1 取出 api_key
 		kType, kName, apiKey := getApiKey(c)
 
@@ -195,4 +198,9 @@ func getApiKey(c *gin.Context) (keyType ApiKeyType, keyName string, apiKey strin
 	}
 
 	return
+}
+
+// ExportGetApiKey 导出 getApiKey 供其他包使用
+func ExportGetApiKey(c *gin.Context) (keyType ApiKeyType, keyName string, apiKey string) {
+	return getApiKey(c)
 }

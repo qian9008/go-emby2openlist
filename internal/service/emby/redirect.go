@@ -189,6 +189,8 @@ func ProxyOriginalResource(c *gin.Context) {
 
 	// 如果是本地媒体, 代理回源
 	if config.C.Emby.IsLocalMediaPath(embyPath) {
+		c.Request.URL.Path = strings.Replace(c.Request.URL.Path, "original", "stream", 1)
+		c.Request.RequestURI = strings.Replace(c.Request.RequestURI, "original", "stream", 1)
 		ProxyOrigin(c)
 		return
 	}

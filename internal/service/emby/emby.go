@@ -2,15 +2,18 @@ package emby
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/bytess"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/https"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/jsons"
@@ -52,14 +55,82 @@ func ProxySocket() func(*gin.Context) {
 
 // HandleImages 处理图片请求
 //
-// 修改图片质量参数为配置值
+// 修改图片质量参数为配置值，并在访问共享媒体图片时自动提权
 func HandleImages(c *gin.Context) {
 	q := c.Request.URL.Query()
 	q.Del("quality")
 	q.Del("Quality")
 	q.Set("Quality", strconv.Itoa(config.C.Emby.ImagesQuality))
+
+	// 拦截分享资源图片：如果当前资源被分享给了当前请求用户，将 ApiKey 提升至管理员 Key 运行以获取图片
+	path := c.Request.URL.Path
+	var itemId string
+	if matches := regexp.MustCompile(`(?i)/items/([0-9a-f]+)/images`).FindStringSubmatch(path); len(matches) > 1 {
+		itemId = matches[1]
+	}
+
+	if itemId != "" {
+		TryElevateSharedResourceCredentials(c, itemId)
+		// 重新加载已修改的 query
+		q = c.Request.URL.Query()
+	}
+
 	c.Request.RequestURI = c.Request.URL.Path + "?" + q.Encode()
 	ProxyOrigin(c)
+}
+
+// TryElevateSharedResourceCredentials 尝试为被分享的资源请求（如图片、字幕）进行管理员权限提权
+func TryElevateSharedResourceCredentials(c *gin.Context, itemId string) {
+	if itemId == "" {
+		return
+	}
+	currentUser, errUser := share.GetCurrentUser(c)
+	if errUser == nil && currentUser.Id != "" {
+		if share.IsSharedTo(itemId, currentUser.Id) {
+			adminKey := config.C.Emby.AdminApiKey
+			if adminKey != "" {
+				logs.Info("用户 %s 请求共享资源 %s 的附件/媒体流, 权限已自动提升为 Admin", currentUser.Name, itemId)
+				
+				// 替换 query 中的 api_key / token 等
+				q := c.Request.URL.Query()
+				if q.Get("api_key") != "" {
+					q.Set("api_key", adminKey)
+				}
+				if q.Get("token") != "" {
+					q.Set("token", adminKey)
+				}
+				c.Request.URL.RawQuery = q.Encode()
+				
+				// 替换 headers 中的 X-Emby-Token 等
+				c.Request.Header.Del("X-Emby-Token")
+				c.Request.Header.Set("X-Emby-Token", adminKey)
+				
+				if c.Request.Header.Get("X-MediaBrowser-Token") != "" {
+					c.Request.Header.Set("X-MediaBrowser-Token", adminKey)
+				}
+				
+				if auth := c.Request.Header.Get("Authorization"); auth != "" {
+					c.Request.Header.Set("Authorization", rewriteAuthorizationToken(auth, adminKey))
+				}
+				
+				if auth := c.Request.Header.Get("X-Emby-Authorization"); auth != "" {
+					c.Request.Header.Set("X-Emby-Authorization", rewriteAuthorizationToken(auth, adminKey))
+				}
+			}
+		}
+	}
+}
+
+func rewriteAuthorizationToken(authHeader, adminKey string) string {
+	reg := regexp.MustCompile(`(?i)token="[^"]+"`)
+	if reg.MatchString(authHeader) {
+		return reg.ReplaceAllString(authHeader, fmt.Sprintf(`Token="%s"`, adminKey))
+	}
+	regNoQuote := regexp.MustCompile(`(?i)token=[^,]+`)
+	if regNoQuote.MatchString(authHeader) {
+		return regNoQuote.ReplaceAllString(authHeader, fmt.Sprintf(`Token=%s`, adminKey))
+	}
+	return authHeader
 }
 
 // ProxyOrigin 将请求代理到源服务器

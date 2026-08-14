@@ -16,6 +16,7 @@ import (
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/openlist"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/path"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/https"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/jsons"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs"
@@ -465,6 +466,49 @@ func resolveItemInfo(c *gin.Context, routeType RouteType) (ItemInfo, error) {
 	u.RawQuery = q.Encode()
 	itemInfo.PlaybackInfoUri = u.String()
 
+	// 拦截分享系统：如果当前资源被分享给了当前请求用户，将 ApiKey 提升至管理员 Key 运行以获取路径
+	currentUser, errUser := share.GetCurrentUser(c)
+	// share.AddDebugLog("[DEBUG] resolveItemInfo - itemId: %s, errUser: %v", itemInfo.Id, errUser)
+	if errUser == nil && currentUser.Id != "" {
+		isShared := share.IsSharedTo(itemInfo.Id, currentUser.Id)
+		// share.AddDebugLog("[DEBUG] resolveItemInfo - currentUser: %s (ID: %s), IsSharedTo: %v", currentUser.Name, currentUser.Id, isShared)
+		if isShared {
+			adminKey := config.C.Emby.AdminApiKey
+			// share.AddDebugLog("[DEBUG] resolveItemInfo - adminKey exists: %v", adminKey != "")
+			if adminKey != "" {
+				logs.Info("用户 %s 访问共享资源 %s, 权限已提升为 Admin", currentUser.Name, itemInfo.Id)
+				itemInfo.ApiKey = adminKey
+
+				adminUserId, errAdmin := share.GetAdminUserId()
+				if errAdmin == nil && adminUserId != "" {
+					// share.AddDebugLog("[DEBUG] resolveItemInfo - Substituting UserId with AdminUserId: %s", adminUserId)
+					uParse, errParse := url.Parse(itemInfo.PlaybackInfoUri)
+					if errParse == nil {
+						qParse := uParse.Query()
+						qParse.Set("api_key", adminKey)
+						if itemInfo.ApiKeyName != "" {
+							qParse.Set(itemInfo.ApiKeyName, adminKey)
+						}
+						qParse.Set("UserId", adminUserId)
+						uParse.RawQuery = qParse.Encode()
+						itemInfo.PlaybackInfoUri = uParse.String()
+					}
+				} else {
+					uParse, errParse := url.Parse(itemInfo.PlaybackInfoUri)
+					if errParse == nil {
+						qParse := uParse.Query()
+						qParse.Set("api_key", adminKey)
+						if itemInfo.ApiKeyName != "" {
+							qParse.Set(itemInfo.ApiKeyName, adminKey)
+						}
+						uParse.RawQuery = qParse.Encode()
+						itemInfo.PlaybackInfoUri = uParse.String()
+					}
+				}
+			}
+		}
+	}
+
 	return itemInfo, nil
 }
 
@@ -568,3 +612,4 @@ func sendOpenStreamPlaybackInfoReqToOrigin(itemInfo ItemInfo) {
 	}
 	resp.Body.Close()
 }
+

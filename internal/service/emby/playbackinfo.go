@@ -7,11 +7,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"time"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/model"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/https"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/jsons"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs"
@@ -30,7 +33,7 @@ const (
 	MasterM3U8UrlTemplate = `/videos/${itemId}/master.m3u8?DeviceId=a690fc29-1f3e-423b-ba23-f03049361a3b\u0026MediaSourceId=83ed6e4e3d820864a3d07d2ef9efab2e\u0026PlaySessionId=9f01e60a22c74ad0847319175912663b\u0026api_key=f53f3bf34c0543ed81415b86576058f2\u0026LiveStreamId=06044cf0e6f93cdae5f285c9ecfaaeb4_01413a525b3a9622ce6fdf19f7dde354_83ed6e4e3d820864a3d07d2ef9efab2e\u0026VideoCodec=h264,h265,hevc,av1\u0026AudioCodec=mp3,aac\u0026VideoBitrate=6808000\u0026AudioBitrate=192000\u0026AudioStreamIndex=1\u0026TranscodingMaxAudioChannels=2\u0026SegmentContainer=ts\u0026MinSegments=1\u0026BreakOnNonKeyFrames=True\u0026SubtitleStreamIndexes=-1\u0026ManifestSubtitles=vtt\u0026h264-profile=high,main,baseline,constrainedbaseline,high10\u0026h264-level=62\u0026hevc-codectag=hvc1,hev1,hevc,hdmv`
 
 	// PlaybackCommonPayload 请求 PlaybackInfo 的通用请求体
-	PlaybackCommonPayload = `{"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mkv","Type":"Video","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"3gp","Type":"Video","VideoCodec":"","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mkv","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","Context":"Static","MaxAudioChannels":"2","CopyTimestamps":true},{"Container":"ts","Type":"Video","AudioCodec":"mp3,aac","VideoCodec":"h264,h265,hevc,av1","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":"false"}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline|high 10","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"62","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[{"Condition":"EqualsAny","Property":"VideoCodecTag","Value":"hvc1|hev1|hevc|hdmv","IsRequired":false}]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"VideoSideData","Protocol":"hls"},{"Format":"eia_708","Method":"VideoSideData","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}}`
+	PlaybackCommonPayload = `{"DeviceProfile":{"MaxStaticBitrate":140000000,"MaxStreamingBitrate":140000000,"MusicStreamingTranscodingBitrate":192000,"DirectPlayProfiles":[{"Container":"mp4,m4v","Type":"Video","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mkv","Type":"Video","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"flv","Type":"Video","VideoCodec":"h264","AudioCodec":"aac,mp3"},{"Container":"3gp","Type":"Video","VideoCodec":"","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"mov","Type":"Video","VideoCodec":"h264","AudioCodec":"mp3,aac,opus,flac,vorbis"},{"Container":"opus","Type":"Audio"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3"},{"Container":"mp2,mp3","Type":"Audio","AudioCodec":"mp2"},{"Container":"m4a","AudioCodec":"aac","Type":"Audio"},{"Container":"mp4","AudioCodec":"aac","Type":"Audio"},{"Container":"flac","Type":"Audio"},{"Container":"webma,webm","Type":"Audio"},{"Container":"wav","Type":"Audio","AudioCodec":"PCM_S16LE,PCM_S24LE"},{"Container":"ogg","Type":"Audio"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis,opus","VideoCodec":"av1,VP8,VP9"}],"TranscodingProfiles":[{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"opus","Type":"Audio","AudioCodec":"opus","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp3","Type":"Audio","AudioCodec":"mp3","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"aac","Type":"Audio","AudioCodec":"aac","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"wav","Type":"Audio","AudioCodec":"wav","Context":"Static","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mkv","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264,h265,hevc,av1,vp8,vp9","Context":"Static","MaxAudioChannels":"2","CopyTimestamps":true},{"Container":"ts","Type":"Video","AudioCodec":"mp3,aac","VideoCodec":"h264,h265,hevc,av1","Context":"Streaming","Protocol":"hls","MaxAudioChannels":"2","MinSegments":"1","BreakOnNonKeyFrames":true,"ManifestSubtitles":"vtt"},{"Container":"webm","Type":"Video","AudioCodec":"vorbis","VideoCodec":"vpx","Context":"Streaming","Protocol":"http","MaxAudioChannels":"2"},{"Container":"mp4","Type":"Video","AudioCodec":"mp3,aac,opus,flac,vorbis","VideoCodec":"h264","Context":"Static","Protocol":"http"}],"ContainerProfiles":[],"CodecProfiles":[{"Type":"VideoAudio","Codec":"aac","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":false}]},{"Type":"VideoAudio","Conditions":[{"Condition":"Equals","Property":"IsSecondaryAudio","Value":"false","IsRequired":false}]},{"Type":"Video","Codec":"h264","Conditions":[{"Condition":"EqualsAny","Property":"VideoProfile","Value":"high|main|baseline|constrained baseline|high 10","IsRequired":false},{"Condition":"LessThanEqual","Property":"VideoLevel","Value":"62","IsRequired":false}]},{"Type":"Video","Codec":"hevc","Conditions":[{"Condition":"EqualsAny","Property":"VideoCodecTag","Value":"hvc1|hev1|hevc|hdmv","IsRequired":false}]}],"SubtitleProfiles":[{"Format":"vtt","Method":"Hls"},{"Format":"eia_608","Method":"Embed","Protocol":"hls"},{"Format":"eia_708","Method":"Embed","Protocol":"hls"},{"Format":"vtt","Method":"External"},{"Format":"ass","Method":"External"},{"Format":"ssa","Method":"External"}],"ResponseProfiles":[{"Type":"Video","Container":"m4v","MimeType":"video/mp4"}]}}`
 )
 
 var (
@@ -44,6 +47,9 @@ var (
 
 // TransferPlaybackInfo 代理 PlaybackInfo 接口, 防止客户端转码
 func TransferPlaybackInfo(c *gin.Context) {
+	if handleCORSAndOPTIONS(c) {
+		return
+	}
 	// 1 解析资源信息
 	itemInfo, err := resolveItemInfo(c, RoutePlaybackInfo)
 	logs.Info("ItemInfo 解析结果: %s", itemInfo)
@@ -65,10 +71,27 @@ func TransferPlaybackInfo(c *gin.Context) {
 	}
 
 	// 2 请求 emby 源服务器的 PlaybackInfo 信息
-	c.Request.Header.Del("Accept-Encoding")
-	originRequestBody := c.Request.Body
-	c.Request.Body = io.NopCloser(bytes.NewBufferString(PlaybackCommonPayload))
-	res, respHeader := RawFetch(itemInfo.PlaybackInfoUri, c.Request.Method, c.Request.Header, c.Request.Body)
+	var res model.HttpRes[*jsons.Item]
+	var respHeader http.Header
+	var originRequestBody io.ReadCloser = c.Request.Body
+
+	var isShared bool
+	currentUser, errUser := share.GetCurrentUser(c)
+	if errUser == nil && currentUser.Id != "" {
+		if share.IsSharedTo(itemInfo.Id, currentUser.Id) {
+			isShared = true
+		}
+	}
+
+	if isShared {
+		logs.Info("用户 %s 播放共享资源 %s, 使用管理员进行干净的 PlaybackInfo 代理获取", currentUser.Name, itemInfo.Id)
+		res, respHeader = fetchPlaybackInfoByAdmin(itemInfo.Id, itemInfo.MsInfo)
+	} else {
+		c.Request.Header.Del("Accept-Encoding")
+		c.Request.Body = io.NopCloser(bytes.NewBufferString(PlaybackCommonPayload))
+		res, respHeader = RawFetch(itemInfo.PlaybackInfoUri, c.Request.Method, c.Request.Header, c.Request.Body)
+	}
+
 	if res.Code != http.StatusOK {
 		checkErr(c, errors.New(res.Msg))
 		return
@@ -76,6 +99,7 @@ func TransferPlaybackInfo(c *gin.Context) {
 
 	// 3 处理 JSON 响应
 	resJson := res.Data
+	logs.Info("resJson 响应内容: %s", resJson.String())
 	mediaSources, ok := resJson.Attr("MediaSources").Done()
 	if !ok || mediaSources.Type() != jsons.JsonTypeArr {
 		checkErr(c, errors.New("获取不到 MediaSources 属性"))
@@ -380,6 +404,33 @@ func useCacheSpacePlaybackInfo(c *gin.Context, itemInfo ItemInfo) bool {
 //
 // 防止转码资源信息丢失
 func LoadCacheItems(c *gin.Context) {
+	if handleCORSAndOPTIONS(c) {
+		return
+	}
+	// 尝试解析 itemId 并进行分享权限提权校验
+	uri := c.Request.URL.Path
+	itemId := filepath.Base(uri)
+
+	var isShared bool
+	currentUser, errUser := share.GetCurrentUser(c)
+	if errUser == nil && currentUser.Id != "" {
+		if share.IsSharedTo(itemId, currentUser.Id) {
+			isShared = true
+		}
+	}
+
+	if isShared {
+		logs.Info("用户 %s 查询共享媒体详情 %s, 权限已由 Admin 穿透代获取", currentUser.Name, itemId)
+		itemBytes, err := share.GetItemInfoByAdmin(itemId)
+		if err == nil {
+			c.Header("Content-Type", "application/json;charset=utf-8")
+			c.Writer.Write(itemBytes)
+			c.Writer.Flush()
+			return
+		}
+		logs.Error("使用管理员获取共享媒体 %s 详情失败: %v", itemId, err)
+	}
+
 	// 代理请求
 	res, ok := proxyAndSetRespHeader(c)
 	if !ok {
@@ -495,3 +546,61 @@ func getPlaybackInfoByCacheSpace(itemInfo ItemInfo) (cache.RespCache, bool) {
 	}
 	return spaceCache, true
 }
+
+// fetchPlaybackInfoByAdmin 用管理员凭证从后台向 Emby 源站发起干净请求，换取 PlaybackInfo
+func fetchPlaybackInfoByAdmin(itemId string, msInfo MsInfo) (model.HttpRes[*jsons.Item], http.Header) {
+	adminKey := config.C.Emby.AdminApiKey
+	adminUserId, err := share.GetAdminUserId()
+	if err != nil {
+		// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - GetAdminUserId err: %v", err)
+		return model.HttpRes[*jsons.Item]{Code: http.StatusInternalServerError, Msg: "获取管理员用户 ID 失败: " + err.Error()}, nil
+	}
+
+	u, err := url.Parse(config.C.Emby.Host + fmt.Sprintf("/Items/%s/PlaybackInfo", itemId))
+	if err != nil {
+		// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Parse URL err: %v", err)
+		return model.HttpRes[*jsons.Item]{Code: http.StatusInternalServerError, Msg: "构建 PlaybackInfo URL 失败: " + err.Error()}, nil
+	}
+
+	q := u.Query()
+	q.Set("api_key", adminKey)
+	q.Set("UserId", adminUserId)
+	q.Set("reqformat", "json")
+	q.Set("IsPlayback", "false")
+	q.Set("AutoOpenLiveStream", "false")
+	if !msInfo.Empty {
+		q.Set("MediaSourceId", msInfo.OriginId)
+	}
+	u.RawQuery = q.Encode()
+
+	// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Requesting URL: %s", u.String())
+
+	header := make(http.Header)
+	header.Set("Content-Type", "application/json;charset=utf-8")
+	header.Set("X-Emby-Token", adminKey)
+
+	body := io.NopCloser(bytes.NewBufferString(PlaybackCommonPayload))
+	
+	resp, err := https.Post(u.String()).Header(header).Body(body).Do()
+	if err != nil {
+		// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Post request failed: %v", err)
+		return model.HttpRes[*jsons.Item]{Code: http.StatusBadRequest, Msg: "请求发送失败: " + err.Error()}, nil
+	}
+	defer resp.Body.Close()
+
+	// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Response status: %d", resp.StatusCode)
+
+	if resp.StatusCode != http.StatusOK {
+		// respBodyBytes, _ := io.ReadAll(resp.Body)
+		// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Emby error response: %s", string(respBodyBytes))
+		return model.HttpRes[*jsons.Item]{Code: resp.StatusCode, Msg: "Emby 返回非 200 响应: " + resp.Status}, nil
+	}
+
+	result, err := jsons.Read(resp.Body)
+	if err != nil {
+		// share.AddDebugLog("[DEBUG] fetchPlaybackInfoByAdmin - Read JSON response failed: %v", err)
+		return model.HttpRes[*jsons.Item]{Code: http.StatusBadRequest, Msg: "解析响应失败: " + err.Error()}, nil
+	}
+	return model.HttpRes[*jsons.Item]{Code: http.StatusOK, Data: result}, resp.Header
+}
+

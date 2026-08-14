@@ -4,9 +4,11 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/model"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/share"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/https"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/jsons"
 
@@ -43,6 +45,13 @@ func RawFetch(uri, method string, header http.Header, body io.ReadCloser) (model
 	}
 	if header.Get("Content-Type") == "" {
 		header.Set("Content-Type", "application/json;charset=utf-8")
+	}
+
+	if strings.Contains(u, "PlaybackInfo") {
+		share.AddDebugLog("[RAW_FETCH] Request URL: %s", u)
+		for k, v := range header {
+			share.AddDebugLog("[RAW_FETCH] Header - %s: %v", k, v)
+		}
 	}
 
 	resp, err := https.Request(method, u).Header(header).Body(body).Do()
