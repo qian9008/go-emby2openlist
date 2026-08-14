@@ -12,7 +12,8 @@ const (
 	Reg_PlayingStopped  = `(?i)^/.*sessions/playing/stopped`
 	Reg_PlayingProgress = `(?i)^/.*sessions/playing/progress`
 
-	Reg_UserItems                = `(?i)^/.*users/.*/items/\d+($|\?)`
+	// Reg_UserItems 匹配单个 Item 详情请求，支持 Emby 数字 ID 和 Jellyfin 十六进制 UUID，兼容含与不含 users 子路径的两种格式
+	Reg_UserItems                = `(?i)^/.*(users/[^/]+/)?items/[0-9a-f]+($|\?)`
 	Reg_UserEpisodeItems         = `(?i)^/.*users/.*/items\?.*includeitemtypes=(episode|movie)`
 	Reg_UserItemsRandomResort    = `(?i)^/.*users/.*/items\?.*SortBy=Random`
 	Reg_UserItemsRandomWithLimit = `(?i)^/.*users/.*/items/with_limit\?.*SortBy=Random`
@@ -43,8 +44,11 @@ const (
 
 	Reg_OpenlistLocalTreeUpdatePrefix = `^(/[^/\\]+)+$`
 
+	Reg_PelagicaAPI = `(?i)^/api/.*`
+
 	Reg_All = `.*`
 )
+
 
 const (
 	Route_SelfBase                = "/ge2o"
@@ -54,6 +58,14 @@ const (
 	Route_Web                     = Route_SelfBase + "/web"
 	Route_ValidateApiSecret       = Route_SelfBase + "/secret/validate"
 	Route_SyncServerLog           = Route_SelfBase + "/ws/log/sync"
+
+	// 分享系统路由
+	Route_ShareUsers     = `^/api/share/users($|\?)`
+	Route_ShareCreate    = `^/api/share/create($|\?)`
+	Route_ShareMine      = `^/api/share/mine($|\?)`
+	Route_SharedWithMe   = `^/api/share/shared-with-me($|\?)`
+	Route_ShareDebugLogs = `^/api/share/debug-logs($|\?)`
+	Route_ShareById      = `^/api/share/(\d+)($|\?)`
 )
 
 const (
