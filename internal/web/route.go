@@ -16,8 +16,17 @@ import (
 // 每个规则为一个切片, 参数分别是: 正则表达式, 处理器
 var rules [][2]any
 
+// ExtraRules 提供一个插件注册额外路由的插槽
+var ExtraRules [][3]any // [pattern, handler, priority]
+
+// RegisterExtraRule 注册额外的路由规则, priority 值越大优先级越高
+func RegisterExtraRule(pattern any, handler any, priority int) {
+	ExtraRules = append(ExtraRules, [3]any{pattern, handler, priority})
+}
+
 func initRulePatterns() {
 	logs.Info("正在初始化路由规则...")
+
 	rules = compileRules([][2]any{
 		// websocket
 		{constant.Reg_Socket, emby.ProxySocket()},
@@ -90,10 +99,29 @@ func initRulePatterns() {
 
 		// 根路径重定向到首页
 		{constant.Reg_Root, emby.ProxyRoot},
-
-		// 其余资源走重定向回源
-		{constant.Reg_All, emby.ProxyOrigin},
 	})
+	
+	// 对 ExtraRules 按照优先级排序 (从大到小)
+	for i := 0; i < len(ExtraRules); i++ {
+		for j := i + 1; j < len(ExtraRules); j++ {
+			if ExtraRules[i][2].(int) < ExtraRules[j][2].(int) {
+				ExtraRules[i], ExtraRules[j] = ExtraRules[j], ExtraRules[i]
+			}
+		}
+	}
+
+	// 剥离 priority 字段，转回 [2]any
+	var sortedExtraRules [][2]any
+	for _, r := range ExtraRules {
+		sortedExtraRules = append(sortedExtraRules, [2]any{r[0], r[1]})
+	}
+
+	// 追加由插件注入的额外路由
+	rules = append(rules, compileRules(sortedExtraRules)...)
+
+	// 其余资源走重定向回源
+	rules = append(rules, compileRules([][2]any{{constant.Reg_All, emby.ProxyOrigin}})...)
+
 	logs.Success("路由规则初始化完成")
 }
 

@@ -7,17 +7,24 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strconv"
+	"syscall"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/constant"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/emby"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/openlist/localtree"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs/colors"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/web"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/web/webport"
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/AmbitiousJun/go-emby2openlist/v2/internal/plugin/pelagica"
+	_ "github.com/AmbitiousJun/go-emby2openlist/v2/internal/plugin/share"
+	_ "github.com/AmbitiousJun/go-emby2openlist/v2/internal/plugin/thumbnail"
 )
 
 var ginMode = gin.DebugMode
@@ -38,12 +45,27 @@ func main() {
 		log.Fatal(colors.ToRed(err.Error()))
 	}
 
+	// 启动 Pelagica 后端子进程
+	emby.StartPelagicaBackend()
+	defer emby.StopPelagicaBackend()
+
+	// 监听系统中断信号以优雅清理子进程
+	go func() {
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+		<-sigChan
+		logs.Info("收到终止信号，正在关闭服务并清理子进程...")
+		emby.StopPelagicaBackend()
+		os.Exit(0)
+	}()
+
 	logs.Info("正在启动服务...")
 	gin.SetMode(ginMode)
 	if err := web.Listen(); err != nil {
 		log.Fatal(colors.ToRed(err.Error()))
 	}
 }
+
 
 // parseFlag 转换命令行参数
 func parseFlag() (dataRoot string) {

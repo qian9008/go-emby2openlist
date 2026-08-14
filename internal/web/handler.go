@@ -3,6 +3,8 @@ package web
 import (
 	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -23,6 +25,24 @@ func globalDftHandler(c *gin.Context) {
 		return
 	}
 
+	uri := c.Request.RequestURI
+	pathPart := uri
+	queryPart := ""
+	if qIdx := strings.Index(uri, "?"); qIdx != -1 {
+		pathPart = uri[:qIdx]
+		queryPart = uri[qIdx:]
+	}
+	for strings.Contains(pathPart, "//") {
+		pathPart = strings.ReplaceAll(pathPart, "//", "/")
+	}
+	cleanedURI := pathPart + queryPart
+
+	// 1. 如果配置了 Pelagica 前端目录，尝试服务 Pelagica 静态文件或 SPA 页面
+	if servePelagicaStatic(c, cleanedURI) {
+		return
+	}
+
+	// 2. 尝试服务官方 Web 控制面板静态资源
 	if handleWebStatic(c) {
 		return
 	}
@@ -30,13 +50,72 @@ func globalDftHandler(c *gin.Context) {
 	// 依次匹配路由规则, 找到其他的处理器
 	for _, rule := range rules {
 		reg := rule[0].(*regexp.Regexp)
-		if reg.MatchString(c.Request.RequestURI) {
+		if reg.MatchString(cleanedURI) {
 			c.Set(MatchRouteKey, reg.String())
-			c.Set(constant.RouteSubMatchGinKey, reg.FindStringSubmatch(c.Request.RequestURI))
+			c.Set(constant.RouteSubMatchGinKey, reg.FindStringSubmatch(cleanedURI))
 			rule[1].(gin.HandlerFunc)(c)
 			return
 		}
 	}
+}
+
+// servePelagicaStatic 尝试接管静态文件和前端 SPA 路由的渲染
+func servePelagicaStatic(c *gin.Context, cleanedURI string) bool {
+	dir := config.C.Ge2o.PelagicaFrontendDir
+	if dir == "" {
+		return false
+	}
+
+	path := c.Request.URL.Path
+
+	// 1. 排除 API 接口、分享系统以及特殊内部路由
+	if strings.HasPrefix(path, "/api/") || strings.HasPrefix(path, "/ge2o") {
+		return false
+	}
+	// 排除 WebSocket 长连接
+	if regexp.MustCompile(`(?i)^/.*(socket|embywebsocket)`).MatchString(path) {
+		return false
+	}
+	// 排除原始 Emby 关键 API 路径以及 Web 后台地址
+	if strings.HasPrefix(path, "/Items") || strings.HasPrefix(path, "/Users") ||
+		strings.HasPrefix(path, "/Videos") || strings.HasPrefix(path, "/Sessions") ||
+		strings.HasPrefix(path, "/Images") || strings.HasPrefix(path, "/Audio") ||
+		strings.HasPrefix(path, "/web") {
+		return false
+	}
+
+	// 2. 检查本地是否存在物理文件，如果存在则直接响应
+	filePath := filepath.Join(dir, path)
+	stat, err := os.Stat(filePath)
+	if err == nil && !stat.IsDir() {
+		c.File(filePath)
+		return true
+	}
+
+	// 3. 匹配 Pelagica 前端 SPA 页面路径。当刷新页面或输入特定路由时，返回 index.html。
+	isSpaRoute := false
+	if path == "/" || path == "/index.html" {
+		isSpaRoute = true
+	} else {
+		// 精确匹配或前缀匹配主要的 SPA 路由
+		spaPrefixes := []string{"/library", "/shared-library", "/item/", "/person/", "/login", "/play/", "/settings", "/browse-themes", "/search"}
+		for _, prefix := range spaPrefixes {
+			if path == prefix || strings.HasPrefix(path, prefix) {
+				isSpaRoute = true
+				break
+			}
+		}
+	}
+
+	if isSpaRoute {
+		indexPath := filepath.Join(dir, "index.html")
+		if _, err := os.Stat(indexPath); err == nil {
+			c.File(indexPath)
+			return true
+		}
+	}
+
+	return false
 }
 
 // handleWebStatic 处理 web 静态资源
@@ -115,3 +194,4 @@ func compileRules(rs [][2]any) [][2]any {
 	}
 	return newRs
 }
+

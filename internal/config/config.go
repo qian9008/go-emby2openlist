@@ -35,6 +35,9 @@ var C *Config
 // BasePath 配置文件所在的基础路径
 var BasePath string
 
+// OnConfigLoadedHooks 配置加载完成后的钩子函数列表，供插件挂载初始化逻辑
+var OnConfigLoadedHooks []func()
+
 type Initializer interface {
 	// Init 配置初始化
 	Init() error
@@ -72,6 +75,10 @@ func ReadFromFile(path string) error {
 				return fmt.Errorf("初始化配置文件失败: %v", err)
 			}
 		}
+	}
+	// 触发插件钩子，使得插件能够安全地读取配置并初始化
+	for _, hook := range OnConfigLoadedHooks {
+		hook()
 	}
 
 	return nil
