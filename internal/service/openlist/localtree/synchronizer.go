@@ -3,6 +3,8 @@ package localtree
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,6 +13,7 @@ import (
 	"time"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/config"
+	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/lib/ffmpeg"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/service/openlist"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/files"
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/util/logs/colors"
@@ -280,7 +283,62 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		}
 
 		// 写入文件
-		return writer.Write(*task, localAbsPath)
+		if err := writer.Write(*task, localAbsPath); err != nil {
+			return err
+		}
+
+		// 列表页同步时直接发起缩略图异步下载
+		if config.C.Openlist.Enable365 {
+			// 1. 获取同名 jpg 图片的绝对路径
+			baseName := filepath.Base(localAbsPath)
+			if idx := strings.LastIndex(baseName, "."); idx != -1 {
+				baseName = baseName[:idx]
+			}
+			jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
+
+			// 2. 检查本地图片是否已经存在，不存在则开启异步协程下载
+			if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
+				if config.C.Openlist.IsExclude365Path(task.Path) {
+					if config.C.Openlist.LocalTreeGen.FFmpegEnable {
+						go func(t FileTask, destJpgPath string) {
+							pic, err := ffmpeg.ExtractVideoCover(getRealDownloadUrl(t))
+							if err == nil && len(pic) > 0 {
+								os.WriteFile(destJpgPath, pic, os.ModePerm)
+							}
+						}(*task, jpgPath)
+					}
+				} else {
+					go func(taskPath string, taskThumb string, destJpgPath string) {
+						thumbUrl := taskThumb
+						// 如果列表返回的 task.Thumb 为空，我们主动调用 FetchFsGet 获取包含 Thumb 的详情
+						if thumbUrl == "" {
+							res := openlist.FetchFsGet(taskPath, nil)
+							if res.Code == http.StatusOK {
+								thumbUrl = res.Data.Thumb
+							}
+						}
+
+						if thumbUrl == "" {
+							return
+						}
+
+						// 修改链接中缩略图分辨率参数为 500x500
+						u, errParse := url.Parse(thumbUrl)
+						if errParse == nil {
+							q := u.Query()
+							q.Set("width", "500")
+							q.Set("height", "500")
+							u.RawQuery = q.Encode()
+							thumbUrl = u.String()
+						}
+
+						openlist.DownloadThumb(thumbUrl, destJpgPath)
+					}(task.Path, task.Thumb, jpgPath)
+				}
+			}
+		}
+
+		return nil
 	}
 
 	// handleTasks 处理任务, 将新增的文件写入本地, 任务处理完成后写入 okTaskChan
@@ -388,6 +446,12 @@ func (s *Synchronizer) updateLocalTree(okTaskChan <-chan FileTask, total, added,
 			continue
 		}
 
+		// 如果该文件是元数据/封面/字幕文件，且其关联的媒体文件或目录仍存在于当前有效任务快照中，则保留不删除
+		isDir := s.snapshot[path].IsDir
+		if !isDir && shouldKeepFile(current, path) {
+			continue
+		}
+
 		path = strings.TrimPrefix(path, "/")
 		toDelete = append(toDelete, filepath.Join(s.baseDir, path))
 	}
@@ -407,4 +471,80 @@ func (s *Synchronizer) updateLocalTree(okTaskChan <-chan FileTask, total, added,
 	}
 
 	s.snapshot = nil
+}
+
+// shouldKeepFile 判断一个非 current 中的本地文件是否应该被保留而不删除。
+// 针对封面图片、nfo元数据、字幕文件等，如果对应的媒体文件或其所在的目录依然存在于 current 中，则应保留。
+func shouldKeepFile(current Snapshot, path string) bool {
+	ext := strings.ToLower(filepath.Ext(path))
+	isMetadata := false
+	switch ext {
+	case ".jpg", ".jpeg", ".png", ".webp", ".gif", ".nfo", ".xml", ".srt", ".ass", ".sub", ".vtt", ".ssa":
+		isMetadata = true
+	}
+	if !isMetadata {
+		return false
+	}
+
+	dir := urls.TransferSlash(filepath.Dir(path))
+	// 如果父目录在 current 中不存在，说明该目录已经在远程不存在，不需要保留其下属文件
+	if _, dirExists := current.Check(dir); !dirExists {
+		return false
+	}
+
+	baseName := filepath.Base(path)
+	baseName = baseName[:len(baseName)-len(ext)]
+
+	// 1. 去除常见的效果图/封面后缀，判断是否是文件夹级别的封面
+	artworkSuffixes := []string{"-fanart", "-poster", "-banner", "-thumb", "-landscape", "-logo", "-clearart", "-disc", "-backdrops", "-theme"}
+	for _, suffix := range artworkSuffixes {
+		baseName = strings.TrimSuffix(baseName, suffix)
+	}
+
+	folderArtworks := map[string]struct{}{
+		"poster":     {},
+		"fanart":     {},
+		"banner":     {},
+		"folder":     {},
+		"logo":       {},
+		"clearart":   {},
+		"theme":      {},
+		"backdrops":  {},
+		"disc":       {},
+	}
+	if _, isFolderArt := folderArtworks[strings.ToLower(baseName)]; isFolderArt {
+		// 文件夹级别的海报图，只要文件夹存在就保留
+		return true
+	}
+
+	// 2. 检查是否有对应的媒体文件存在于 current 中
+	hasMedia := func(name string) bool {
+		mediaExts := []string{".strm", ".mp4", ".mkv", ".avi", ".ts", ".mov", ".wmv", ".flv", ".mp3", ".flac", ".wav", ".ogg", ".m4a"}
+		for _, me := range mediaExts {
+			testPath := urls.TransferSlash(filepath.Join(dir, name+me))
+			if _, exists := current.Check(testPath); exists {
+				return true
+			}
+		}
+		return false
+	}
+
+	tempName := baseName
+	for {
+		if hasMedia(tempName) {
+			return true
+		}
+		lastDot := strings.LastIndex(tempName, ".")
+		if lastDot == -1 {
+			break
+		}
+		suffix := tempName[lastDot+1:]
+		// 语言标识符或字幕指示（如 zh, zh-cn, default, forced 等）一般较短
+		if len(suffix) > 10 {
+			break
+		}
+		tempName = tempName[:lastDot]
+	}
+
+	return false
 }

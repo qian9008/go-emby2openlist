@@ -44,6 +44,9 @@ type FileTask struct {
 
 	// Modified 文件的最后修改时间
 	Modified time.Time
+
+	// Thumb 缩略图链接
+	Thumb string
 }
 
 func FsGetTask(prefix string, info openlist.FsGet) FileTask {
@@ -56,6 +59,7 @@ func FsGetTask(prefix string, info openlist.FsGet) FileTask {
 		Sign:      info.Sign,
 		Container: container,
 		Modified:  info.Modified,
+		Thumb:     info.Thumb,
 	}
 }
 
