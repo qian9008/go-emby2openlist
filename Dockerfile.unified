@@ -1,14 +1,19 @@
 # syntax=docker/dockerfile:1
 # check=skip=SecretsUsedInArgOrEnv
 # ==========================================
-# Stage 1: Build Pelagica Frontend
+# Stage 1: Build Pelagica Frontend (Monorepo)
 # ==========================================
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
-COPY pelagica/frontend/package.json pelagica/frontend/pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
-COPY pelagica/frontend ./
-RUN pnpm run build
+RUN npm install -g pnpm
+
+COPY pelagica/package.json pelagica/pnpm-lock.yaml pelagica/pnpm-workspace.yaml ./
+COPY pelagica/packages packages
+COPY pelagica/frontend frontend
+COPY pelagica/tizen/package.json tizen/package.json
+
+RUN pnpm install --frozen-lockfile --filter pelagica...
+RUN pnpm --filter pelagica run build
 
 # ==========================================
 # Stage 2: Build Official Web Dashboard
@@ -60,7 +65,7 @@ WORKDIR /app
 COPY --from=proxy-builder /app/main ./ge2o
 COPY --from=backend-builder /app/pelagica-backend ./pelagica-backend
 COPY --from=backend-builder /app/default.theme.json /default.theme.json
-COPY --from=frontend-builder /app/dist ./dist
+COPY --from=frontend-builder /app/frontend/dist ./dist
 
 # 创建配置与缓存数据挂载目录
 RUN mkdir -p /config
