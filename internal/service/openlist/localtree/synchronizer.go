@@ -3,8 +3,6 @@ package localtree
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -88,12 +86,6 @@ func (s *Synchronizer) Sync(prefix string, apiRefreshFlag bool) (total, added, d
 	s.threadsSem = make(chan struct{}, config.C.Openlist.LocalTreeGen.Threads)
 	s.hasScanFinish, s.hasScanTotal = 0, 0
 
-	// 读取根目录放置到任务通道中
-	s.activeTaskCount = 0
-	if err := s.walkDir2SyncTasks(prefix); err != nil {
-		return 0, 0, 0, fmt.Errorf("获取 openlist 根目录异常: %w", err)
-	}
-
 	// 每隔固定时间输出一下当前的同步进度
 	ticker := time.NewTicker(time.Second * 10)
 	defer ticker.Stop()
@@ -106,6 +98,12 @@ func (s *Synchronizer) Sync(prefix string, apiRefreshFlag bool) (total, added, d
 			logf(colors.Purple, "预估同步进度 (已扫描/已发现任务数) => %d/%d (%.2f%%)", s.hasScanFinish, s.hasScanTotal, percent*100)
 		}
 	}()
+
+	// 读取根目录放置到任务通道中
+	s.activeTaskCount = 0
+	if err := s.walkDir2SyncTasks(prefix); err != nil {
+		return 0, 0, 0, fmt.Errorf("获取 openlist 根目录异常: %w", err)
+	}
 
 	// 执行同步任务
 	go s.handleSyncTasks(okTaskChan)
@@ -308,32 +306,12 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 						}(*task, jpgPath)
 					}
 				} else {
-					go func(taskPath string, taskThumb string, destJpgPath string) {
-						thumbUrl := taskThumb
-						// 如果列表返回的 task.Thumb 为空，我们主动调用 FetchFsGet 获取包含 Thumb 的详情
-						if thumbUrl == "" {
-							res := openlist.FetchFsGet(taskPath, nil)
-							if res.Code == http.StatusOK {
-								thumbUrl = res.Data.Thumb
-							}
-						}
-
-						if thumbUrl == "" {
-							return
-						}
-
-						// 修改链接中缩略图分辨率参数为 500x500
-						u, errParse := url.Parse(thumbUrl)
-						if errParse == nil {
-							q := u.Query()
-							q.Set("width", "500")
-							q.Set("height", "500")
-							u.RawQuery = q.Encode()
-							thumbUrl = u.String()
-						}
-
-						openlist.DownloadThumb(thumbUrl, destJpgPath)
-					}(task.Path, task.Thumb, jpgPath)
+					// 非排除路径交由 365 缩略图插件处理：
+					// 主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks，
+					// 由插件完成缩略图分辨率改写(500x500)与下载，避免在此重复实现下载逻辑。
+					go func(taskPath string) {
+						openlist.FetchFsGet(taskPath, nil)
+					}(task.Path)
 				}
 			}
 		}
@@ -502,15 +480,15 @@ func shouldKeepFile(current Snapshot, path string) bool {
 	}
 
 	folderArtworks := map[string]struct{}{
-		"poster":     {},
-		"fanart":     {},
-		"banner":     {},
-		"folder":     {},
-		"logo":       {},
-		"clearart":   {},
-		"theme":      {},
-		"backdrops":  {},
-		"disc":       {},
+		"poster":    {},
+		"fanart":    {},
+		"banner":    {},
+		"folder":    {},
+		"logo":      {},
+		"clearart":  {},
+		"theme":     {},
+		"backdrops": {},
+		"disc":      {},
 	}
 	if _, isFolderArt := folderArtworks[strings.ToLower(baseName)]; isFolderArt {
 		// 文件夹级别的海报图，只要文件夹存在就保留

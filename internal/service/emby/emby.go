@@ -55,12 +55,18 @@ func ProxySocket() func(*gin.Context) {
 
 // HandleImages 处理图片请求
 //
-// 修改图片质量参数为配置值，并在访问共享媒体图片时自动提权
+// 修改图片质量参数为配置值
 func HandleImages(c *gin.Context) {
 	q := c.Request.URL.Query()
 	q.Del("quality")
 	q.Del("Quality")
-	q.Set("Quality", strconv.Itoa(config.C.Emby.ImagesQuality))
+
+	if config.C.Emby.ImagesOriginal {
+		// 原图模式: 移除分辨率、格式等处理参数, 使 emby 直接返回原图
+		StripImageParams(q)
+	} else {
+		q.Set("Quality", strconv.Itoa(config.C.Emby.ImagesQuality))
+	}
 
 	// 拦截分享资源图片：如果当前资源被分享给了当前请求用户，将 ApiKey 提升至管理员 Key 运行以获取图片
 	path := c.Request.URL.Path
@@ -79,58 +85,38 @@ func HandleImages(c *gin.Context) {
 	ProxyOrigin(c)
 }
 
-// TryElevateSharedResourceCredentials 尝试为被分享的资源请求（如图片、字幕）进行管理员权限提权
-func TryElevateSharedResourceCredentials(c *gin.Context, itemId string) {
-	if itemId == "" {
-		return
-	}
-	currentUser, errUser := share.GetCurrentUser(c)
-	if errUser == nil && currentUser.Id != "" {
-		if share.IsSharedTo(itemId, currentUser.Id) {
-			adminKey := config.C.Emby.AdminApiKey
-			if adminKey != "" {
-				logs.Info("用户 %s 请求共享资源 %s 的附件/媒体流, 权限已自动提升为 Admin", currentUser.Name, itemId)
-				
-				// 替换 query 中的 api_key / token 等
-				q := c.Request.URL.Query()
-				if q.Get("api_key") != "" {
-					q.Set("api_key", adminKey)
-				}
-				if q.Get("token") != "" {
-					q.Set("token", adminKey)
-				}
-				c.Request.URL.RawQuery = q.Encode()
-				
-				// 替换 headers 中的 X-Emby-Token 等
-				c.Request.Header.Del("X-Emby-Token")
-				c.Request.Header.Set("X-Emby-Token", adminKey)
-				
-				if c.Request.Header.Get("X-MediaBrowser-Token") != "" {
-					c.Request.Header.Set("X-MediaBrowser-Token", adminKey)
-				}
-				
-				if auth := c.Request.Header.Get("Authorization"); auth != "" {
-					c.Request.Header.Set("Authorization", rewriteAuthorizationToken(auth, adminKey))
-				}
-				
-				if auth := c.Request.Header.Get("X-Emby-Authorization"); auth != "" {
-					c.Request.Header.Set("X-Emby-Authorization", rewriteAuthorizationToken(auth, adminKey))
-				}
-			}
+// StripImageParams 移除图片处理相关参数
+//
+// emby 会根据请求中的分辨率、格式等参数对图片进行缩放/转码压缩,
+// 移除这些参数后, emby 收不到任何处理指令, 会直接返回原始图片文件
+//
+// emby 服务端解析参数时大小写不敏感, 这里同样按大小写不敏感匹配移除
+//
+// tag 参数保留, 用于图片版本变更时的缓存刷新; index 参数保留, 用于多图类型的选图
+func StripImageParams(q url.Values) {
+	for key := range q {
+		if _, ok := imageProcessingParams[strings.ToLower(key)]; ok {
+			q.Del(key)
 		}
 	}
 }
 
-func rewriteAuthorizationToken(authHeader, adminKey string) string {
-	reg := regexp.MustCompile(`(?i)token="[^"]+"`)
-	if reg.MatchString(authHeader) {
-		return reg.ReplaceAllString(authHeader, fmt.Sprintf(`Token="%s"`, adminKey))
-	}
-	regNoQuote := regexp.MustCompile(`(?i)token=[^,]+`)
-	if regNoQuote.MatchString(authHeader) {
-		return regNoQuote.ReplaceAllString(authHeader, fmt.Sprintf(`Token=%s`, adminKey))
-	}
-	return authHeader
+// imageProcessingParams 会使 emby 对图片进行缩放/转码压缩的请求参数, 统一小写存储
+var imageProcessingParams = map[string]struct{}{
+	"maxwidth":             {},
+	"maxheight":            {},
+	"width":                {},
+	"height":               {},
+	"quality":              {},
+	"format":               {},
+	"cropwhitespace":       {},
+	"enableimageenhancers": {},
+	"addplayedindicator":   {},
+	"percentplayed":        {},
+	"unplayedcount":        {},
+	"blur":                 {},
+	"backgroundcolor":      {},
+	"foregroundlayer":      {},
 }
 
 // ProxyOrigin 将请求代理到源服务器
@@ -244,4 +230,58 @@ func ProxyRoot(c *gin.Context) {
 	buf := bytess.CommonFixedBuffer()
 	defer buf.PutBack()
 	io.CopyBuffer(c.Writer, resp.Body, buf.Bytes())
+}
+
+// TryElevateSharedResourceCredentials 尝试为被分享的资源请求（如图片、字幕）进行管理员权限提权
+func TryElevateSharedResourceCredentials(c *gin.Context, itemId string) {
+	if itemId == "" {
+		return
+	}
+	currentUser, errUser := share.GetCurrentUser(c)
+	if errUser == nil && currentUser.Id != "" {
+		if share.IsSharedTo(itemId, currentUser.Id) {
+			adminKey := config.C.Emby.AdminApiKey
+			if adminKey != "" {
+				logs.Info("用户 %s 请求共享资源 %s 的附件/媒体流, 权限已自动提升为 Admin", currentUser.Name, itemId)
+
+				// 替换 query 中的 api_key / token 等
+				q := c.Request.URL.Query()
+				if q.Get("api_key") != "" {
+					q.Set("api_key", adminKey)
+				}
+				if q.Get("token") != "" {
+					q.Set("token", adminKey)
+				}
+				c.Request.URL.RawQuery = q.Encode()
+
+				// 替换 headers 中的 X-Emby-Token 等
+				c.Request.Header.Del("X-Emby-Token")
+				c.Request.Header.Set("X-Emby-Token", adminKey)
+
+				if c.Request.Header.Get("X-MediaBrowser-Token") != "" {
+					c.Request.Header.Set("X-MediaBrowser-Token", adminKey)
+				}
+
+				if auth := c.Request.Header.Get("Authorization"); auth != "" {
+					c.Request.Header.Set("Authorization", rewriteAuthorizationToken(auth, adminKey))
+				}
+
+				if auth := c.Request.Header.Get("X-Emby-Authorization"); auth != "" {
+					c.Request.Header.Set("X-Emby-Authorization", rewriteAuthorizationToken(auth, adminKey))
+				}
+			}
+		}
+	}
+}
+
+func rewriteAuthorizationToken(authHeader, adminKey string) string {
+	reg := regexp.MustCompile(`(?i)token="[^"]+"`)
+	if reg.MatchString(authHeader) {
+		return reg.ReplaceAllString(authHeader, fmt.Sprintf(`Token="%s"`, adminKey))
+	}
+	regNoQuote := regexp.MustCompile(`(?i)token=[^,]+`)
+	if regNoQuote.MatchString(authHeader) {
+		return regNoQuote.ReplaceAllString(authHeader, fmt.Sprintf(`Token=%s`, adminKey))
+	}
+	return authHeader
 }

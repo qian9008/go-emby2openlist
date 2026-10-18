@@ -105,9 +105,16 @@ func Redirect2OpenlistLink(c *gin.Context) {
 		return
 	}
 
-	// 5 如果是本地地址, 回源处理
+	// 5 如果是本地地址
 	if config.C.Emby.IsLocalMediaPath(embyPath) {
-		logs.Info("本地媒体: %s, 回源处理", embyPath)
+		if shouldRedirectDirectly(c, config.C.Emby.Host) {
+			logs.Info("本地媒体: %s, 检测到 Emby 服务端与 ge2o 同源: %s, 重定向处理", embyPath, config.C.Emby.Host)
+			c.Redirect(http.StatusTemporaryRedirect, config.C.Emby.Host+c.Request.RequestURI)
+			return
+		}
+		// 如果是外网，由于无法直连内网端口，我们返回原有的 original 路径进行代理回源播放
+		// （因为有底层的 Context 机制保护，所以即使代理也不会发生内存暴涨）
+		logs.Info("本地媒体: %s, 代理回源", embyPath)
 		newUri := strings.Replace(c.Request.RequestURI, "stream", "original", 1)
 		newUri = strings.Replace(newUri, "universal", "original", 1)
 		c.Redirect(http.StatusTemporaryRedirect, newUri)
@@ -187,10 +194,19 @@ func ProxyOriginalResource(c *gin.Context) {
 		return
 	}
 
-	// 如果是本地媒体, 代理回源
+	// 如果是本地媒体
 	if config.C.Emby.IsLocalMediaPath(embyPath) {
+		if shouldRedirectDirectly(c, config.C.Emby.Host) {
+			logs.Info("本地媒体: %s, 检测到 Emby 服务端与 ge2o 同源: %s, 重定向处理", embyPath, config.C.Emby.Host)
+			c.Redirect(http.StatusTemporaryRedirect, config.C.Emby.Host+c.Request.RequestURI)
+			return
+		}
+		// 外网请求，执行代理回源
+		logs.Info("本地媒体: %s, 代理回源", embyPath)
+		// dev: 代理回源前将 original 路径改写为 stream（share 拦截场景）
 		c.Request.URL.Path = strings.Replace(c.Request.URL.Path, "original", "stream", 1)
 		c.Request.RequestURI = strings.Replace(c.Request.RequestURI, "original", "stream", 1)
+
 		ProxyOrigin(c)
 		return
 	}
@@ -251,4 +267,48 @@ func getFinalRedirectLink(originLink string, header http.Header) string {
 	}
 
 	return finalLink
+}
+
+// shouldRedirectDirectly 判断客户端请求的主机名是否与配置的 Emby 服务器主机名一致
+func shouldRedirectDirectly(c *gin.Context, rawEmbyHost string) bool {
+	// 1. 提取客户端请求的 Hostname（优先处理反向代理头）
+	clientHost := c.GetHeader("X-Forwarded-Host")
+	if clientHost == "" {
+		clientHost = c.Request.Host
+	}
+
+	// 清理客户端 Host 中的端口号（如 "192.168.1.100:8080" -> "192.168.1.100"）
+	if idx := strings.Index(clientHost, ":"); idx != -1 {
+		clientHost = clientHost[:idx]
+	}
+	clientHost = strings.TrimSpace(clientHost)
+
+	// 2. 提取配置中 Emby Host 的 Hostname（如 "http://192.168.1.100:8096" -> "192.168.1.100"）
+	embyHost := extractHostname(rawEmbyHost)
+
+	if clientHost == "" || embyHost == "" {
+		return false
+	}
+
+	// 3. 忽略大小写比对两者 Hostname
+	return strings.EqualFold(clientHost, embyHost)
+}
+
+// extractHostname 安全解析 url 格式的主机名
+func extractHostname(rawUrl string) string {
+	if rawUrl == "" {
+		return ""
+	}
+
+	// 若配置未带协议前缀（如仅填了 "192.168.1.100:8096"），补全便于 net/url 解析
+	if !strings.HasPrefix(rawUrl, "http://") && !strings.HasPrefix(rawUrl, "https://") {
+		rawUrl = "http://" + rawUrl
+	}
+
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return ""
+	}
+
+	return u.Hostname()
 }

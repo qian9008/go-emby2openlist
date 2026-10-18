@@ -16,6 +16,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ptrStr 返回字符串指针，便于在测试中为 *string 字段赋值
+func ptrStr(s string) *string { return &s }
+
 // TestShareIntegration 集成测试: 验证无权用户 B 访问分享视频时的权限穿透与提权
 func TestShareIntegration(t *testing.T) {
 	gin.SetMode(gin.TestMode)
@@ -105,6 +108,7 @@ func TestShareIntegration(t *testing.T) {
 		Emby: &config.Emby{
 			Host:        mockEmby.URL,
 			AdminApiKey: "key_admin",
+			ApiPrefix:   ptrStr("/emby"), // 本测试模拟 Emby 后端，保留 /emby 前缀
 		},
 		VideoPreview: &config.VideoPreview{
 			Enable: false,

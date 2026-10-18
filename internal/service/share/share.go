@@ -54,8 +54,8 @@ type EmbyUser struct {
 
 // store 内存分享数据存储, 受 mu 读写锁保护
 var store struct {
-	mu     sync.RWMutex
-	items  []ShareItem
+	mu    sync.RWMutex
+	items []ShareItem
 }
 
 // dataFilePath 返回 shares.json 的绝对路径
@@ -127,9 +127,9 @@ func CreateShares(mediaId string, owner EmbyUser, targets []EmbyUser) int {
 			Id:             baseId + int64(i),
 			MediaId:        mediaId,
 			OwnerUserId:    owner.Id,
-			OwnerUsername:   owner.Name,
+			OwnerUsername:  owner.Name,
 			TargetUserId:   target.Id,
-			TargetUsername:  target.Name,
+			TargetUsername: target.Name,
 			CreatedAt:      now,
 			ExpireAt:       "",
 			Status:         1,
@@ -288,8 +288,8 @@ func GetCurrentUser(c *gin.Context) (EmbyUser, error) {
 		return EmbyUser{}, fmt.Errorf("请求中未携带有效的 API Key")
 	}
 
-	// 调用 Emby 的 /Users/Me 或 /emby/Users/Me 接口获取当前用户信息
-	url := config.C.Emby.Host + "/emby/Users/Me?api_key=" + apiKey
+	// 调用后端服务器的当前用户接口（/Users/Me，Emby 下为 /emby/Users/Me，Jellyfin 下为根路径）
+	url := config.C.Emby.ApiURL("/Users/Me?api_key=" + apiKey)
 	resp, err := https.Get(url).Do()
 	if err != nil {
 		return EmbyUser{}, fmt.Errorf("查询 Emby 用户信息失败: %v", err)
@@ -324,7 +324,7 @@ func GetAllEmbyUsers() ([]EmbyUser, error) {
 		return nil, fmt.Errorf("未配置 emby.admin-api-key, 无法获取用户列表")
 	}
 
-	url := config.C.Emby.Host + "/emby/Users?api_key=" + adminKey
+	url := config.C.Emby.ApiURL("/Users?api_key=" + adminKey)
 	resp, err := https.Get(url).Do()
 	if err != nil {
 		return nil, fmt.Errorf("查询 Emby 用户列表失败: %v", err)
@@ -397,9 +397,9 @@ func GetItemInfoByAdmin(itemId string) (json.RawMessage, error) {
 		return nil, fmt.Errorf("获取管理员用户 ID 失败: %v", err)
 	}
 
-	// Emby/Jellyfin 不支持不带 UserId 的直接详情查询 (/emby/Items/...)，会返回 400 错
-	// 必须拼装为包含真实管理员 UserId 的标准端点：/emby/Users/{UserId}/Items/{ItemId}
-	url := config.C.Emby.Host + "/emby/Users/" + userId + "/Items/" + itemId + "?api_key=" + adminKey
+	// Emby/Jellyfin 不支持不带 UserId 的直接详情查询 (/Items/...)，会返回 400 错
+	// 必须拼装为包含真实管理员 UserId 的标准端点：/Users/{UserId}/Items/{ItemId}
+	url := config.C.Emby.ApiURL("/Users/" + userId + "/Items/" + itemId + "?api_key=" + adminKey)
 	resp, err := https.Get(url).Do()
 	if err != nil {
 		return nil, fmt.Errorf("查询 Emby 媒体信息失败: %v", err)
@@ -432,4 +432,3 @@ func AddDebugLog(format string, args ...any) {
 		DebugLogs = DebugLogs[1:]
 	}
 }
-

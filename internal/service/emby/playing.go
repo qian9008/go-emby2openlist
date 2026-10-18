@@ -103,11 +103,11 @@ func sendPlayingProgress(kType ApiKeyType, kName, apiKey string, body *jsons.Ite
 	}
 
 	logs.Tip("开始发送辅助 Progress 进度记录, 内容: %v", body)
-	if err := inner(config.C.Emby.Host + "/emby/Sessions/Playing/Progress"); err != nil {
+	if err := inner(config.C.Emby.ApiURL("/Sessions/Playing/Progress")); err != nil {
 		logs.Warn("辅助发送 Progress 进度记录失败: %v", err)
 		return
 	}
-	if err := inner(config.C.Emby.Host + "/emby/Sessions/Playing/Stopped"); err != nil {
+	if err := inner(config.C.Emby.ApiURL("/Sessions/Playing/Stopped")); err != nil {
 		logs.Warn("辅助发送 Progress 进度记录失败: %v", err)
 		return
 	}

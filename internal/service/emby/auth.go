@@ -18,10 +18,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AuthUri 鉴权地址
+// AuthUri 鉴权地址路径（不含前缀，前缀由 config.C.Emby.ApiPrefix 决定）
 //
-// 通过此 uri, 可以判断出客户端传递的 api_key 是否是被 emby 服务器认可的
-const AuthUri = "/emby/Auth/Keys"
+// 通过此 uri, 可以判断出客户端传递的 api_key 是否是被后端服务器认可的
+const AuthUri = "/Auth/Keys"
 
 // validApiKeys 已经校验通过的 api_key, 下次就不再校验
 //
@@ -111,7 +111,7 @@ func ApiKeyChecker() gin.HandlerFunc {
 		}
 
 		// 4 发出请求, 验证 api_key
-		u := config.C.Emby.Host + AuthUri
+		u := config.C.Emby.ApiURL(AuthUri)
 		var header http.Header
 		if kType == Query {
 			u = urls.AppendArgs(u, kName, apiKey)

@@ -53,6 +53,13 @@ type Emby struct {
 	ProxyErrorStrategy PeStrategy `yaml:"proxy-error-strategy"`
 	// ImagesQuality 图片质量
 	ImagesQuality int `yaml:"images-quality"`
+	// ImagesOriginal 是否返回原图
+	ImagesOriginal bool `yaml:"images-original"`
+	// ApiPrefix 后端服务器 API 路径前缀
+	// 使用 *string 以区分「未配置」与「显式置空」：
+	//   - 未配置（nil）：按 Emby 默认 /emby；
+	//   - 显式配置为空字符串 ""：连接 Jellyfin 10.9+（已移除 /emby 兼容性前缀）。
+	ApiPrefix *string `yaml:"api-prefix"`
 	// Strm strm 配置
 	Strm *Strm `yaml:"strm"`
 	// DownloadStrategy 下载接口响应策略
@@ -67,6 +74,14 @@ func (e *Emby) Init() error {
 	if strs.AnyEmpty(e.Host) {
 		return errors.New("emby.host 配置不能为空")
 	}
+	if e.ApiPrefix == nil {
+		// 未配置时默认按 Emby 的 /emby 前缀；
+		// 连接 Jellyfin 时须在配置中显式配置 api-prefix: ""（空字符串，非缺失）
+		p := "/emby"
+		e.ApiPrefix = &p
+	}
+	normalized := normalizeApiPrefix(*e.ApiPrefix)
+	e.ApiPrefix = &normalized
 	if strs.AnyEmpty(string(e.ProxyErrorStrategy)) {
 		// 失败默认回源
 		e.ProxyErrorStrategy = PeStrategyOrigin
@@ -109,6 +124,31 @@ func (e *Emby) Init() error {
 	}
 
 	return nil
+}
+
+// normalizeApiPrefix 规整 API 前缀：保证以单个 / 开头、且不以 / 结尾。
+// 空字符串表示不使用任何前缀（Jellyfin 的根路径风格）。
+func normalizeApiPrefix(prefix string) string {
+	prefix = strings.TrimSpace(prefix)
+	if prefix == "" {
+		return ""
+	}
+	if !strings.HasPrefix(prefix, "/") {
+		prefix = "/" + prefix
+	}
+	prefix = strings.TrimRight(prefix, "/")
+	return prefix
+}
+
+// ApiURL 拼接后端服务器 API 完整地址，自动附加 ApiPrefix。
+// 例如 Host=http://x:8096、ApiPrefix=/emby、path=/Users/Me
+// 得到 http://x:8096/emby/Users/Me；ApiPrefix 为空时得到 http://x:8096/Users/Me。
+func (e *Emby) ApiURL(path string) string {
+	prefix := ""
+	if e.ApiPrefix != nil {
+		prefix = *e.ApiPrefix
+	}
+	return e.Host + prefix + path
 }
 
 // IsLocalMediaPath 判断路径是否为本地媒体路径

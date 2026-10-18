@@ -1,7 +1,7 @@
 package constant
 
 const (
-	CurrentVersion = "v2.8.1"
+	CurrentVersion = "v2.9.0"
 	RepoAddr       = "https://github.com/AmbitiousJun/go-emby2openlist"
 )
 
@@ -48,7 +48,6 @@ const (
 
 	Reg_All = `.*`
 )
-
 
 const (
 	Route_SelfBase                = "/ge2o"
