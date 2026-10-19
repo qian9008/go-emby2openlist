@@ -285,33 +285,60 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 			return err
 		}
 
-		// 列表页同步时直接发起缩略图异步下载
-		if config.C.Openlist.Enable365 {
-			// 1. 获取同名 jpg 图片的绝对路径
+		// 列表页同步时直接发起缩略图生成
+		// 重要: 合并上游时曾误删「列表 Thumb 内联下载」, 改为仅依赖 365 插件钩子
+		// (FetchFsGet 的 res.Thumb)。若所用 openlist 在 /api/fs/get 不返回 thumb
+		// (仅 /api/fs/list 返回), 非排除路径将完全无图。现恢复列表 Thumb 内联下载
+		// 作为主链路, 365 插件与 ffmpeg 作为补充, 三者均先检查 jpg 是否已存在再写, 避免竞态覆盖。
+		if config.C.Openlist.Enable365 || config.C.Openlist.LocalTreeGen.FFmpegEnable {
+			// 1. 获取同名 jpg 图片的绝对路径 (与 365 插件/媒体文件同目录)
 			baseName := filepath.Base(localAbsPath)
 			if idx := strings.LastIndex(baseName, "."); idx != -1 {
 				baseName = baseName[:idx]
 			}
 			jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
 
-			// 2. 检查本地图片是否已经存在，不存在则开启异步协程下载
+			// 2. 本地图片不存在时才异步生成
 			if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
-				if config.C.Openlist.IsExclude365Path(task.Path) {
-					if config.C.Openlist.LocalTreeGen.FFmpegEnable {
-						go func(t FileTask, destJpgPath string) {
-							pic, err := ffmpeg.ExtractVideoCover(getRealDownloadUrl(t))
-							if err == nil && len(pic) > 0 {
-								os.WriteFile(destJpgPath, pic, os.ModePerm)
-							}
-						}(*task, jpgPath)
-					}
-				} else {
-					// 非排除路径交由 365 缩略图插件处理：
-					// 主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks，
-					// 由插件完成缩略图分辨率改写(500x500)与下载，避免在此重复实现下载逻辑。
-					go func(taskPath string) {
+				isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
+
+				// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
+				//     列表响应已携带 thumb 链接 (task.Thumb), 直接下载,
+				//     不依赖二次 fs/get, 对「fs/get 不回 thumb」的 openlist 版本兼容性最好。
+				//     排除路径不走此路, 改由 ffmpeg 兜底, 避免依赖远程 365 缩略图。
+				if !isExcluded && task.Thumb != "" {
+					go openlist.Download365Thumb(task.Path, task.Thumb, filepath.Base(task.Path))
+				}
+
+				// 2.2 365 插件钩子（补充）: 非排除路径且启用 365 时,
+				//     主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks,
+				//     由其完成缩略图分辨率改写(500x500)与下载。
+				if config.C.Openlist.Enable365 && !isExcluded {
+					go func(taskPath, destJpgPath string) {
+						if _, e := os.Stat(destJpgPath); e == nil {
+							return
+						}
 						openlist.FetchFsGet(taskPath, nil)
-					}(task.Path)
+					}(task.Path, jpgPath)
+				}
+
+				// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录
+				//     抽帧生成封面; 其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
+				//     注意: 排除目录因 365 无法处理 (本地/局域网直链), 才用 ffmpeg 兜底抽帧。
+				if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
+					go func(t FileTask, destJpgPath string) {
+						if _, e := os.Stat(destJpgPath); e == nil {
+							return
+						}
+						pic, err := ffmpeg.ExtractVideoCover(getRealDownloadUrl(t))
+						if err != nil || len(pic) == 0 {
+							return
+						}
+						// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
+						if _, e := os.Stat(destJpgPath); e != nil {
+							os.WriteFile(destJpgPath, pic, os.ModePerm)
+						}
+					}(*task, jpgPath)
 				}
 			}
 		}
