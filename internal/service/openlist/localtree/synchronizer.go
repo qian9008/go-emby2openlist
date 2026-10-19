@@ -299,10 +299,12 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 			jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
 
 			// 2. 本地图片不存在时才异步生成
-			if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
-				isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
+		if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
+			isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
+			// [thumb-debug] 临时诊断日志: 观察每个文件的判定与 ffmpeg 结果, 定位后删除
+			logf(colors.Yellow, "[thumb-debug] path=%s excluded=%v ffmpeg=%v enable365=%v hasThumb=%v", task.Path, isExcluded, config.C.Openlist.LocalTreeGen.FFmpegEnable, config.C.Openlist.Enable365, task.Thumb != "")
 
-				// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
+			// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
 				//     列表响应已携带 thumb 链接 (task.Thumb), 直接下载,
 				//     不依赖二次 fs/get, 对「fs/get 不回 thumb」的 openlist 版本兼容性最好。
 				//     排除路径不走此路, 改由 ffmpeg 兜底, 避免依赖远程 365 缩略图。
@@ -325,21 +327,29 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 				// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录
 				//     抽帧生成封面; 其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
 				//     注意: 排除目录因 365 无法处理 (本地/局域网直链), 才用 ffmpeg 兜底抽帧。
-				if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
-					go func(t FileTask, destJpgPath string) {
-						if _, e := os.Stat(destJpgPath); e == nil {
-							return
+			if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
+				go func(t FileTask, destJpgPath string) {
+					if _, e := os.Stat(destJpgPath); e == nil {
+						logf(colors.Gray, "[thumb-debug] 已存在跳过: %s", destJpgPath)
+						return
+					}
+					dlUrl := getRealDownloadUrl(t)
+					logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s url=%s", t.Path, dlUrl)
+					pic, err := ffmpeg.ExtractVideoCover(dlUrl)
+					if err != nil || len(pic) == 0 {
+						logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s err=%v size=%d", t.Path, err, len(pic))
+						return
+					}
+					// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
+					if _, e := os.Stat(destJpgPath); e != nil {
+						if werr := os.WriteFile(destJpgPath, pic, os.ModePerm); werr != nil {
+							logf(colors.Red, "[thumb-debug] 写文件失败: %v", werr)
+						} else {
+							logf(colors.Green, "[thumb-debug] ffmpeg 抽帧成功: %s", destJpgPath)
 						}
-						pic, err := ffmpeg.ExtractVideoCover(getRealDownloadUrl(t))
-						if err != nil || len(pic) == 0 {
-							return
-						}
-						// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
-						if _, e := os.Stat(destJpgPath); e != nil {
-							os.WriteFile(destJpgPath, pic, os.ModePerm)
-						}
-					}(*task, jpgPath)
-				}
+					}
+				}(*task, jpgPath)
+			}
 			}
 		}
 
