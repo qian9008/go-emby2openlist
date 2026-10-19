@@ -84,6 +84,16 @@ func (r *RequestHolder) Header(header http.Header) *RequestHolder {
 	return r
 }
 
+// EmbyAuth 附加兼容 Emby 与 Jellyfin(含 12.x) 的鉴权头 Authorization: MediaBrowser Token="..."。
+// 旧版 ?api_key= / X-Emby-Token 仍由调用方自行保留，本方法只做补充，Emby 不会回归。
+// apiKey 为空时不做任何操作。
+func (r *RequestHolder) EmbyAuth(apiKey string) *RequestHolder {
+	if v := EmbyAuthHeaderValue(apiKey); v != "" {
+		r.AddHeader("Authorization", v)
+	}
+	return r
+}
+
 // Body 设置请求体
 func (r *RequestHolder) Body(body io.ReadCloser) *RequestHolder {
 	r.body = body

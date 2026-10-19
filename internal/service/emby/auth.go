@@ -119,6 +119,13 @@ func ApiKeyChecker() gin.HandlerFunc {
 			header = make(http.Header)
 			header.Set(kName, apiKey)
 		}
+		// Jellyfin 12 兼容：补充 MediaBrowser 头（旧方式保留）
+		if v := https.EmbyAuthHeaderValue(apiKey); v != "" {
+			if header == nil {
+				header = make(http.Header)
+			}
+			header.Set("Authorization", v)
+		}
 		resp, err := https.Get(u).Header(header).Do()
 		if err != nil {
 			logs.Error("鉴权失败: %v", err)

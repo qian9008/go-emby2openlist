@@ -290,7 +290,7 @@ func GetCurrentUser(c *gin.Context) (EmbyUser, error) {
 
 	// 调用后端服务器的当前用户接口（/Users/Me，Emby 下为 /emby/Users/Me，Jellyfin 下为根路径）
 	url := config.C.Emby.ApiURL("/Users/Me?api_key=" + apiKey)
-	resp, err := https.Get(url).Do()
+	resp, err := https.Get(url).EmbyAuth(apiKey).Do()
 	if err != nil {
 		return EmbyUser{}, fmt.Errorf("查询 Emby 用户信息失败: %v", err)
 	}
@@ -325,7 +325,7 @@ func GetAllEmbyUsers() ([]EmbyUser, error) {
 	}
 
 	url := config.C.Emby.ApiURL("/Users?api_key=" + adminKey)
-	resp, err := https.Get(url).Do()
+	resp, err := https.Get(url).EmbyAuth(adminKey).Do()
 	if err != nil {
 		return nil, fmt.Errorf("查询 Emby 用户列表失败: %v", err)
 	}
@@ -400,7 +400,7 @@ func GetItemInfoByAdmin(itemId string) (json.RawMessage, error) {
 	// Emby/Jellyfin 不支持不带 UserId 的直接详情查询 (/Items/...)，会返回 400 错
 	// 必须拼装为包含真实管理员 UserId 的标准端点：/Users/{UserId}/Items/{ItemId}
 	url := config.C.Emby.ApiURL("/Users/" + userId + "/Items/" + itemId + "?api_key=" + adminKey)
-	resp, err := https.Get(url).Do()
+	resp, err := https.Get(url).EmbyAuth(adminKey).Do()
 	if err != nil {
 		return nil, fmt.Errorf("查询 Emby 媒体信息失败: %v", err)
 	}

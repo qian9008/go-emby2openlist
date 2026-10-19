@@ -130,6 +130,13 @@ func ProxyOrigin(c *gin.Context) {
 	c.Request.Header.Set("X-Forwarded-For", c.ClientIP())
 	c.Request.Header.Set("X-Real-IP", c.ClientIP())
 
+	// Jellyfin 12 默认禁用旧的 X-Emby-Token / api_key，需把生效令牌镜像成
+	// Authorization: MediaBrowser Token="..."，旧头/参数保留不动（Emby 仍可用）。
+	// 此时 c.Request 上的 X-Emby-Token 可能已被分享提权改写为管理员 Key，故直接采用之。
+	if token := https.ExtractEmbyToken(c.Request); token != "" {
+		c.Request.Header.Set("Authorization", https.EmbyAuthHeaderValue(token))
+	}
+
 	if err := https.ProxyPass(c.Request, c.Writer, origin); err != nil {
 		logs.Error("代理异常: %v", err)
 	}

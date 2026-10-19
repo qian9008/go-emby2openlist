@@ -91,6 +91,8 @@ func sendPlayingProgress(kType ApiKeyType, kName, apiKey string, body *jsons.Ite
 		} else {
 			header.Set(kName, apiKey)
 		}
+		// Jellyfin 12 兼容：补充 MediaBrowser 头（旧方式保留）
+		header.Set("Authorization", https.EmbyAuthHeaderValue(apiKey))
 		resp, err := https.Post(remote).Header(header).Body(io.NopCloser(bytes.NewBuffer([]byte(body.String())))).Do()
 		if err != nil {
 			return err

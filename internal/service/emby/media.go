@@ -44,6 +44,8 @@ func getEmbyFileLocalPath(itemInfo ItemInfo) (string, error) {
 		// 如果是 query 格式的 api key, 则往请求头中补充信息
 		header = http.Header{HeaderFullAuthName: []string{"Token=" + itemInfo.ApiKey}}
 	}
+	// Jellyfin 12 兼容：统一补充标准 MediaBrowser 头（旧方式保留）
+	header.Set("Authorization", https.EmbyAuthHeaderValue(itemInfo.ApiKey))
 
 	innerRequest := func(method string) (*http.Response, error) {
 		resp, err := https.Request(method, config.C.Emby.Host+itemInfo.PlaybackInfoUri).Header(header).Do()
