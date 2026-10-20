@@ -248,6 +248,26 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		return nil
 	}
 
+	// resolveFFmpegInput 获取 ffmpeg 抽帧的真实输入源。
+	// strm 容器: 本地是 .strm 指针文件, 其文件内容即写入时已由播放器验证可用的真实下载地址,
+	//	优先读取该 URL 作为抽帧输入; 读取失败再退回重建 openlist 直链。
+	// 其余容器 (虚拟/音乐等): 退回重建 openlist 直链。
+	resolveFFmpegInput := func(task *FileTask, localAbsPath string) (string, string) {
+		if task == nil {
+			return "", ""
+		}
+		if strings.EqualFold(filepath.Ext(localAbsPath), ".strm") {
+			if data, err := os.ReadFile(localAbsPath); err == nil {
+				if u := strings.TrimSpace(string(data)); u != "" {
+					return u, "strm"
+				}
+			}
+			// 读取失败退回重建直链
+			return getRealDownloadUrl(sw.OpenlistPath(*task)), "rebuild"
+		}
+		return getRealDownloadUrl(sw.OpenlistPath(*task)), "rebuild"
+	}
+
 	// tryGenerateThumbnail 为指定文件尝试生成同名缩略图 (jpg)。
 	// 无论文件是本次新写入还是此前已存在, 只要同名 jpg 不存在就会尝试,
 	// 因此重跑同步 (新增:0) 也能补齐此前缺失的缩略图。
@@ -297,13 +317,19 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录抽帧生成封面;
 		//     其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
 		if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
-			go func(t FileTask, destJpgPath string) {
+			go func(t FileTask, destJpgPath, localPath string) {
 				if _, e := os.Stat(destJpgPath); e == nil {
 					logf(colors.Gray, "[thumb-debug] 已存在跳过: %s", destJpgPath)
 					return
 				}
-				dlUrl := getRealDownloadUrl(t)
-				logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s url=%s", t.Path, dlUrl)
+				// 输入源: 优先读取本地 .strm 文件内容 (即写入时已由播放器验证可用的真实下载地址),
+				// 避免用当前列表 sign 重建可能失效/不匹配的直链导致抽到 0 字节。
+				dlUrl, src := resolveFFmpegInput(&t, localPath)
+				if dlUrl == "" {
+					logf(colors.Red, "[thumb-debug] 无法获取抽帧输入: %s", t.Path)
+					return
+				}
+				logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s src=%s url=%s", t.Path, src, dlUrl)
 				pic, err := ffmpeg.ExtractVideoCover(dlUrl)
 				if err != nil || len(pic) == 0 {
 					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s err=%v size=%d", t.Path, err, len(pic))
@@ -317,7 +343,7 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 						logf(colors.Green, "[thumb-debug] ffmpeg 抽帧成功: %s", destJpgPath)
 					}
 				}
-			}(*task, jpgPath)
+			}(*task, jpgPath, localAbsPath)
 		}
 	}
 

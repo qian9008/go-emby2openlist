@@ -115,7 +115,7 @@ func (vw *VirtualWriter) Write(task FileTask, localPath string) error {
 
 	var info ffmpeg.Info
 	err := trys.Try(func() (err error) {
-		info, err = ffmpeg.InspectInfo(getRealDownloadUrl(task))
+		info, err = ffmpeg.InspectInfo(getRealDownloadUrl(sw.OpenlistPath(task)))
 		return
 	}, 3, time.Second)
 	if err != nil {
@@ -192,7 +192,7 @@ func (mw *MusicWriter) Write(task FileTask, localPath string) error {
 
 	var meta ffmpeg.Music
 	err := trys.Try(func() (err error) {
-		meta, err = ffmpeg.InspectMusic(getRealDownloadUrl(task))
+		meta, err = ffmpeg.InspectMusic(getRealDownloadUrl(sw.OpenlistPath(task)))
 		return
 	}, 3, time.Second)
 	if err != nil {
@@ -204,7 +204,7 @@ func (mw *MusicWriter) Write(task FileTask, localPath string) error {
 
 	var pic []byte
 	err = trys.Try(func() (err error) {
-		pic, err = ffmpeg.ExtractMusicCover(getRealDownloadUrl(task))
+		pic, err = ffmpeg.ExtractMusicCover(getRealDownloadUrl(sw.OpenlistPath(task)))
 		return
 	}, 3, time.Second)
 	if err != nil {
@@ -274,11 +274,9 @@ func (rw *RawWriter) Write(task FileTask, localPath string) error {
 	return err
 }
 
-// getRealDownloadUrl 获取真实的下载链接，跟随 302 跳转
-func getRealDownloadUrl(task FileTask) string {
-	// 构建 openlist 的 /d/ 路径
-	openlistUrl := sw.OpenlistPath(task)
-
+// getRealDownloadUrl 解析 openlist 直链 (/d/ 路径), 跟随 302 跳转到真实下载地址。
+// 入参为 openlist 的 /d/ 下载地址 (例如 StrmWriter.OpenlistPath 生成的地址)。
+func getRealDownloadUrl(openlistUrl string) string {
 	// 发送请求并跟随重定向
 	finalUrl, resp, err := https.
 		Get(openlistUrl).
