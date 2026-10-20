@@ -248,6 +248,79 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		return nil
 	}
 
+	// tryGenerateThumbnail 为指定文件尝试生成同名缩略图 (jpg)。
+	// 无论文件是本次新写入还是此前已存在, 只要同名 jpg 不存在就会尝试,
+	// 因此重跑同步 (新增:0) 也能补齐此前缺失的缩略图。
+	// 三条来源: 列表 Thumb 内联下载(主, 非排除) / 365 插件钩子(辅, 非排除) / ffmpeg 抽帧(排除路径兜底)。
+	tryGenerateThumbnail := func(task *FileTask, localAbsPath string) {
+		if task == nil {
+			return
+		}
+		if !config.C.Openlist.Enable365 && !config.C.Openlist.LocalTreeGen.FFmpegEnable {
+			return
+		}
+
+		// 1. 同名 jpg 的绝对路径 (与媒体文件/365 插件同目录)
+		baseName := filepath.Base(localAbsPath)
+		if idx := strings.LastIndex(baseName, "."); idx != -1 {
+			baseName = baseName[:idx]
+		}
+		jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
+
+		// 2. 本地图片已存在则跳过 (避免重复抽帧/下载)
+		if _, errJpg := os.Stat(jpgPath); !os.IsNotExist(errJpg) {
+			return
+		}
+
+		isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
+		// [thumb-debug] 临时诊断日志: 观察每个文件的判定与 ffmpeg 结果, 定位后删除
+		logf(colors.Yellow, "[thumb-debug] path=%s excluded=%v ffmpeg=%v enable365=%v hasThumb=%v", task.Path, isExcluded, config.C.Openlist.LocalTreeGen.FFmpegEnable, config.C.Openlist.Enable365, task.Thumb != "")
+
+		// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
+		//     列表响应已携带 thumb 链接 (task.Thumb), 直接下载, 不依赖二次 fs/get;
+		//     排除路径不走此路, 改由 ffmpeg 兜底。
+		if !isExcluded && task.Thumb != "" {
+			go openlist.Download365Thumb(task.Path, task.Thumb, filepath.Base(task.Path))
+		}
+
+		// 2.2 365 插件钩子（补充）: 非排除路径且启用 365 时,
+		//     主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks, 由其完成缩略图下载。
+		if config.C.Openlist.Enable365 && !isExcluded {
+			go func(taskPath, destJpgPath string) {
+				if _, e := os.Stat(destJpgPath); e == nil {
+					return
+				}
+				openlist.FetchFsGet(taskPath, nil)
+			}(task.Path, jpgPath)
+		}
+
+		// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录抽帧生成封面;
+		//     其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
+		if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
+			go func(t FileTask, destJpgPath string) {
+				if _, e := os.Stat(destJpgPath); e == nil {
+					logf(colors.Gray, "[thumb-debug] 已存在跳过: %s", destJpgPath)
+					return
+				}
+				dlUrl := getRealDownloadUrl(t)
+				logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s url=%s", t.Path, dlUrl)
+				pic, err := ffmpeg.ExtractVideoCover(dlUrl)
+				if err != nil || len(pic) == 0 {
+					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s err=%v size=%d", t.Path, err, len(pic))
+					return
+				}
+				// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
+				if _, e := os.Stat(destJpgPath); e != nil {
+					if werr := os.WriteFile(destJpgPath, pic, os.ModePerm); werr != nil {
+						logf(colors.Red, "[thumb-debug] 写文件失败: %v", werr)
+					} else {
+						logf(colors.Green, "[thumb-debug] ffmpeg 抽帧成功: %s", destJpgPath)
+					}
+				}
+			}(*task, jpgPath)
+		}
+	}
+
 	// handleFile 处理文件, 根据容器类型以不同方式写入本地
 	handleFile := func(task *FileTask) error {
 		if task == nil {
@@ -265,9 +338,10 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		stat, err := os.Stat(localAbsPath)
 		if err == nil {
 			if !stat.IsDir() {
-				// 文件已存在
-				// 根据本地文件的修改时间和远程文件的修改时间判断文件是否发生变更
+				// 文件已存在: 若本地修改时间晚于远端, 视为未变更, 跳过写入。
+				// 但仍需确保缩略图存在 —— 即便本次未写入 (新增:0), 缺失的图也要补生成。
 				if stat.ModTime().After(task.Modified) {
+					tryGenerateThumbnail(task, localAbsPath)
 					return nil
 				}
 			}
@@ -285,73 +359,8 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 			return err
 		}
 
-		// 列表页同步时直接发起缩略图生成
-		// 重要: 合并上游时曾误删「列表 Thumb 内联下载」, 改为仅依赖 365 插件钩子
-		// (FetchFsGet 的 res.Thumb)。若所用 openlist 在 /api/fs/get 不返回 thumb
-		// (仅 /api/fs/list 返回), 非排除路径将完全无图。现恢复列表 Thumb 内联下载
-		// 作为主链路, 365 插件与 ffmpeg 作为补充, 三者均先检查 jpg 是否已存在再写, 避免竞态覆盖。
-		if config.C.Openlist.Enable365 || config.C.Openlist.LocalTreeGen.FFmpegEnable {
-			// 1. 获取同名 jpg 图片的绝对路径 (与 365 插件/媒体文件同目录)
-			baseName := filepath.Base(localAbsPath)
-			if idx := strings.LastIndex(baseName, "."); idx != -1 {
-				baseName = baseName[:idx]
-			}
-			jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
-
-			// 2. 本地图片不存在时才异步生成
-		if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
-			isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
-			// [thumb-debug] 临时诊断日志: 观察每个文件的判定与 ffmpeg 结果, 定位后删除
-			logf(colors.Yellow, "[thumb-debug] path=%s excluded=%v ffmpeg=%v enable365=%v hasThumb=%v", task.Path, isExcluded, config.C.Openlist.LocalTreeGen.FFmpegEnable, config.C.Openlist.Enable365, task.Thumb != "")
-
-			// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
-				//     列表响应已携带 thumb 链接 (task.Thumb), 直接下载,
-				//     不依赖二次 fs/get, 对「fs/get 不回 thumb」的 openlist 版本兼容性最好。
-				//     排除路径不走此路, 改由 ffmpeg 兜底, 避免依赖远程 365 缩略图。
-				if !isExcluded && task.Thumb != "" {
-					go openlist.Download365Thumb(task.Path, task.Thumb, filepath.Base(task.Path))
-				}
-
-				// 2.2 365 插件钩子（补充）: 非排除路径且启用 365 时,
-				//     主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks,
-				//     由其完成缩略图分辨率改写(500x500)与下载。
-				if config.C.Openlist.Enable365 && !isExcluded {
-					go func(taskPath, destJpgPath string) {
-						if _, e := os.Stat(destJpgPath); e == nil {
-							return
-						}
-						openlist.FetchFsGet(taskPath, nil)
-					}(task.Path, jpgPath)
-				}
-
-				// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录
-				//     抽帧生成封面; 其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
-				//     注意: 排除目录因 365 无法处理 (本地/局域网直链), 才用 ffmpeg 兜底抽帧。
-			if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
-				go func(t FileTask, destJpgPath string) {
-					if _, e := os.Stat(destJpgPath); e == nil {
-						logf(colors.Gray, "[thumb-debug] 已存在跳过: %s", destJpgPath)
-						return
-					}
-					dlUrl := getRealDownloadUrl(t)
-					logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s url=%s", t.Path, dlUrl)
-					pic, err := ffmpeg.ExtractVideoCover(dlUrl)
-					if err != nil || len(pic) == 0 {
-						logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s err=%v size=%d", t.Path, err, len(pic))
-						return
-					}
-					// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
-					if _, e := os.Stat(destJpgPath); e != nil {
-						if werr := os.WriteFile(destJpgPath, pic, os.ModePerm); werr != nil {
-							logf(colors.Red, "[thumb-debug] 写文件失败: %v", werr)
-						} else {
-							logf(colors.Green, "[thumb-debug] ffmpeg 抽帧成功: %s", destJpgPath)
-						}
-					}
-				}(*task, jpgPath)
-			}
-			}
-		}
+		// 新写入的文件, 生成缩略图
+		tryGenerateThumbnail(task, localAbsPath)
 
 		return nil
 	}
