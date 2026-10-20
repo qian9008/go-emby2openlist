@@ -2,6 +2,7 @@ package ffmpeg
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -136,6 +137,13 @@ func getProxyUrlByPath(path string) string {
 	u, err := url.Parse(path)
 	if err != nil {
 		return ""
+	}
+	// 私网/本机/链路本地地址不应走代理, 否则 ffmpeg 会把 openlist 等局域网直链
+	// 误代理到外网代理, 导致拉取失败 (表现为抽帧 size=0 且无 Error opening input)。
+	if host := u.Hostname(); host != "" {
+		if ip := net.ParseIP(host); ip != nil && (ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast()) {
+			return ""
+		}
 	}
 	if u.Scheme == "http" && webproxy.HttpUrl != nil {
 		return webproxy.HttpUrl.String()

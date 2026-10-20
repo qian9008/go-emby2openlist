@@ -331,8 +331,12 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 				}
 				logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s src=%s url=%s", t.Path, src, dlUrl)
 				pic, err := ffmpeg.ExtractVideoCover(dlUrl)
-				if err != nil || len(pic) == 0 {
-					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s err=%v size=%d", t.Path, err, len(pic))
+				if err != nil {
+					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s url=%s err=%v", t.Path, dlUrl, err)
+					return
+				}
+				if len(pic) == 0 {
+					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧输出为空(可能 seek 越界/输入非视频): path=%s url=%s", t.Path, dlUrl)
 					return
 				}
 				// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
