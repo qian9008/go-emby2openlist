@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"strings"
 	"sync"
 
 	"github.com/AmbitiousJun/go-emby2openlist/v2/internal/constant"
@@ -57,7 +58,7 @@ func InspectMusic(path string) (Music, error) {
 	m := Music{}
 	wg := sync.WaitGroup{}
 	output := string(outputBytes)
-	wg.Add(11)
+	wg.Add(12)
 
 	go func() {
 		defer wg.Done()
@@ -98,6 +99,13 @@ func InspectMusic(path string) (Music, error) {
 		defer wg.Done()
 		if genreReg.MatchString(output) {
 			m.Genre = genreReg.FindStringSubmatch(output)[1]
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if albumArtistReg.MatchString(output) {
+			m.AlbumArtist = albumArtistReg.FindStringSubmatch(output)[1]
 		}
 	}()
 
@@ -147,7 +155,10 @@ func ExtractMusicCover(path string) ([]byte, error) {
 			if bytes.Contains(stderr, []byte(OpenError)) {
 				return nil, errors.New(string(stderr[bytes.Index(stderr, []byte(OpenError)):]))
 			}
+			// 其他失败 (代理连不上 / 输入非媒体 / seek 越界等) 如实返回, 避免被静默吞掉
+			return nil, fmt.Errorf("ffmpeg 抽取音乐封面失败 (stderr): %s", strings.TrimSpace(string(stderr)))
 		}
+		return nil, fmt.Errorf("ffmpeg 抽取音乐封面执行异常: %w", err)
 	}
 
 	return append([]byte(nil), outputBytes...), nil
@@ -170,7 +181,10 @@ func ExtractVideoCover(path string) ([]byte, error) {
 			if bytes.Contains(stderr, []byte(OpenError)) {
 				return nil, errors.New(string(stderr[bytes.Index(stderr, []byte(OpenError)):]))
 			}
+			// 其他失败 (代理连不上 / 输入非媒体 / seek 越界等) 如实返回, 避免被静默吞掉
+			return nil, fmt.Errorf("ffmpeg 抽帧失败 (stderr): %s", strings.TrimSpace(string(stderr)))
 		}
+		return nil, fmt.Errorf("ffmpeg 抽帧执行异常: %w", err)
 	}
 
 	return append([]byte(nil), outputBytes...), nil

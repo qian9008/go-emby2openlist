@@ -2,6 +2,7 @@ package ffmpeg
 
 import (
 	"fmt"
+	"net"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -12,20 +13,21 @@ import (
 )
 
 var (
-	durationReg   = regexp.MustCompile(`Duration: (\d+):(\d+):(\d+\.\d+)`)
-	albumReg      = regexp.MustCompile(`(?mi)^[ \t]*album\s*:\s*(.+?)\s*$`)
-	artistReg     = regexp.MustCompile(`(?mi)^[ \t]*artist\s*:\s*(.+?)\s*$`)
-	commentReg    = regexp.MustCompile(`(?mi)^[ \t]*comment\s*:\s*(.+?)\s*$`)
-	dateReg       = regexp.MustCompile(`(?mi)^[ \t]*date\s*:\s*(.+?)\s*$`)
-	titleReg      = regexp.MustCompile(`(?mi)^[ \t]*title\s*:\s*(.+?)\s*$`)
-	titleTiReg    = regexp.MustCompile(`(?mi):\s*\[ti:(.*?)\]\s*$`)
-	trackReg      = regexp.MustCompile(`(?mi)^[ \t]*track\s*:\s*(.+?)\s*$`)
-	trackTotalReg = regexp.MustCompile(`(?mi)^[ \t]*tracktotal\s*:\s*(.+?)\s*$`)
-	discReg       = regexp.MustCompile(`(?mi)^[ \t]*disc\s*:\s*(.+?)\s*$`)
-	discTotalReg  = regexp.MustCompile(`(?mi)^[ \t]*disctotal\s*:\s*(.+?)\s*$`)
-	genreReg      = regexp.MustCompile(`(?mi)^[ \t]*genre\s*:\s*(.+?)\s*$`)
-	tdorReg       = regexp.MustCompile(`(?mi)^[ \t]*tdor\s*:\s*(.+?)\s*$`)
-	lyricsReg     = regexp.MustCompile(`(?mi):\s*(\[.*?\].*?)\s*$`)
+	durationReg    = regexp.MustCompile(`Duration: (\d+):(\d+):(\d+\.\d+)`)
+	albumReg       = regexp.MustCompile(`(?mi)^[ \t]*album\s*:\s*(.+?)\s*$`)
+	artistReg      = regexp.MustCompile(`(?mi)^[ \t]*artist\s*:\s*(.+?)\s*$`)
+	commentReg     = regexp.MustCompile(`(?mi)^[ \t]*comment\s*:\s*(.+?)\s*$`)
+	dateReg        = regexp.MustCompile(`(?mi)^[ \t]*date\s*:\s*(.+?)\s*$`)
+	titleReg       = regexp.MustCompile(`(?mi)^[ \t]*title\s*:\s*(.+?)\s*$`)
+	titleTiReg     = regexp.MustCompile(`(?mi):\s*\[ti:(.*?)\]\s*$`)
+	trackReg       = regexp.MustCompile(`(?mi)^[ \t]*track\s*:\s*(.+?)\s*$`)
+	trackTotalReg  = regexp.MustCompile(`(?mi)^[ \t]*tracktotal\s*:\s*(.+?)\s*$`)
+	discReg        = regexp.MustCompile(`(?mi)^[ \t]*disc\s*:\s*(.+?)\s*$`)
+	discTotalReg   = regexp.MustCompile(`(?mi)^[ \t]*disctotal\s*:\s*(.+?)\s*$`)
+	genreReg       = regexp.MustCompile(`(?mi)^[ \t]*genre\s*:\s*(.+?)\s*$`)
+	tdorReg        = regexp.MustCompile(`(?mi)^[ \t]*tdor\s*:\s*(.+?)\s*$`)
+	lyricsReg      = regexp.MustCompile(`(?mi):\s*(\[.*?\].*?)\s*$`)
+	albumArtistReg = regexp.MustCompile(`(?mi)^[ \t]*album_artist\s*:\s*(.+?)\s*$`)
 )
 
 // resolveDuration 解析 ffmpeg 的 Duration 参数
@@ -135,6 +137,13 @@ func getProxyUrlByPath(path string) string {
 	u, err := url.Parse(path)
 	if err != nil {
 		return ""
+	}
+	// 私网/本机/链路本地地址不应走代理, 否则 ffmpeg 会把 openlist 等局域网直链
+	// 误代理到外网代理, 导致拉取失败 (表现为抽帧 size=0 且无 Error opening input)。
+	if host := u.Hostname(); host != "" {
+		if ip := net.ParseIP(host); ip != nil && (ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast()) {
+			return ""
+		}
 	}
 	if u.Scheme == "http" && webproxy.HttpUrl != nil {
 		return webproxy.HttpUrl.String()

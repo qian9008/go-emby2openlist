@@ -64,6 +64,29 @@ func (p *progressWriter) Read(buf []byte) (int, error) {
 	return n, err
 }
 
+// ensureExecutable 确保 ffmpeg 二进制具有 owner 可执行权限。
+// 某些部署环境 (如 Docker 挂载卷) 中的二进制可能缺少执行位,
+// 直接 fork/exec 会报 "permission denied"。此处主动补齐 0755;
+// 若 chmod 失败 (如只读挂载), 返回明确错误提示用户手动 chmod +x,
+// 避免运行时才静默失败。
+func ensureExecutable(path string) error {
+	stat, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+	if stat.IsDir() {
+		return fmt.Errorf("ffmpeg 二进制路径被目录占用: %s", path)
+	}
+	// 已具备 owner 执行权限则无需处理
+	if stat.Mode().Perm()&0o100 != 0 {
+		return nil
+	}
+	if err := os.Chmod(path, 0o755); err != nil {
+		return fmt.Errorf("ffmpeg 二进制缺少执行权限且自动修复失败, 请手动执行: chmod +x %s (err: %w)", path, err)
+	}
+	return nil
+}
+
 // AutoDownloadExec 自动根据系统架构下载对应版本的 ffmpeg 到数据目录下
 //
 // 下载失败只会进行日志输出, 不会影响到程序运行
@@ -85,10 +108,10 @@ func AutoDownloadExec(parentPath string) error {
 	}()
 
 	// 如果文件不存在, 触发自动下载
-	stat, err := os.Stat(execPath)
-	if err == nil {
-		if stat.IsDir() {
-			return fmt.Errorf("二进制文件路径被目录占用: %s, 请手动处理后尝试重启服务", execPath)
+	if _, err := os.Stat(execPath); err == nil {
+		// 文件存在: 检查并补齐执行权限, 避免缺少 +x 导致运行时 permission denied
+		if err := ensureExecutable(execPath); err != nil {
+			return err
 		}
 		execOk = true
 		logs.Success("ffmpeg 环境检测通过 ✓")
@@ -97,7 +120,7 @@ func AutoDownloadExec(parentPath string) error {
 
 	logs.Info("检测不到 ffmpeg 环境, 即将开始自动下载")
 
-	if err = os.MkdirAll(filepath.Dir(execPath), os.ModePerm); err != nil {
+	if err := os.MkdirAll(filepath.Dir(execPath), os.ModePerm); err != nil {
 		return fmt.Errorf("数据目录异常: %s, err: %v", filepath.Dir(execPath), err)
 	}
 
@@ -139,6 +162,12 @@ func AutoDownloadExec(parentPath string) error {
 	if downloadErr != nil {
 		os.Remove(execPath)
 		return fmt.Errorf("下载失败: %w", downloadErr)
+	}
+
+	// 下载完成后显式补齐执行权限, 防止 umask 导致缺少 +x 进而运行时 permission denied
+	if err := os.Chmod(execPath, 0o755); err != nil {
+		os.Remove(execPath)
+		return fmt.Errorf("设置 ffmpeg 可执行权限失败, 请手动 chmod +x %s (err: %w)", execPath, err)
 	}
 
 	// 标记就绪状态

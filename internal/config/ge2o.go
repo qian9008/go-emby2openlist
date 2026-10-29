@@ -16,6 +16,9 @@ type Ge2o struct {
 	PelagicaBackendPath string `yaml:"pelagica-backend-path"`
 	// PelagicaFrontendDir Pelagica 前端静态文件目录
 	PelagicaFrontendDir string `yaml:"pelagica-frontend-dir"`
+
+	// TrustedProxies 可受信任的代理网关
+	TrustedProxies []string `yaml:"trusted-proxies"`
 }
 
 func (g *Ge2o) Init() error {
@@ -39,6 +42,10 @@ func (g *Ge2o) Init() error {
 		} else if _, err := os.Stat("./pelagica/frontend/dist"); err == nil {
 			g.PelagicaFrontendDir = "./pelagica/frontend/dist"
 		}
+	}
+
+	if g.TrustedProxies == nil {
+		g.TrustedProxies = make([]string, 0)
 	}
 	return nil
 }

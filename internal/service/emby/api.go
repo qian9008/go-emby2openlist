@@ -46,6 +46,10 @@ func RawFetch(uri, method string, header http.Header, body io.ReadCloser) (model
 	if header.Get("Content-Type") == "" {
 		header.Set("Content-Type", "application/json;charset=utf-8")
 	}
+	// Jellyfin 12 兼容：若调用方通过 X-Emby-Token 传令牌，额外补充标准 MediaBrowser 头
+	if tk := header.Get("X-Emby-Token"); tk != "" {
+		header.Set("Authorization", https.EmbyAuthHeaderValue(tk))
+	}
 
 	if strings.Contains(u, "PlaybackInfo") {
 		share.AddDebugLog("[RAW_FETCH] Request URL: %s", u)

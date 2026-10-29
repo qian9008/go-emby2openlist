@@ -22,6 +22,8 @@ main
 main.exe
 pelagica-backend
 pelagica-backend.exe
+emby2openlist
+emby2openlist.exe
 
 # Shared Database and Pelagica backend data
 shares.json

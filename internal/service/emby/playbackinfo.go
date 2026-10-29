@@ -517,6 +517,8 @@ func fetchFullPlaybackInfo(itemInfo ItemInfo) (*jsons.Item, error) {
 	if itemInfo.ApiKeyType == Header {
 		header.Set(itemInfo.ApiKeyName, itemInfo.ApiKey)
 	}
+	// Jellyfin 12 兼容：补充 MediaBrowser 头（旧 X-Emby-Token 保留）
+	header.Set("Authorization", https.EmbyAuthHeaderValue(itemInfo.ApiKey))
 	resp, err := https.Post(u.String()).Header(header).Body(reqBody).Do()
 	if err != nil {
 		return nil, fmt.Errorf("获取全量 PlaybackInfo 失败: %v", err)
@@ -578,6 +580,8 @@ func fetchPlaybackInfoByAdmin(itemId string, msInfo MsInfo) (model.HttpRes[*json
 	header := make(http.Header)
 	header.Set("Content-Type", "application/json;charset=utf-8")
 	header.Set("X-Emby-Token", adminKey)
+	// Jellyfin 12 兼容：补充 MediaBrowser 头（旧 X-Emby-Token 保留）
+	header.Set("Authorization", https.EmbyAuthHeaderValue(adminKey))
 
 	body := io.NopCloser(bytes.NewBufferString(PlaybackCommonPayload))
 	

@@ -3,8 +3,6 @@ package localtree
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -88,12 +86,6 @@ func (s *Synchronizer) Sync(prefix string, apiRefreshFlag bool) (total, added, d
 	s.threadsSem = make(chan struct{}, config.C.Openlist.LocalTreeGen.Threads)
 	s.hasScanFinish, s.hasScanTotal = 0, 0
 
-	// 读取根目录放置到任务通道中
-	s.activeTaskCount = 0
-	if err := s.walkDir2SyncTasks(prefix); err != nil {
-		return 0, 0, 0, fmt.Errorf("获取 openlist 根目录异常: %w", err)
-	}
-
 	// 每隔固定时间输出一下当前的同步进度
 	ticker := time.NewTicker(time.Second * 10)
 	defer ticker.Stop()
@@ -106,6 +98,12 @@ func (s *Synchronizer) Sync(prefix string, apiRefreshFlag bool) (total, added, d
 			logf(colors.Purple, "预估同步进度 (已扫描/已发现任务数) => %d/%d (%.2f%%)", s.hasScanFinish, s.hasScanTotal, percent*100)
 		}
 	}()
+
+	// 读取根目录放置到任务通道中
+	s.activeTaskCount = 0
+	if err := s.walkDir2SyncTasks(prefix); err != nil {
+		return 0, 0, 0, fmt.Errorf("获取 openlist 根目录异常: %w", err)
+	}
 
 	// 执行同步任务
 	go s.handleSyncTasks(okTaskChan)
@@ -250,6 +248,109 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		return nil
 	}
 
+	// resolveFFmpegInput 获取 ffmpeg 抽帧的真实输入源。
+	// strm 容器: 本地是 .strm 指针文件, 其文件内容即写入时已由播放器验证可用的真实下载地址,
+	//	优先读取该 URL 作为抽帧输入; 读取失败再退回重建 openlist 直链。
+	// 其余容器 (虚拟/音乐等): 退回重建 openlist 直链。
+	resolveFFmpegInput := func(task *FileTask, localAbsPath string) (string, string) {
+		if task == nil {
+			return "", ""
+		}
+		if strings.EqualFold(filepath.Ext(localAbsPath), ".strm") {
+			if data, err := os.ReadFile(localAbsPath); err == nil {
+				if u := strings.TrimSpace(string(data)); u != "" {
+					return u, "strm"
+				}
+			}
+			// 读取失败退回重建直链
+			return getRealDownloadUrl(sw.OpenlistPath(*task)), "rebuild"
+		}
+		return getRealDownloadUrl(sw.OpenlistPath(*task)), "rebuild"
+	}
+
+	// tryGenerateThumbnail 为指定文件尝试生成同名缩略图 (jpg)。
+	// 无论文件是本次新写入还是此前已存在, 只要同名 jpg 不存在就会尝试,
+	// 因此重跑同步 (新增:0) 也能补齐此前缺失的缩略图。
+	// 三条来源: 列表 Thumb 内联下载(主, 非排除) / 365 插件钩子(辅, 非排除) / ffmpeg 抽帧(排除路径兜底)。
+	tryGenerateThumbnail := func(task *FileTask, localAbsPath string) {
+		if task == nil {
+			return
+		}
+		if !config.C.Openlist.Enable365 && !config.C.Openlist.LocalTreeGen.FFmpegEnable {
+			return
+		}
+
+		// 1. 同名 jpg 的绝对路径 (与媒体文件/365 插件同目录)
+		baseName := filepath.Base(localAbsPath)
+		if idx := strings.LastIndex(baseName, "."); idx != -1 {
+			baseName = baseName[:idx]
+		}
+		jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
+
+		// 2. 本地图片已存在则跳过 (避免重复抽帧/下载)
+		if _, errJpg := os.Stat(jpgPath); !os.IsNotExist(errJpg) {
+			return
+		}
+
+		isExcluded := config.C.Openlist.IsExclude365Path(task.Path)
+		// [thumb-debug] 临时诊断日志: 观察每个文件的判定与 ffmpeg 结果, 定位后删除
+		logf(colors.Yellow, "[thumb-debug] path=%s excluded=%v ffmpeg=%v enable365=%v hasThumb=%v", task.Path, isExcluded, config.C.Openlist.LocalTreeGen.FFmpegEnable, config.C.Openlist.Enable365, task.Thumb != "")
+
+		// 2.1 列表 Thumb 内联下载（主链路, 恢复原机制）:
+		//     列表响应已携带 thumb 链接 (task.Thumb), 直接下载, 不依赖二次 fs/get;
+		//     排除路径不走此路, 改由 ffmpeg 兜底。
+		if !isExcluded && task.Thumb != "" {
+			go openlist.Download365Thumb(task.Path, task.Thumb, filepath.Base(task.Path))
+		}
+
+		// 2.2 365 插件钩子（补充）: 非排除路径且启用 365 时,
+		//     主动请求 FsGet 详情以触发 openlist.AfterFsGetHooks, 由其完成缩略图下载。
+		if config.C.Openlist.Enable365 && !isExcluded {
+			go func(taskPath, destJpgPath string) {
+				if _, e := os.Stat(destJpgPath); e == nil {
+					return
+				}
+				openlist.FetchFsGet(taskPath, nil)
+			}(task.Path, jpgPath)
+		}
+
+		// 2.3 ffmpeg 抽帧: ffmpeg-enable 为总开关, 仅对 exclude-365-paths 中的目录抽帧生成封面;
+		//     其余目录不在此处理, 交由 365 插件/列表 Thumb (2.1/2.2)。
+		if config.C.Openlist.LocalTreeGen.FFmpegEnable && isExcluded {
+			go func(t FileTask, destJpgPath, localPath string) {
+				if _, e := os.Stat(destJpgPath); e == nil {
+					logf(colors.Gray, "[thumb-debug] 已存在跳过: %s", destJpgPath)
+					return
+				}
+				// 输入源: 优先读取本地 .strm 文件内容 (即写入时已由播放器验证可用的真实下载地址),
+				// 避免用当前列表 sign 重建可能失效/不匹配的直链导致抽到 0 字节。
+				dlUrl, src := resolveFFmpegInput(&t, localPath)
+				if dlUrl == "" {
+					logf(colors.Red, "[thumb-debug] 无法获取抽帧输入: %s", t.Path)
+					return
+				}
+				logf(colors.Yellow, "[thumb-debug] ffmpeg 抽帧开始: path=%s src=%s url=%s", t.Path, src, dlUrl)
+				pic, err := ffmpeg.ExtractVideoCover(dlUrl)
+				if err != nil {
+					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧失败: path=%s url=%s err=%v", t.Path, dlUrl, err)
+					return
+				}
+				if len(pic) == 0 {
+					logf(colors.Red, "[thumb-debug] ffmpeg 抽帧输出为空(可能 seek 越界/输入非视频): path=%s url=%s", t.Path, dlUrl)
+					return
+				}
+				// 写入前再校验, 防止与 2.1/2.2 竞态覆盖
+				if _, e := os.Stat(destJpgPath); e != nil {
+					if werr := os.WriteFile(destJpgPath, pic, os.ModePerm); werr != nil {
+						logf(colors.Red, "[thumb-debug] 写文件失败: %v", werr)
+					} else {
+						logf(colors.Green, "[thumb-debug] ffmpeg 抽帧成功: %s", destJpgPath)
+					}
+				}
+			}(*task, jpgPath, localAbsPath)
+		}
+	}
+
 	// handleFile 处理文件, 根据容器类型以不同方式写入本地
 	handleFile := func(task *FileTask) error {
 		if task == nil {
@@ -267,9 +368,10 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 		stat, err := os.Stat(localAbsPath)
 		if err == nil {
 			if !stat.IsDir() {
-				// 文件已存在
-				// 根据本地文件的修改时间和远程文件的修改时间判断文件是否发生变更
+				// 文件已存在: 若本地修改时间晚于远端, 视为未变更, 跳过写入。
+				// 但仍需确保缩略图存在 —— 即便本次未写入 (新增:0), 缺失的图也要补生成。
 				if stat.ModTime().After(task.Modified) {
+					tryGenerateThumbnail(task, localAbsPath)
 					return nil
 				}
 			}
@@ -287,56 +389,8 @@ func (s *Synchronizer) handleSyncTasks(okTaskChan chan<- FileTask) {
 			return err
 		}
 
-		// 列表页同步时直接发起缩略图异步下载
-		if config.C.Openlist.Enable365 {
-			// 1. 获取同名 jpg 图片的绝对路径
-			baseName := filepath.Base(localAbsPath)
-			if idx := strings.LastIndex(baseName, "."); idx != -1 {
-				baseName = baseName[:idx]
-			}
-			jpgPath := filepath.Join(filepath.Dir(localAbsPath), baseName+".jpg")
-
-			// 2. 检查本地图片是否已经存在，不存在则开启异步协程下载
-			if _, errJpg := os.Stat(jpgPath); os.IsNotExist(errJpg) {
-				if config.C.Openlist.IsExclude365Path(task.Path) {
-					if config.C.Openlist.LocalTreeGen.FFmpegEnable {
-						go func(t FileTask, destJpgPath string) {
-							pic, err := ffmpeg.ExtractVideoCover(getRealDownloadUrl(t))
-							if err == nil && len(pic) > 0 {
-								os.WriteFile(destJpgPath, pic, os.ModePerm)
-							}
-						}(*task, jpgPath)
-					}
-				} else {
-					go func(taskPath string, taskThumb string, destJpgPath string) {
-						thumbUrl := taskThumb
-						// 如果列表返回的 task.Thumb 为空，我们主动调用 FetchFsGet 获取包含 Thumb 的详情
-						if thumbUrl == "" {
-							res := openlist.FetchFsGet(taskPath, nil)
-							if res.Code == http.StatusOK {
-								thumbUrl = res.Data.Thumb
-							}
-						}
-
-						if thumbUrl == "" {
-							return
-						}
-
-						// 修改链接中缩略图分辨率参数为 500x500
-						u, errParse := url.Parse(thumbUrl)
-						if errParse == nil {
-							q := u.Query()
-							q.Set("width", "500")
-							q.Set("height", "500")
-							u.RawQuery = q.Encode()
-							thumbUrl = u.String()
-						}
-
-						openlist.DownloadThumb(thumbUrl, destJpgPath)
-					}(task.Path, task.Thumb, jpgPath)
-				}
-			}
-		}
+		// 新写入的文件, 生成缩略图
+		tryGenerateThumbnail(task, localAbsPath)
 
 		return nil
 	}
@@ -502,15 +556,15 @@ func shouldKeepFile(current Snapshot, path string) bool {
 	}
 
 	folderArtworks := map[string]struct{}{
-		"poster":     {},
-		"fanart":     {},
-		"banner":     {},
-		"folder":     {},
-		"logo":       {},
-		"clearart":   {},
-		"theme":      {},
-		"backdrops":  {},
-		"disc":       {},
+		"poster":    {},
+		"fanart":    {},
+		"banner":    {},
+		"folder":    {},
+		"logo":      {},
+		"clearart":  {},
+		"theme":     {},
+		"backdrops": {},
+		"disc":      {},
 	}
 	if _, isFolderArt := folderArtworks[strings.ToLower(baseName)]; isFolderArt {
 		// 文件夹级别的海报图，只要文件夹存在就保留

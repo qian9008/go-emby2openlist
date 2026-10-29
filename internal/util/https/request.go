@@ -2,6 +2,7 @@ package https
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -28,6 +29,9 @@ type RequestHolder struct {
 
 	// closeConn 请求结束后是否关闭连接
 	closeConn bool
+
+	// ctx 请求的上下文，用于连接取消传递
+	ctx context.Context
 }
 
 // Request 构造自定义请求
@@ -80,6 +84,16 @@ func (r *RequestHolder) Header(header http.Header) *RequestHolder {
 	return r
 }
 
+// EmbyAuth 附加兼容 Emby 与 Jellyfin(含 12.x) 的鉴权头 Authorization: MediaBrowser Token="..."。
+// 旧版 ?api_key= / X-Emby-Token 仍由调用方自行保留，本方法只做补充，Emby 不会回归。
+// apiKey 为空时不做任何操作。
+func (r *RequestHolder) EmbyAuth(apiKey string) *RequestHolder {
+	if v := EmbyAuthHeaderValue(apiKey); v != "" {
+		r.AddHeader("Authorization", v)
+	}
+	return r
+}
+
 // Body 设置请求体
 func (r *RequestHolder) Body(body io.ReadCloser) *RequestHolder {
 	r.body = body
@@ -89,6 +103,12 @@ func (r *RequestHolder) Body(body io.ReadCloser) *RequestHolder {
 // CloseConn 请求完毕之后关闭 tcp 连接
 func (r *RequestHolder) CloseConn() *RequestHolder {
 	r.closeConn = true
+	return r
+}
+
+// Context 设置上下文
+func (r *RequestHolder) Context(ctx context.Context) *RequestHolder {
+	r.ctx = ctx
 	return r
 }
 
@@ -130,7 +150,11 @@ func (r *RequestHolder) execute() (string, *http.Response, error) {
 				return "", nil, fmt.Errorf("读取请求体失败: %v", err)
 			}
 		}
-		req, err := http.NewRequest(method, url, bytes.NewBuffer(bodyBytes))
+		ctx := r.ctx
+		if ctx == nil {
+			ctx = context.Background()
+		}
+		req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(bodyBytes))
 		if err != nil {
 			return "", nil, fmt.Errorf("创建请求失败: %v", err)
 		}

@@ -397,6 +397,23 @@
   - 给出了每个功能模块在合并时的重点审查点和代码保留指南。
   - 规定了分步式手动合并操作规范（从环境准备、文件比对到构建校验、dev.sh 联调测试），为后续维护与代码拉取提供安全机制。
 
+### 18. Jellyfin 12 鉴权兼容 (EmbyAuth) (2026-10-19)
+* **背景**：Jellyfin 12.0+ 默认禁用旧版鉴权（查询参数 `?api_key=`、请求头 `X-Emby-Token`/`X-MediaBrowser-Token`、`/emby/` 前缀），仅认 `Authorization: MediaBrowser Token="..."` 头与 `?ApiKey=`（大写 K）查询参数。本项目默认后端可能是 Jellyfin 12，原代码所有回源调用均使用旧方式，导致分享/播放/下载/代理全部 `401 Unauthorized`。
+* **新增通用工具（位于 `internal/util/https/`）**：
+  - `EmbyAuthHeaderValue(apiKey string) string`：返回 `MediaBrowser Token="<key>"`，空 key 返回空串。
+  - `ExtractEmbyToken(r *http.Request) string`：从请求中提取生效令牌（query `api_key`/`token` → 头 `X-Emby-Token`/`X-MediaBrowser-Token` → `Authorization`/`X-Emby-Authorization` 中的 `Token`）。
+  - `(*RequestHolder).EmbyAuth(apiKey string)`：链式方法，出站请求附加上述头；空 key 不操作。
+* **核心约定（兼容策略）**：**保留旧方式、补充 MediaBrowser 头**，Emby 全系不回归；Jellyfin 12 自动采用新头。所有 ge2o→Emby/Jellyfin 的出站/代理请求统一照此处理。
+* **代理修复（`internal/service/emby/emby.go` 的 `ProxyOrigin`）**：在转发前用 `ExtractEmbyToken` 取生效令牌（含分享提权改写后的管理员 Key），注入 `Authorization: MediaBrowser Token=`，旧头/参数保持不变。覆盖元数据/图片/串流/下载/字幕等全部代理流量。
+* **服务端直连调用同步修复**（均追加 `EmbyAuth` 或 `Authorization: MediaBrowser Token=`）：
+  - `internal/service/share/share.go`：`GetCurrentUser`、`GetAllEmbyUsers`、`GetItemInfoByAdmin`（三处 `?api_key=` 出站）。
+  - `internal/service/emby/playbackinfo.go`：两处 `X-Emby-Token` 出站（`fetchFullPlaybackInfo`、`fetchPlaybackInfoByAdmin`）。
+  - `internal/service/emby/media.go`：`PlaybackInfoUri` 出站。
+  - `internal/service/emby/playing.go`：`sendPlayingProgress` 进度上报。
+  - `internal/service/emby/auth.go`：鉴权中间件令牌校验。
+  - `internal/service/emby/api.go`：`RawFetch`/`Fetch` 集中补 MediaBrowser 头（从 `X-Emby-Token` 派生）。
+* **未处理（待验证）**：`internal/service/m3u8/proxy.go:125`、`internal/plugin/thumbnail/365_thumb.go:64` 为服务端直连拉取外部/缩略图 URL，因无法确认目标 host 是否即 Emby，未盲目追加令牌（避免令牌外泄）；若其在 Jellyfin 12 上 `401`，需按 host==emby.host 判定后补充 `ApiKey`。
+
 ## 5. 插件扩展系统 (2026-08-08 重构)
 * **核心结构变更**：引入了全新的插件化解耦机制，用于隔离二开（二次开发）逻辑，摆脱每次合并上游代码导致的大量冲突。
 * **文件路径**：`internal/plugin/` 以及对 `internal/web/route.go`、`internal/service/openlist/api.go`、`internal/config/config.go` 的插槽拓展。

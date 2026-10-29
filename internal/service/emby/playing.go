@@ -91,6 +91,8 @@ func sendPlayingProgress(kType ApiKeyType, kName, apiKey string, body *jsons.Ite
 		} else {
 			header.Set(kName, apiKey)
 		}
+		// Jellyfin 12 兼容：补充 MediaBrowser 头（旧方式保留）
+		header.Set("Authorization", https.EmbyAuthHeaderValue(apiKey))
 		resp, err := https.Post(remote).Header(header).Body(io.NopCloser(bytes.NewBuffer([]byte(body.String())))).Do()
 		if err != nil {
 			return err
@@ -103,11 +105,11 @@ func sendPlayingProgress(kType ApiKeyType, kName, apiKey string, body *jsons.Ite
 	}
 
 	logs.Tip("开始发送辅助 Progress 进度记录, 内容: %v", body)
-	if err := inner(config.C.Emby.Host + "/emby/Sessions/Playing/Progress"); err != nil {
+	if err := inner(config.C.Emby.ApiURL("/Sessions/Playing/Progress")); err != nil {
 		logs.Warn("辅助发送 Progress 进度记录失败: %v", err)
 		return
 	}
-	if err := inner(config.C.Emby.Host + "/emby/Sessions/Playing/Stopped"); err != nil {
+	if err := inner(config.C.Emby.ApiURL("/Sessions/Playing/Stopped")); err != nil {
 		logs.Warn("辅助发送 Progress 进度记录失败: %v", err)
 		return
 	}
