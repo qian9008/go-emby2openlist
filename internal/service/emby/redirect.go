@@ -206,7 +206,6 @@ func ProxyOriginalResource(c *gin.Context) {
 		// dev: 代理回源前将 original 路径改写为 stream（share 拦截场景）
 		c.Request.URL.Path = strings.Replace(c.Request.URL.Path, "original", "stream", 1)
 		c.Request.RequestURI = strings.Replace(c.Request.RequestURI, "original", "stream", 1)
-
 		ProxyOrigin(c)
 		return
 	}

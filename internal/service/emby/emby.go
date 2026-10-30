@@ -80,7 +80,6 @@ func HandleImages(c *gin.Context) {
 		// 重新加载已修改的 query
 		q = c.Request.URL.Query()
 	}
-
 	c.Request.RequestURI = c.Request.URL.Path + "?" + q.Encode()
 	ProxyOrigin(c)
 }
